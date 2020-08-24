@@ -36,6 +36,9 @@ dependencies:
   path_provider: ^1.6.11
   path: ^1.7.0
 
+  # Social Login API
+  flutter_kakao_login: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
