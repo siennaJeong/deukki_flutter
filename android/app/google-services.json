@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "890185520334",
+    "firebase_url": "https://deukki-flutter.firebaseio.com",
+    "project_id": "deukki-flutter",
+    "storage_bucket": "deukki-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:890185520334:android:3eb34be077efd3656aec9f",
+        "android_client_info": {
+          "package_name": "com.diction.deukki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "890185520334-8p7ap2b9avp6i13aev9ciedppcfq5or3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diction.deukki",
+            "certificate_hash": "19790fdaed6600036a33ad42da1698c26f2aeebc"
+          }
+        },
+        {
+          "client_id": "890185520334-i0f5b5e9tegkgpjqen2g3vbue6l9uog0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcoY75Tg3ceoYkoOJF6RGX2r4AeVpqcM0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "890185520334-i0f5b5e9tegkgpjqen2g3vbue6l9uog0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

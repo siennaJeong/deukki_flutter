@@ -12,6 +12,8 @@ void main() => runApp(
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Container(
+      child: Text("hi"),
+    );
   }
 }
