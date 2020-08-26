@@ -42,7 +42,7 @@ dependencies:
   path: ^1.7.0
 
   # ======== Social Login API =========
-  #flutter_kakao_login: ^1.2.0
+  kakao_flutter_sdk: ^0.4.2
 
 dev_dependencies:
   flutter_test:
