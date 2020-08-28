@@ -35,7 +35,7 @@ class DBHelper {
             "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY, version_name TEXT, version TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_data TEXT, gender INTEGER)"
+            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender INTEGER)"
           );
           db.execute(
             "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, order INTEGER)"
