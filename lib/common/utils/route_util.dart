@@ -15,3 +15,9 @@ var routes = <String, WidgetBuilder> {
   GetRoutesName().ROUTE_MAIN: (BuildContext context) => MainCategory()
 };
 
+class RouteNavigator {
+  static void goLogin(BuildContext context) {
+    Navigator.pushReplacementNamed(context, GetRoutesName().ROUTE_LOGIN);
+  }
+}
+

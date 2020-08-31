@@ -113,8 +113,8 @@ flutter:
   fonts:
     - family: TomoneyRound
       fonts:
-        - asset: fonts/TmoneyRoundWindRegular.ttf
-        - asset: fonts/TmoneyRoundWindExtraBold.ttf
+        - asset: assets/fonts/TmoneyRoundWindRegular.ttf
+        - asset: assets/fonts/TmoneyRoundWindExtraBold.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

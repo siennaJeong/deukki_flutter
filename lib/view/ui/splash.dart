@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/login/sns_auth_service.dart';
+import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -32,15 +35,17 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
+
+    Timer(Duration(seconds: 2), () => RouteNavigator.goLogin(context));
+
     return Scaffold(
+      backgroundColor: MainColors().yellow_100,
       body: Center(
         child: SafeArea(
-          child: RaisedButton(
-            child: Text("click"),
-            onPressed: () {
-              Navigator.pushNamed(context, GetRoutesName().ROUTE_LOGIN);
-            },
-          ),
+           child: Image.asset(
+             "images/app_logo_white.png",
+             width: 243.6,
+           )
         ),
       )
     );
