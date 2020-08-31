@@ -1,4 +1,4 @@
-import 'package:deukki/data/model/user_dao.dart';
+import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/provider/login/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
@@ -15,30 +15,30 @@ const String KAKAO_JS_KEY = "3765d00988752c05db3b9e83cf9ddb88";
 class SNSAuthService implements AuthService {
 
   @override
-  Future<UserDAO> currentUser() {
+  Future<UserVO> currentUser() {
 
   }
 
   @override
-  Stream<UserDAO> get onAuthStateChanged => throw UnimplementedError();
+  Stream<UserVO> get onAuthStateChanged => throw UnimplementedError();
 
   @override
-  Future<UserDAO> signInWithApple() {
+  Future<UserVO> signInWithApple() {
 
   }
 
   @override
-  Future<UserDAO> signInWithFacebook() {
+  Future<UserVO> signInWithFacebook() async {
 
   }
 
   @override
-  Future<UserDAO> signInWithGoogle() {
+  Future<UserVO> signInWithGoogle() {
 
   }
 
   @override
-  Future<UserDAO> signInWithKakao() async {
+  Future<UserVO> signInWithKakao() async {
     bool isKakaoInstalled = await isKakaoTalkInstalled();
     var kakaoAuthCode;
     var kakaoUserToken;
@@ -51,6 +51,8 @@ class SNSAuthService implements AuthService {
       }
       kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
       AccessTokenStore.instance.toStore(kakaoUserToken);
+
+      // TODO: 기기에 카카오톡 설치된 상태에서 계정 연결 안되어 있으면 Not Supported Error 발생! -> 에러처리 어케 할건지..
     } on KakaoAuthException catch (e) {
       print("kakao Auth exception");
     } on KakaoClientException catch (e) {

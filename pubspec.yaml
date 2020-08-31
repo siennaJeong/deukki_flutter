@@ -68,9 +68,36 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - images/app_logo_white.png
+    - images/app_logo_yellow.png
+    - images/apple_logo.png
+    - images/arrow_back_btn.png
+    - images/back_btn.png
+    - images/flag_active.png
+    - images/flag_normal.png
+    - images/google_g_logo.png
+    - images/icon_bookmark_active.png
+    - images/icon_bookmark_normal.png
+    - images/icon_clear.png
+    - images/icon_empty_star.png
+    - images/icon_face.png
+    - images/icon_full_star.png
+    - images/icon_half_star.png
+    - images/icon_hearing.png
+    - images/icon_keyboard_voice.png
+    - images/icon_play.png
+    - images/icon_speaker.png
+    - images/img_basic_purple.png
+    - images/img_basic.png
+    - images/img_business_green.png
+    - images/img_business.png
+    - images/img_practice_blue.png
+    - images/img_practice.png
+    - images/img_word_yellow.png
+    - images/img_word.png
+    - images/kakao_logo.png
+    - images/kakao_logo_yellow.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -83,11 +110,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  fonts:
+    - family: TomoneyRound
+      fonts:
+        - asset: fonts/TmoneyRoundWindRegular.ttf
+        - asset: fonts/TmoneyRoundWindExtraBold.ttf
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:
@@ -97,3 +124,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

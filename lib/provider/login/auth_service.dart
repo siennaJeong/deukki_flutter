@@ -1,12 +1,12 @@
-import 'package:deukki/data/model/user_dao.dart';
+import 'package:deukki/data/model/user_vo.dart';
 import 'dart:async';
 
 abstract class AuthService {
-  Future<UserDAO> currentUser();
-  Future<UserDAO> signInWithKakao();
-  Future<UserDAO> signInWithGoogle();
-  Future<UserDAO> signInWithFacebook();
-  Future<UserDAO> signInWithApple();
+  Future<UserVO> currentUser();
+  Future<UserVO> signInWithKakao();
+  Future<UserVO> signInWithGoogle();
+  Future<UserVO> signInWithFacebook();
+  Future<UserVO> signInWithApple();
   Future<void> signOut();
-  Stream<UserDAO> get onAuthStateChanged;
+  Stream<UserVO> get onAuthStateChanged;
 }
