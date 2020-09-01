@@ -77,6 +77,7 @@ flutter:
     - images/flag_active.png
     - images/flag_normal.png
     - images/google_g_logo.png
+    - images/facebook_logo.png
     - images/icon_bookmark_active.png
     - images/icon_bookmark_normal.png
     - images/icon_clear.png
@@ -111,10 +112,11 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: TomoneyRound
+    - family: TmoneyRound
       fonts:
         - asset: assets/fonts/TmoneyRoundWindRegular.ttf
         - asset: assets/fonts/TmoneyRoundWindExtraBold.ttf
+          weight: 700
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

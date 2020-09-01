@@ -27,6 +27,7 @@ class MainColors {
   Color purple_20 = const Color.fromRGBO(255,223,249,1);
 
   Color grey_100 = const Color.fromRGBO(51,51,51,1);
+  Color grey_text = const Color.fromRGBO(182,182,182,1);
   
   Color grey_google = const Color.fromRGBO(240,240,240,1);
   Color blue_facebook = const Color.fromRGBO(24,119,242,1);
