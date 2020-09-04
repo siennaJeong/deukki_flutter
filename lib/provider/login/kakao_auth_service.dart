@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/login/auth_service.dart';
 import 'package:deukki/provider/login/auth_service_adapter.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +11,7 @@ import 'package:kakao_flutter_sdk/user.dart';
 const String KAKAO_APP_KEY = "33194ae01d0ccade0fffcd22f39f300a";
 const String KAKAO_JS_KEY = "3765d00988752c05db3b9e83cf9ddb88";
 
-class KakaoAuthService{
+class KakaoAuthService implements AuthService{
   var kakaoUserToken;
   var kakaoAuthCode;
   bool isKakaoInstalled;
@@ -43,21 +41,31 @@ class KakaoAuthService{
 
       kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
       token = await AccessTokenStore.instance.toStore(kakaoUserToken);
+      signInDone(context, token, AuthService.AUTH_TYPE_KAKAO);
 
     } on KakaoAuthException catch (e) {
       print(e);
     } on KakaoClientException catch (e) {
       print(e);
     }
-
-    if(token != null) {
-      RouteNavigator.goMain(context);
-
-      SharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, AuthService.AUTH_TYPE_KAKAO);
-    }
   }
 
   Future<bool> _getUserProfile(String authCode) async {
+
+  }
+
+  @override
+  Future<bool> signInDone(BuildContext context, var token, String sharedValue) {
+    AuthServiceAdapter().signInDone(context, token, sharedValue);
+  }
+
+  @override
+  Future<bool> signOut(BuildContext context, String sharedValue) {
+    AuthServiceAdapter().signOut(context, sharedValue);
+  }
+
+  @override
+  Future<bool> userAuthState() {
 
   }
 }

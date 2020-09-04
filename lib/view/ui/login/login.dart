@@ -1,12 +1,12 @@
-import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/login/kakao_auth_service.dart';
 import 'package:deukki/provider/login/sns_auth_service.dart';
-import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 import 'package:deukki/view/values/strings.dart';
+import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:deukki/provider/login/auth_service.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -19,6 +19,10 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     KakaoContext.clientId = KAKAO_APP_KEY;
     KakaoContext.javascriptClientId = KAKAO_JS_KEY;
+
+    if(SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, "").isNotEmpty) {
+      print(SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, ""));
+    }
 
     final SNSAuthService authService = Provider.of<SNSAuthService>(context);
     KakaoAuthService kakaoAuthService = Provider.of<KakaoAuthService>(context, listen: false);
@@ -138,7 +142,7 @@ class _LoginState extends State<Login> {
                           color: MainColors().blue_facebook,
                           shape: CircleBorder(),
                           padding: EdgeInsets.all(11.0),
-                          onPressed: () => authService.signInWithFacebook(),
+                          onPressed: () => SNSAuthService().signInWithFacebook(context),
                         )
                     ),  //  페이스북 로그인
                     SizedBox(
@@ -153,7 +157,7 @@ class _LoginState extends State<Login> {
                         color: Colors.black,
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(11.0),
-                        onPressed: () => authService.signInWithFacebook(),
+                        onPressed: () => authService.signInWithApple(),
                       ),
                     ) //  애플 로그인
                   ],

@@ -17,23 +17,28 @@ import 'package:provider/provider.dart';
  */
 
 void main() {
-  runApp(
-    MultiProvider(
-      providers: [
-        Provider<SNSAuthService> (
-          create: (_) => SNSAuthService(),
-        ),
-        Provider<KakaoAuthService> (
-          create: (_) => KakaoAuthService(),
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
+  .then((_) {
+    runApp(
+        MultiProvider(
+            providers: [
+              Provider<SNSAuthService> (
+                create: (_) => SNSAuthService(),
+              ),
+              Provider<KakaoAuthService> (
+                create: (_) => KakaoAuthService(),
+              )
+            ],
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              routes: routes,
+              home: Splash(),
+            )
         )
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: routes,
-        home: Splash(),
-      )
-    )
-  );
+    );
+  });
+
 }
 
 class Splash extends StatefulWidget {
@@ -45,7 +50,6 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-
     SharedHelper.initShared();
   }
 
@@ -60,7 +64,6 @@ class _SplashState extends State<Splash> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
 
     return Scaffold(
         backgroundColor: MainColors().yellow_100,

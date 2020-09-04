@@ -29,25 +29,33 @@
 			</array>
 		</dict>
 		<dict>
-		    <key>CFBundleURLSchemes</key>
-		    <array>
-		        <string>fb639456823354844</string>
-            </array>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb639456823354844</string>
+			</array>
+		</dict>
+		<dict>
+        	<key>CFBundleTypeRole</key>
+        	<string>Editor</string>
+        	<key>CFBundleURLSchemes</key>
+        	<array>
+        		<string>com.googleusercontent.apps.890185520334-vf09fs0qpdpto870kf3erq6hlsrgbun4</string>
+        	</array>
         </dict>
 	</array>
-	<key>FacebookAppID</key>
-    <string>639456823354844</string>
-    <key>FacebookDisplayName</key>
-    <string>deukki</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>fbapi</string>
-        <string>fb-messenger-share-api</string>
-        <string>fbauth2</string>
-        <string>fbshareextension</string>
-    </array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>639456823354844</string>
+	<key>FacebookDisplayName</key>
+	<string>deukki</string>
+	<key>LSApplicationQueriesSchemes</key>
+    	<array>
+    		<string>fbapi</string>
+    		<string>fb-messenger-share-api</string>
+    		<string>fbauth2</string>
+    		<string>fbshareextension</string>
+    	</array>
 	<key>KAKAO_APP_KEY</key>
 	<string>33194ae01d0ccade0fffcd22f39f300a</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -60,14 +68,11 @@
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
