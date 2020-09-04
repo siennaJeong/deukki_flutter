@@ -4,6 +4,7 @@ import 'package:deukki/provider/login/auth_service_adapter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SNSAuthService implements AuthService{
   //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
@@ -38,8 +39,16 @@ class SNSAuthService implements AuthService{
 
   }
 
-  Future<UserVO> signInWithGoogle() {
-
+  Future<UserVO> signInWithGoogle(BuildContext context) async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken
+    );
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
+    print("sign in with google of firebase + " + userCredential.user.email);
+    signInDone(context, googleAuth.accessToken, AuthService.AUTH_TYPE_Google);
   }
 
   @override

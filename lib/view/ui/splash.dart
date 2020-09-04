@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/login/kakao_auth_service.dart';
@@ -16,8 +17,9 @@ import 'package:provider/provider.dart';
  * 4. 도움말 버전 체크
  */
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
   .then((_) {
     runApp(

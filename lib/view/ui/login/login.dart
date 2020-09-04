@@ -124,7 +124,7 @@ class _LoginState extends State<Login> {
                         color: MainColors().grey_google,
                         shape: CircleBorder(),
                         padding: EdgeInsets.all(11.0),
-                        onPressed: () => authService.signInWithGoogle(),
+                        onPressed: () => authService.signInWithGoogle(context),
                       ),
                     ),  //  구글 로그인
                     SizedBox(
