@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/provider/login/kakao_auth_service.dart';
 import 'package:deukki/provider/login/sns_auth_service.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 /*
@@ -20,34 +22,56 @@ void main() {
       providers: [
         Provider<SNSAuthService> (
           create: (_) => SNSAuthService(),
+        ),
+        Provider<KakaoAuthService> (
+          create: (_) => KakaoAuthService(),
         )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Splash(),
         routes: routes,
-      ),
+        home: Splash(),
+      )
     )
   );
 }
 
-class Splash extends StatelessWidget {
+class Splash extends StatefulWidget {
+  @override
+  _SplashState createState() => _SplashState();
+}
+
+class _SplashState extends State<Splash> {
+  @override
+  void initState() {
+    super.initState();
+
+    SharedHelper.initShared();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final KakaoAuthService kakaoAuthService = Provider.of<KakaoAuthService>(context, listen: false);
+    kakaoAuthService.isKakaoLogin();
+    Timer(Duration(seconds: 2), () => kakaoAuthService.isLogin ? RouteNavigator.goMain(context) : RouteNavigator.goLogin(context));
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight]);
 
-    Timer(Duration(seconds: 2), () => RouteNavigator.goLogin(context));
-
     return Scaffold(
-      backgroundColor: MainColors().yellow_100,
-      body: Center(
-        child: SafeArea(
-           child: Image.asset(
-             "images/app_logo_white.png",
-             width: 243.6,
-           )
-        ),
-      )
+        backgroundColor: MainColors().yellow_100,
+        body: Center(
+          child: SafeArea(
+              child: Image.asset(
+                "images/app_logo_white.png",
+                width: 243.6,
+              )
+          ),
+        )
     );
   }
 }

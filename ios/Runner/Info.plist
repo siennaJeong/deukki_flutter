@@ -28,11 +28,10 @@
 				<string>kakao33194ae01d0ccade0fffcd22f39f300a</string>
 			</array>
 		</dict>
-
 		<dict>
 		    <key>CFBundleURLSchemes</key>
 		    <array>
-		        <string>639456823354844</string>
+		        <string>fb639456823354844</string>
             </array>
         </dict>
 	</array>

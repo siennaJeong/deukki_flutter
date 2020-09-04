@@ -2,11 +2,13 @@ import 'package:deukki/data/model/user_vo.dart';
 import 'dart:async';
 
 abstract class AuthService {
-  Future<UserVO> currentUser();
-  Future<UserVO> signInWithKakao();
-  Future<UserVO> signInWithGoogle();
-  Future<UserVO> signInWithFacebook();
-  Future<UserVO> signInWithApple();
-  Future<void> signOut();
-  Stream<UserVO> get onAuthStateChanged;
+  static const String AUTH_TYPE = "loginAuthType";
+  static const String AUTH_TYPE_APPLE = "Apple";
+  static const String AUTH_TYPE_FB = "Facebook";
+  static const String AUTH_TYPE_Google = "Google";
+  static const String AUTH_TYPE_KAKAO = "Kakao";
+
+  Future<bool> signInDone();
+  Future<bool> signOut();
+  Future<bool> userAuthState();
 }

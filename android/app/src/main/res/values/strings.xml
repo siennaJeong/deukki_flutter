@@ -2,5 +2,5 @@
 <resources>
     <string name="app_name">deukki</string>
     <string name="facebook_app_id">639456823354844</string>
-    <string name="fb_login_protocol_scheme">639456823354844</string>
+    <string name="fb_login_protocol_scheme">fb639456823354844</string>
 </resources>

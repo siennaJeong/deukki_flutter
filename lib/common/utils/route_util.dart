@@ -19,5 +19,9 @@ class RouteNavigator {
   static void goLogin(BuildContext context) {
     Navigator.pushReplacementNamed(context, GetRoutesName().ROUTE_LOGIN);
   }
+
+  static void goMain(BuildContext context) {
+    Navigator.pushReplacementNamed(context, GetRoutesName().ROUTE_MAIN);
+  }
 }
 

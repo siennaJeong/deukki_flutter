@@ -41,10 +41,11 @@ dependencies:
   #flutter_audio_recorder: ^0.5.5
   path_provider: ^1.6.11
   path: ^1.7.0
+  flare_splash_screen: ^3.0.1
 
   # ======== Social Login API =========
   kakao_flutter_sdk: ^0.4.2
-  flutter_facebook_login: ^3.0.0
+  flutter_facebook_auth: ^0.2.4
 
   # ======== Kakao SDK dependencies =========
   dio: ^3.0.10
