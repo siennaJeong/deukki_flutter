@@ -2,9 +2,10 @@ import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/login/auth_service.dart';
 import 'package:deukki/provider/login/auth_service_adapter.dart';
+import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:flutter/material.dart';
 
-class MainCategory extends StatefulWidget {
+class MainCategory extends BaseWidget {
   @override
   _MainCategoryState createState() => _MainCategoryState();
 }

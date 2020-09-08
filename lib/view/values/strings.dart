@@ -23,5 +23,9 @@ class Strings {
 
   static const String sign_up_email = '이메일 주소';
   static const String sign_up_name = '이름';
+  static const String sign_up_birth = '생년/월';
+  static const String sign_up_gender = '성별';
+  static const String sign_up_gender_male = '남자';
+  static const String sign_up_gender_female = '여자';
 
 }

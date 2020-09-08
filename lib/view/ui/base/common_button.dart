@@ -1,14 +1,11 @@
-
-import 'package:deukki/common/utils/route_util.dart';
-import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommonRaisedButton extends StatelessWidget {
   final String buttonText, routeName;
-  final Color buttonColor, textColor;
+  final Color buttonColor, textColor, borderColor;
 
-  CommonRaisedButton(this.buttonText, this.routeName, this.buttonColor, this.textColor);
+  CommonRaisedButton(this.buttonText, this.routeName, this.buttonColor, this.textColor, this.borderColor);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +16,7 @@ class CommonRaisedButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(24.0)),
           side: BorderSide(
-              color: textColor,
+              color: borderColor,
               width: 2.0
           )
       ),
@@ -32,7 +29,7 @@ class CommonRaisedButton extends StatelessWidget {
             fontWeight: FontWeight.w700
         ),
       ),
-      onPressed: () => RouteNavigator(context).navigatePushName(routeName),
+      onPressed: () => Navigator.pushNamed(context, routeName),
     );
   }
 

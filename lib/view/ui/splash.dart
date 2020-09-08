@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
@@ -44,7 +45,7 @@ void main() async {
 
 }
 
-class Splash extends StatefulWidget {
+class Splash extends BaseWidget {
   @override
   _SplashState createState() => _SplashState();
 }
@@ -65,8 +66,8 @@ class _SplashState extends State<Splash> {
     Timer (
         Duration(seconds: 2),
             () => kakaoAuthService.isLogin ?
-            RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_MAIN) :
-            RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_LOGIN)
+            Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_MAIN) :
+            Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN)
     );
   }
 

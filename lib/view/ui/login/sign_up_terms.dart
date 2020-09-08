@@ -1,10 +1,11 @@
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/common_button.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/material.dart';
 
-class SignUpTerms extends StatefulWidget {
+class SignUpTerms extends BaseWidget {
   @override
   _SignUpTermsState createState() => _SignUpTermsState();
 }
@@ -80,12 +81,23 @@ class _SignUpTermsState extends State<SignUpTerms> {
                           children: <Widget>[
                             Expanded(
                                 flex: 1,
-                                child: CommonRaisedButton(Strings.common_btn_cancel, GetRoutesName.ROUTE_LOGIN ,Colors.white, MainColors().purple_100)
+                                child: CommonRaisedButton(
+                                    Strings.common_btn_cancel,
+                                    GetRoutesName.ROUTE_LOGIN,
+                                    Colors.white, MainColors().purple_100,
+                                    MainColors().purple_100
+                                )
                             ),
                             SizedBox(width: 16),
                             Expanded(
                                 flex: 1,
-                                child: CommonRaisedButton(Strings.common_btn_ok, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, MainColors().purple_100, Colors.white)
+                                child: CommonRaisedButton(
+                                    Strings.common_btn_ok,
+                                    GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL,
+                                    MainColors().purple_100,
+                                    Colors.white,
+                                    MainColors().purple_100
+                                )
                             )
                           ],
                         ),

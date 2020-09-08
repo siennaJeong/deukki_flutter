@@ -10,7 +10,6 @@ class AuthServiceAdapter implements AuthService {
   Future<void> signInDone(BuildContext context, var token, String sharedValue) async {
     if(token != null) {
       Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
-      //RouteNavigator(context).navigatePushName(GetRoutesName.ROUTE_TERMS);
       SharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
 
       /*
@@ -39,7 +38,6 @@ class AuthServiceAdapter implements AuthService {
         break;
     }
     SharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    //RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_LOGIN);
     Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN);
 
     return true;
