@@ -24,6 +24,7 @@ class _LoginState extends State<Login> {
       print(SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, ""));
     }
 
+    final SNSAuthService snsAuthService = Provider.of<SNSAuthService>(context);
     KakaoAuthService kakaoAuthService = Provider.of<KakaoAuthService>(context, listen: false);
     kakaoAuthService.isInstalled();
 
@@ -110,7 +111,52 @@ class _LoginState extends State<Login> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget> [
+                  children: [
+                    /*SizedBox(
+                      width: 48,
+                      child: RaisedButton(
+                          child: Image.asset(
+                            'images/google_g_logo.png',
+                            width: 21,
+                            height: 25,
+                          ),
+                          elevation: 0,
+                          color: MainColors().grey_google,
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(11.0),
+                          onPressed: () => snsAuthService.signInWithGoogle(context)
+                      ),
+                    ),
+                    SizedBox(
+                      width: 48,
+                      child: RaisedButton(
+                        child: Image.asset(
+                          'images/facebook_logo.png',
+                          width: 21,
+                          height: 25,
+                        ),
+                          elevation: 0,
+                          color: MainColors().blue_facebook,
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(11.0),
+                          onPressed: () => snsAuthService.signInWithFacebook(context)
+                      ),
+                    ),
+                    SizedBox(
+                      width: 48,
+                      child: RaisedButton(
+                          child: Image.asset(
+                            'images/apple_logo.png',
+                            width: 21,
+                            height: 25,
+                          ),
+                          elevation: 0,
+                          color: MainColors().blue_facebook,
+                          shape: CircleBorder(),
+                          padding: EdgeInsets.all(11.0),
+                          onPressed: () => snsAuthService.signInWithApple()
+                      ),
+                    )*/
                     SNSButton('images/google_g_logo.png', MainColors().grey_google, AuthService.AUTH_TYPE_Google),
                     SNSButton('images/facebook_logo.png', MainColors().blue_facebook, AuthService.AUTH_TYPE_FB),
                     SNSButton('images/apple_logo.png', Colors.black, AuthService.AUTH_TYPE_APPLE)
@@ -161,7 +207,7 @@ class SNSButton extends StatelessWidget {
             color: color,
             shape: CircleBorder(),
             padding: EdgeInsets.all(11.0),
-            onPressed: () => {snsLogin(authType)}
+            onPressed: () => snsLogin(authType)
         )
     );
   }

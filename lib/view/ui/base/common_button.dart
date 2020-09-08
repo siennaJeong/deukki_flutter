@@ -5,18 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CommonRaisedButton extends StatelessWidget {
-  final String buttonText;
-  final String routeName;
-  final bool isWhiteButton;
+  final String buttonText, routeName;
+  final Color buttonColor, textColor;
 
-  CommonRaisedButton(this.buttonText, this.routeName, this.isWhiteButton);
+  CommonRaisedButton(this.buttonText, this.routeName, this.buttonColor, this.textColor);
 
   @override
   Widget build(BuildContext context) {
-    return isWhiteButton ? setRaisedButton(Colors.white, MainColors().purple_100, context) : setRaisedButton(MainColors().purple_100, Colors.white, context);
-  }
-
-  Widget setRaisedButton(Color buttonColor, Color textColor, BuildContext context) {
     return RaisedButton(
       padding: EdgeInsets.only(left: 14, right: 14, top: 13, bottom: 15),
       color: buttonColor,
@@ -40,4 +35,5 @@ class CommonRaisedButton extends StatelessWidget {
       onPressed: () => RouteNavigator(context).navigatePushName(routeName),
     );
   }
+
 }

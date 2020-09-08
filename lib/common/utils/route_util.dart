@@ -12,6 +12,7 @@ class GetRoutesName {
   static const String ROUTE_TERMS = "/signUpTerms";
   static const String ROUTE_SIGNUP_INPUT_EMAIL = "/signUpInputEmail";
   static const String ROUTE_SIGNUP_INPUT_NAME = "/signUpInputName";
+  static const String ROUTE_SIGNUP_INPUT_BIRTH = '/signUpInputBirth';
 }
 
 var routes = <String, WidgetBuilder> {
@@ -20,19 +21,20 @@ var routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_MAIN: (BuildContext context) => MainCategory(),
   GetRoutesName.ROUTE_TERMS: (BuildContext context) => SignUpTerms(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (BuildContext context) => SignUpInputEmail(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (BuildContext context) => SignUpInputName()
+  GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (BuildContext context) => SignUpInputName(),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (BuildContext context) => SignUpInputBirth()
 };
 
 class RouteNavigator {
-  BuildContext _context;
-  RouteNavigator(this._context);
+  BuildContext context;
+  RouteNavigator(this.context);
 
   navigatePushReplaceName(String routeName) {
-    Navigator.pushReplacementNamed(_context, routeName);
+    Navigator.pushReplacementNamed(context, routeName);
   }
 
   navigatePushName(String routeName) {
-    Navigator.pushNamed(_context, routeName);
+    Navigator.pushNamed(context, routeName);
   }
 
   /*goLogin() {
