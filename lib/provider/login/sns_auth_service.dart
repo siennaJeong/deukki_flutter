@@ -17,16 +17,13 @@ class SNSAuthService implements AuthService{
 
   }
 
-  Future<Null> signInWithFacebook(BuildContext context) async {
+  Future<void> signInWithFacebook(BuildContext context) async {
     final result = await FacebookAuth.instance.login();
     switch (result.status) {
       case FacebookAuthLoginResponse.ok:
         final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
         final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-
-        // TODO: Firebase -> Facebook 앱 시크릿키 입력
         print("sign in with facebook of firebase + " + userCredential.user.email);
-
         signInDone(context, result.accessToken.token, AuthService.AUTH_TYPE_FB);
         break;
       case FacebookAuthLoginResponse.cancelled:
@@ -39,7 +36,7 @@ class SNSAuthService implements AuthService{
 
   }
 
-  Future<UserVO> signInWithGoogle(BuildContext context) async {
+  Future<void> signInWithGoogle(BuildContext context) async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
     final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
@@ -47,22 +44,22 @@ class SNSAuthService implements AuthService{
       idToken: googleAuth.idToken
     );
     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
-    print("sign in with google of firebase + " + userCredential.user.email);
+    print("sign in with google of firebase : access Token - " + googleAuth.accessToken + ", email - " + userCredential.user.email);
     signInDone(context, googleAuth.accessToken, AuthService.AUTH_TYPE_Google);
   }
 
   @override
-  Future<bool> signInDone(BuildContext context, var token, String sharedValue) {
+  Future<void> signInDone(BuildContext context, var token, String sharedValue) async {
     AuthServiceAdapter().signInDone(context, token, sharedValue);
   }
 
   @override
-  Future<bool> signOut(BuildContext context, String sharedValue) {
+  Future<void> signOut(BuildContext context, String sharedValue) async {
 
   }
 
   @override
-  Future<bool> userAuthState() {
+  Future<void> userAuthState() async {
 
   }
 

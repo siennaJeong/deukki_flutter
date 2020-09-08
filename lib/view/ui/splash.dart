@@ -20,6 +20,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
   .then((_) {
     runApp(
@@ -61,7 +62,12 @@ class _SplashState extends State<Splash> {
 
     final KakaoAuthService kakaoAuthService = Provider.of<KakaoAuthService>(context, listen: false);
     kakaoAuthService.isKakaoLogin();
-    Timer(Duration(seconds: 2), () => kakaoAuthService.isLogin ? RouteNavigator.goMain(context) : RouteNavigator.goLogin(context));
+    Timer (
+        Duration(seconds: 2),
+            () => kakaoAuthService.isLogin ?
+            RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_MAIN) :
+            RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_LOGIN)
+    );
   }
 
   @override

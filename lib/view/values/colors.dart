@@ -1,12 +1,12 @@
 import 'dart:ui';
 
 class MainColors {
+  Color yellow_kakao = const Color.fromRGBO(255,205,0,1);
   Color yellow_100 = const Color.fromRGBO(242,216,41,1);
   Color yellow_80 = const Color.fromRGBO(255,234,93,1);
   Color yellow_60 = const Color.fromRGBO(255,240,139,1);
   Color yellow_40 = const Color.fromRGBO(255,244,173,1);
   Color yellow_20 = const Color.fromRGBO(252,247,212,1);
-  Color yellow_kakao = const Color.fromRGBO(255,205,0,1);
 
   Color green_100 = const Color.fromRGBO(32,189,148,1);
   Color green_80 = const Color.fromRGBO(115,231,173,1);
@@ -14,6 +14,7 @@ class MainColors {
   Color green_40 = const Color.fromRGBO(171,241,206,1);
   Color green_20 = const Color.fromRGBO(199,245,222,1);
 
+  Color blue_facebook = const Color.fromRGBO(24,119,242,1);
   Color blue_100 = const Color.fromRGBO(82,149,255,1);
   Color blue_80 = const Color.fromRGBO(104,184,255,1);
   Color blue_60 = const Color.fromRGBO(173,231,255,1);
@@ -28,8 +29,7 @@ class MainColors {
 
   Color grey_100 = const Color.fromRGBO(51,51,51,1);
   Color grey_text = const Color.fromRGBO(182,182,182,1);
-  
+  Color grey_border = const Color.fromRGBO(207,207,207,1);
   Color grey_google = const Color.fromRGBO(240,240,240,1);
-  Color blue_facebook = const Color.fromRGBO(24,119,242,1);
 
 }

@@ -55,17 +55,17 @@ class KakaoAuthService implements AuthService{
   }
 
   @override
-  Future<bool> signInDone(BuildContext context, var token, String sharedValue) {
+  Future<void> signInDone(BuildContext context, var token, String sharedValue) {
     AuthServiceAdapter().signInDone(context, token, sharedValue);
   }
 
   @override
-  Future<bool> signOut(BuildContext context, String sharedValue) {
+  Future<void> signOut(BuildContext context, String sharedValue) {
     AuthServiceAdapter().signOut(context, sharedValue);
   }
 
   @override
-  Future<bool> userAuthState() {
+  Future<void> userAuthState() {
 
   }
 }

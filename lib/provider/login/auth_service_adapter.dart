@@ -7,15 +7,23 @@ import 'package:kakao_flutter_sdk/all.dart';
 
 class AuthServiceAdapter implements AuthService {
   @override
-  Future<bool> signInDone(BuildContext context, var token, String sharedValue) {
+  Future<void> signInDone(BuildContext context, var token, String sharedValue) async {
     if(token != null) {
-      RouteNavigator.goMain(context);
+      Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
+      //RouteNavigator(context).navigatePushName(GetRoutesName.ROUTE_TERMS);
       SharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
+
+      /*
+      * TODO:
+      *  - 로컬 DB 에 저장?..
+      */
     }
   }
 
   @override
-  Future<bool> signOut(BuildContext context, String sharedValue) async {
+  Future<void> signOut(BuildContext context, String sharedValue) async {
+    // *** 참고 : Firebase 탈퇴 - await FirebaseAuth.instance.currentUser.delete();
+
     switch (sharedValue) {
       case AuthService.AUTH_TYPE_KAKAO:
         var logout = await UserApi.instance.logout();
@@ -31,13 +39,14 @@ class AuthServiceAdapter implements AuthService {
         break;
     }
     SharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    RouteNavigator.goLogin(context);
+    //RouteNavigator(context).navigatePushReplaceName(GetRoutesName.ROUTE_LOGIN);
+    Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN);
 
     return true;
   }
 
   @override
-  Future<bool> userAuthState() {
+  Future<void> userAuthState() {
 
   }
 
