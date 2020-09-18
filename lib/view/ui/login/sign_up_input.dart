@@ -16,6 +16,7 @@ class SignUpInputEmail extends BaseWidget {
 
 class _SignUpInputEmailState extends State<SignUpInputEmail> {
   FocusNode _focusNode;
+  TextEditingController _textController;
   
   @override
   void initState() {
@@ -26,12 +27,13 @@ class _SignUpInputEmailState extends State<SignUpInputEmail> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _textController.dispose();
     super.dispose();
   }
   
   @override
   Widget build(BuildContext context) {
-    return EditWidget(Strings.sign_up_email, GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, _focusNode);
+    return EditWidget(Strings.sign_up_email, GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, _focusNode, _textController);
   }
 }
 
@@ -46,6 +48,7 @@ class SignUpInputName extends BaseWidget {
 
 class _SignUpInputNameState extends State<SignUpInputName> {
   FocusNode _focusNode;
+  TextEditingController _textController;
 
   @override
   void initState() {
@@ -56,12 +59,13 @@ class _SignUpInputNameState extends State<SignUpInputName> {
   @override
   void dispose() {
     _focusNode.dispose();
+    _textController.dispose();
     super.dispose();
   }
   
   @override
   Widget build(BuildContext context) {
-    return EditWidget(Strings.sign_up_name, GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH, _focusNode);
+    return EditWidget(Strings.sign_up_name, GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH, _focusNode, _textController);
   }
 }
 
@@ -99,7 +103,9 @@ class EditWidget extends StatelessWidget {
   final FocusNode _focusNode;
   final String inputTitle, routeName;
 
-  EditWidget(this.inputTitle, this.routeName, this._focusNode);
+  final TextEditingController _textController;
+
+  EditWidget(this.inputTitle, this.routeName, this._focusNode, this._textController);
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +165,10 @@ class EditWidget extends StatelessWidget {
                             Container(
                               width: 280,
                               margin: EdgeInsets.only(top: 8),
-                              child: TextFormField(
+                              child: TextField(
+                                maxLines: 1,
+                                textInputAction: TextInputAction.go,
+                                style: TextStyle(color: MainColors().grey_100, fontSize: 16),
                                 focusNode: _focusNode,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(left: 16, top: 12, bottom: 12, right: 16),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:deukki/data/model/user_vo.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -35,19 +36,19 @@ class DBHelper {
             "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY, version_name TEXT, version TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender INTEGER)"
+            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender INTEGER, marketing_agree INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, order INTEGER)"
+            "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, content_order INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, description TEXT, order INTEGER, premium INTEGER, enable INTEGER, large_id TEXT)"
+            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, description TEXT, content_order INTEGER, premium INTEGER, enable INTEGER, large_id TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_SMALL(id TEXT, title TEXT, description TEXT, order INTEGER, premium INTEGER, enable INTEGER, medium_id TEXT)"
+            "CREATE TABLE $TABLE_CATEGORY_SMALL(id TEXT, title TEXT, description TEXT, content_order INTEGER, premium INTEGER, enable INTEGER, medium_id TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_SENTENCE(id TEXT, content TEXT, order INTEGER, cutline_score INTEGER, enable INTEGER, small_id TEXT)"
+            "CREATE TABLE $TABLE_SENTENCE(id TEXT, content TEXT, content_order INTEGER, cutline_score INTEGER, enable INTEGER, small_id TEXT)"
           );
         }
     );
@@ -56,6 +57,17 @@ class DBHelper {
   /* Version */
 
   /* User */
+  Future<void> insertUser(UserVO vo) async {
+    final db = await database;
+    await db.insert(TABLE_USER, vo.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  getUser() async {
+    final db = await database;
+    var res = await db.query(TABLE_USER, where: 'idx = 1');
+    return res.isNotEmpty ? UserVO.fromJson(res.first) : Null;
+  }
+
 
   /* Vocabulary */
 

@@ -1,3 +1,5 @@
+import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/provider/login/auth_service_adapter.dart';
 import 'package:deukki/provider/login/kakao_auth_service.dart';
 import 'package:deukki/provider/login/sns_auth_service.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
@@ -18,15 +20,7 @@ class Login extends BaseWidget {
 class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
-    KakaoContext.clientId = KAKAO_APP_KEY;
-    KakaoContext.javascriptClientId = KAKAO_JS_KEY;
-
-    if(SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, "").isNotEmpty) {
-      print(SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, ""));
-    }
-
-    KakaoAuthService kakaoAuthService = Provider.of<KakaoAuthService>(context, listen: false);
-    kakaoAuthService.isInstalled();
+    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -80,7 +74,7 @@ class _LoginState extends State<Login> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(70.0))
                   ),
-                  onPressed: () => kakaoAuthService.signInWithKakao(context),
+                  onPressed: () => authServiceAdapter.signInWithKakao(),
                 ),  //  카카오톡 로그인
               ),
               Row(
@@ -112,9 +106,9 @@ class _LoginState extends State<Login> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SNSButton('images/google_g_logo.png', MainColors().grey_google, AuthService.AUTH_TYPE_Google),
-                    SNSButton('images/facebook_logo.png', MainColors().blue_facebook, AuthService.AUTH_TYPE_FB),
-                    SNSButton('images/apple_logo.png', Colors.black, AuthService.AUTH_TYPE_APPLE)
+                    SNSButton('images/google_g_logo.png', MainColors().grey_google, AuthServiceType.Google),
+                    SNSButton('images/facebook_logo.png', MainColors().blue_facebook, AuthServiceType.Facebook),
+                    SNSButton('images/apple_logo.png', Colors.black, AuthServiceType.Apple)
                   ],
                 ),
               )
@@ -129,27 +123,14 @@ class _LoginState extends State<Login> {
 class SNSButton extends StatelessWidget {
   final String imgUrl;
   final Color color;
-  final String authType;
+  final AuthServiceType authServiceType;
 
-  SNSButton(this.imgUrl, this.color, this.authType);
+  SNSButton(this.imgUrl, this.color, this.authServiceType);
 
   @override
   Widget build(BuildContext context) {
-    final SNSAuthService snsAuthService = Provider.of<SNSAuthService>(context);
+    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
-    snsLogin(String authType) {
-      switch (authType) {
-        case AuthService.AUTH_TYPE_Google:
-          snsAuthService.signInWithGoogle(context);
-          break;
-        case AuthService.AUTH_TYPE_FB:
-          snsAuthService.signInWithFacebook(context);
-          break;
-        case AuthService.AUTH_TYPE_APPLE:
-          snsAuthService.signInWithApple();
-          break;
-      }
-    }
     return SizedBox(
         width: 48,
         child: RaisedButton(
@@ -162,7 +143,7 @@ class SNSButton extends StatelessWidget {
             color: color,
             shape: CircleBorder(),
             padding: EdgeInsets.all(11.0),
-            onPressed: () => snsLogin(authType)
+            onPressed: () async => authServiceAdapter.signInWithFirebase(authServiceType)
         )
     );
   }

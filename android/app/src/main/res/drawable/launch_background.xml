@@ -3,6 +3,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/splash_color" />
 
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/app_logo_white"
+        android:width="243dp"
+        android:height="58dp"/>
     <!-- You can insert your own image assets here -->
     <!-- <item>
         <bitmap

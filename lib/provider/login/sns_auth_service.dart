@@ -1,3 +1,4 @@
+import 'package:deukki/common/network/http_request.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/provider/login/auth_service.dart';
 import 'package:deukki/provider/login/auth_service_adapter.dart';
@@ -6,62 +7,48 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class SNSAuthService implements AuthService{
+class SNSAuthService {
   //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<UserVO> currentUser() {
+  Future<bool> firebaseAuthState() async {
 
   }
 
-  Future<UserVO> signInWithApple() {
+  Future<String> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken
+    );
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
 
+    /* 서버에서 가입되어 있는지 확인후 -> 가입 되어 있어서 로그인이면 "goLogin" String 전달 / 가입 안되어 있으면 Sns에서 제공해주는 이메일 전달. */
+    //HttpRequest().snsLogin('google/token', googleUser.id);
+
+    return userCredential.user.email;
   }
 
-  Future<void> signInWithFacebook(BuildContext context) async {
-    final result = await FacebookAuth.instance.login();
+  Future<String> signInWithFacebook() async {
+    final result = await FacebookAuth.instance.login(permissions: ['email', 'public_profile']);
     switch (result.status) {
       case FacebookAuthLoginResponse.ok:
         final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
         final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-        print("sign in with facebook of firebase + " + userCredential.user.email);
-        signInDone(context, result.accessToken.token, AuthService.AUTH_TYPE_FB);
-        break;
+        print("sign in with facebook of firebase + " + result.accessToken.userId);
+
+        //HttpRequest().snsLogin('facebook/', facebookAuthCredential.accessToken);
+        return userCredential.user.email;
       case FacebookAuthLoginResponse.cancelled:
         print("login cancelled");
         break;
       case FacebookAuthLoginResponse.error:
-
         break;
     }
-
   }
 
-  Future<void> signInWithGoogle(BuildContext context) async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken
-    );
-    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
-    print("sign in with google of firebase : access Token - " + googleAuth.accessToken + ", email - " + userCredential.user.email);
-    signInDone(context, googleAuth.accessToken, AuthService.AUTH_TYPE_Google);
-  }
-
-  @override
-  Future<void> signInDone(BuildContext context, var token, String sharedValue) async {
-    AuthServiceAdapter().signInDone(context, token, sharedValue);
-  }
-
-  @override
-  Future<void> signOut(BuildContext context, String sharedValue) async {
+  Future<String> signInWithApple() async {
 
   }
-
-  @override
-  Future<void> userAuthState() async {
-
-  }
-
 }
 

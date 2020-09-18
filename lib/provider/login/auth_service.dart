@@ -1,16 +1,18 @@
-import 'package:deukki/data/model/user_vo.dart';
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:deukki/provider/login/auth_service_adapter.dart';
 
 abstract class AuthService{
   static const String AUTH_TYPE = "loginAuthType";
+
   static const String AUTH_TYPE_APPLE = "Apple";
   static const String AUTH_TYPE_FB = "Facebook";
   static const String AUTH_TYPE_Google = "Google";
   static const String AUTH_TYPE_KAKAO = "Kakao";
 
-  Future<void> signInDone(BuildContext context, var token, String sharedValue);
-  Future<void> signOut(BuildContext context, String sharedValue);
+  Future<void> signInWithKakao();
+  Future<void> signInWithFirebase(AuthServiceType authServiceType);
+  Future<void> signOut();
   Future<void> userAuthState();
+  void dispose();
 }

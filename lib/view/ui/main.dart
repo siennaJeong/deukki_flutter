@@ -4,6 +4,7 @@ import 'package:deukki/provider/login/auth_service.dart';
 import 'package:deukki/provider/login/auth_service_adapter.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainCategory extends BaseWidget {
   @override
@@ -11,13 +12,16 @@ class MainCategory extends BaseWidget {
 }
 
 class _MainCategoryState extends State<MainCategory> {
+
   @override
   Widget build(BuildContext context) {
+    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
+
     return Scaffold(
       body: Center(
         child: RaisedButton(
           child: Text("로그아웃"),
-          onPressed: () => AuthServiceAdapter().signOut(context, SharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, ""))
+          onPressed: () async => authServiceAdapter.signOut().then((value) => Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN))
         )
       ),
     );
