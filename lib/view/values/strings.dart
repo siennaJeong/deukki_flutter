@@ -1,6 +1,12 @@
 class Strings {
   static const String service_name = "바름드끼";
 
+  static const String connection_error = '인터넷에 연결되어 있지 않습니다.';
+  static const String client_error = 'Client Error - Resource not found';
+  static const String server_error = '지금은 서비스 점검 중입니다.\n이용에 불편을 드려 죄송합니다.';
+  static const String empty_result_error = "Empty Result Error - Request body is Empty";
+  static const String unknown_error = "Unknown Error";
+
   static const String login_for_kakao = "카카오로 시작하기";
 
   static const String common_btn_ok = '확인';
@@ -10,7 +16,6 @@ class Strings {
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
-  static const String dialog_title_service_check = '지금은 서비스 점검 중입니다.\n이용에 불편을 드려 죄송합니다.';
   static const String login_sns_other_type = '또는';
 
   static const String sign_up_terms_title = '바름드끼 시작하기';

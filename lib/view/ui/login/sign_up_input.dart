@@ -110,7 +110,7 @@ class EditWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: MainColors().yellow_100,
+        backgroundColor: MainColors.yellow_100,
         resizeToAvoidBottomPadding: false,
         resizeToAvoidBottomInset: false,
         body: GestureDetector(
@@ -148,7 +148,7 @@ class EditWidget extends StatelessWidget {
                             Container(
                               alignment: AlignmentDirectional.centerEnd,
                               margin: EdgeInsets.only(top: 16, right: 12),
-                              child: CommonRaisedButton(Strings.common_btn_next, routeName, Colors.white, MainColors().purple_100, MainColors().purple_100),
+                              child: CommonRaisedButton(Strings.common_btn_next, routeName, Colors.white, MainColors.purple_100, MainColors.purple_100),
                             )
                           ],
                         ),
@@ -168,22 +168,22 @@ class EditWidget extends StatelessWidget {
                               child: TextField(
                                 maxLines: 1,
                                 textInputAction: TextInputAction.go,
-                                style: TextStyle(color: MainColors().grey_100, fontSize: 16),
+                                style: TextStyle(color: MainColors.grey_100, fontSize: 16),
                                 focusNode: _focusNode,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.only(left: 16, top: 12, bottom: 12, right: 16),
                                   enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12.0),
-                                      borderSide: BorderSide(color: MainColors().grey_border, width: 2.0)
+                                      borderSide: BorderSide(color: MainColors.grey_border, width: 2.0)
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(12.0),
-                                      borderSide: BorderSide(color: MainColors().grey_100, width: 2.0)
+                                      borderSide: BorderSide(color: MainColors.grey_100, width: 2.0)
                                   ),
                                 ),
                                 onEditingComplete: () => OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12.0),
-                                    borderSide: BorderSide(color: MainColors().grey_100, width: 2.0)
+                                    borderSide: BorderSide(color: MainColors.grey_100, width: 2.0)
                                 ),
                               ),
                             )

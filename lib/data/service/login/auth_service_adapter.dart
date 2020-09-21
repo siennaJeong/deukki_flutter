@@ -1,8 +1,8 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/provider/login/auth_service.dart';
-import 'package:deukki/provider/login/kakao_auth_service.dart';
-import 'package:deukki/provider/login/sns_auth_service.dart';
+import 'package:deukki/data/service/login/auth_service.dart';
+import 'package:deukki/data/service/login/kakao_auth_service.dart';
+import 'package:deukki/data/service/login/sns_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 

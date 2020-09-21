@@ -1,15 +1,16 @@
 import 'package:deukki/common/utils/route_util.dart';
-import 'package:deukki/provider/login/auth_service_adapter.dart';
-import 'package:deukki/provider/login/kakao_auth_service.dart';
-import 'package:deukki/provider/login/sns_auth_service.dart';
+import 'package:deukki/data/service/login/auth_service_adapter.dart';
+import 'package:deukki/data/service/login/kakao_auth_service.dart';
+import 'package:deukki/data/service/login/sns_auth_service.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
+import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/provider/login/auth_service.dart';
+import 'package:deukki/data/service/login/auth_service.dart';
 
 class Login extends BaseWidget {
   @override
@@ -35,7 +36,7 @@ class _LoginState extends State<Login> {
                   margin: EdgeInsets.only(top: 50),
                   width: 160,
                   child: Image.asset(
-                    "images/app_logo_yellow.png",
+                    AppImages.appLogoYellow,
                   )
               ),
               Container(
@@ -51,7 +52,7 @@ class _LoginState extends State<Login> {
                       Expanded(
                         flex: 0,
                         child: Image.asset(
-                          "images/kakao_logo.png",
+                          AppImages.kakaoLogo,
                           width: 24,
                         ),
                       ),
@@ -69,7 +70,7 @@ class _LoginState extends State<Login> {
                       ),
                     ],
                   ),
-                  color: MainColors().yellow_kakao,
+                  color: MainColors.yellow_kakao,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(70.0))
@@ -85,17 +86,17 @@ class _LoginState extends State<Login> {
                     margin: EdgeInsets.only(right: 8),
                     width: 16.0,
                     height: 1.0,
-                    color: MainColors().grey_text,
+                    color: MainColors.grey_text,
                   ),
                   Text(
                       Strings.login_sns_other_type,
-                      style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13, color: MainColors().grey_text)
+                      style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13, color: MainColors.grey_text)
                   ),
                   Container(
                     margin: EdgeInsets.only(left: 8),
                     width: 16.0,
                     height: 1.0,
-                    color: MainColors().grey_text,
+                    color: MainColors.grey_text,
                   )
                 ],
               ),
@@ -106,8 +107,8 @@ class _LoginState extends State<Login> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SNSButton('images/google_g_logo.png', MainColors().grey_google, AuthServiceType.Google),
-                    SNSButton('images/facebook_logo.png', MainColors().blue_facebook, AuthServiceType.Facebook),
+                    SNSButton('images/google_g_logo.png', MainColors.grey_google, AuthServiceType.Google),
+                    SNSButton('images/facebook_logo.png', MainColors.blue_facebook, AuthServiceType.Facebook),
                     SNSButton('images/apple_logo.png', Colors.black, AuthServiceType.Apple)
                   ],
                 ),

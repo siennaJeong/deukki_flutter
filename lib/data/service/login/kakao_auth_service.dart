@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:deukki/provider/login/auth_service.dart';
-import 'package:deukki/provider/login/auth_service_adapter.dart';
+import 'package:deukki/data/service/login/auth_service.dart';
+import 'package:deukki/data/service/login/auth_service_adapter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:kakao_flutter_sdk/auth.dart';

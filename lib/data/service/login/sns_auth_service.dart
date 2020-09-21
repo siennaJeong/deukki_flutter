@@ -1,7 +1,7 @@
-import 'package:deukki/common/network/http_request.dart';
+
 import 'package:deukki/data/model/user_vo.dart';
-import 'package:deukki/provider/login/auth_service.dart';
-import 'package:deukki/provider/login/auth_service_adapter.dart';
+import 'package:deukki/data/service/login/auth_service.dart';
+import 'package:deukki/data/service/login/auth_service_adapter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';

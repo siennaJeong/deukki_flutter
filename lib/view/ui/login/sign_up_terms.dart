@@ -16,7 +16,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MainColors().yellow_100,
+      backgroundColor: MainColors.yellow_100,
       body: SafeArea(
         child: Container(
           margin: EdgeInsets.only(left: 44, top: 19, right: 44, bottom: 19),
@@ -48,13 +48,13 @@ class _SignUpTermsState extends State<SignUpTerms> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             textInkWell(Strings.sign_up_terms_terms),
-                            termsText(Strings.sign_up_terms_essential + Strings.sign_up_terms_dot, MainColors().grey_100, null),
+                            termsText(Strings.sign_up_terms_essential + Strings.sign_up_terms_dot, MainColors.grey_100, null),
                             textInkWell(Strings.sign_up_terms_info),
-                            termsText(Strings.sign_up_terms_essential, MainColors().grey_100, null)
+                            termsText(Strings.sign_up_terms_essential, MainColors.grey_100, null)
                           ],
                         ),
                       ),
-                      termsText(Strings.sign_up_terms_script, MainColors().grey_100, null),
+                      termsText(Strings.sign_up_terms_script, MainColors.grey_100, null),
                       Container(
                         margin: EdgeInsets.only(top: 24, bottom: 56),
                         child: Row(
@@ -62,7 +62,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             Checkbox(
-                              activeColor: MainColors().purple_100,
+                              activeColor: MainColors.purple_100,
                               value: marketingAgree,
                               onChanged: (bool value) {
                                 setState(() {
@@ -70,7 +70,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 });
                               },
                             ),
-                            termsText(Strings.sign_up_terms_marketing, MainColors().grey_100, null)
+                            termsText(Strings.sign_up_terms_marketing, MainColors.grey_100, null)
                           ],
                         ),
                       ),
@@ -84,8 +84,8 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 child: CommonRaisedButton(
                                     Strings.common_btn_cancel,
                                     GetRoutesName.ROUTE_LOGIN,
-                                    Colors.white, MainColors().purple_100,
-                                    MainColors().purple_100
+                                    Colors.white, MainColors.purple_100,
+                                    MainColors.purple_100
                                 )
                             ),
                             SizedBox(width: 16),
@@ -94,9 +94,9 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 child: CommonRaisedButton(
                                     Strings.common_btn_ok,
                                     GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL,
-                                    MainColors().purple_100,
+                                    MainColors.purple_100,
                                     Colors.white,
-                                    MainColors().purple_100
+                                    MainColors.purple_100
                                 )
                             )
                           ],
@@ -115,7 +115,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   Widget textInkWell(String str) {
     return InkWell(
-      child: termsText(str, MainColors().purple_100, TextDecoration.underline)
+      child: termsText(str, MainColors.purple_100, TextDecoration.underline)
     );
   }
 

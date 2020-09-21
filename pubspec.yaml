@@ -42,6 +42,8 @@ dependencies:
   path_provider: ^1.6.11
   path: ^1.7.0
   flare_splash_screen: ^3.0.1
+  json_serializable: ^3.4.1
+  build_runner: ^1.9.0
 
   # ======== Social Login API =========
   kakao_flutter_sdk: ^0.4.2

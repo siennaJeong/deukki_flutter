@@ -1,6 +1,4 @@
 
-import 'package:deukki/common/network/response_mappers.dart';
-
 class UserVO {
   UserVO({
     this.accessToken,
@@ -36,15 +34,5 @@ class UserVO {
       'gender': gender,
       'agreeMarketing': marketingAgree,
     };
-  }
-}
-
-class UserVoList extends ListMappable {
-  List<UserVO> userList;
-
-  @override
-  ResponseMappable fromJsonList(List json) {
-    userList = json.map((e) => UserVO.fromJson(e)).toList();
-    return this;
   }
 }
