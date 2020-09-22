@@ -1,16 +1,13 @@
 import 'package:deukki/common/utils/route_util.dart';
-import 'package:deukki/data/service/login/auth_service_adapter.dart';
-import 'package:deukki/data/service/login/kakao_auth_service.dart';
-import 'package:deukki/data/service/login/sns_auth_service.dart';
+import 'package:deukki/data/service/signin/auth_service.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/signin/sign_in_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 import 'package:deukki/view/values/strings.dart';
-import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/data/service/login/auth_service.dart';
 
 class Login extends BaseWidget {
   @override
@@ -19,10 +16,36 @@ class Login extends BaseWidget {
 }
 
 class _LoginState extends State<Login> {
+  SignInProviderModel signInProviderModel;
+  AuthServiceAdapter authServiceAdapter;
+  String authId;
+
+  @override
+  void didChangeDependencies() {
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    signInProviderModel = Provider.of<SignInProviderModel>(context, listen: false);
+    super.didChangeDependencies();
+  }
+
+  void _checkSignUp(String authType, AuthServiceType authServiceType) {
+    authServiceAdapter.signInWithFirebase(authServiceType).then((value) {
+      signInProviderModel.checkSignUp(authType, value).then((val) {
+        final isSignUp = signInProviderModel.value.checkSignUp;
+        if(!isSignUp.hasData) {
+          print("isSignUp no data");
+        }
+        if(isSignUp.result.isValue) {
+          print("isSignUp result : " + isSignUp.result.asValue.value.result.toString());
+          Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL);
+        }else if(isSignUp.result.isError) {
+          print("isSignUp error : " + isSignUp.result.asError.error.toString());
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -107,9 +130,9 @@ class _LoginState extends State<Login> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    SNSButton('images/google_g_logo.png', MainColors.grey_google, AuthServiceType.Google),
-                    SNSButton('images/facebook_logo.png', MainColors.blue_facebook, AuthServiceType.Facebook),
-                    SNSButton('images/apple_logo.png', Colors.black, AuthServiceType.Apple)
+                    _snsButton(context, AppImages.googleLogo, MainColors.grey_google, AuthServiceType.Google, AuthService.AUTH_TYPE_Google),
+                    _snsButton(context, AppImages.facebookLogo, MainColors.blue_facebook, AuthServiceType.Facebook, AuthService.AUTH_TYPE_FB),
+                    _snsButton(context, AppImages.appleLogo, Colors.black, AuthServiceType.Apple, AuthService.AUTH_TYPE_APPLE)
                   ],
                 ),
               )
@@ -119,18 +142,37 @@ class _LoginState extends State<Login> {
       ),
     );
   }
+
+  Widget _snsButton(BuildContext context, String imgUrl, Color color, AuthServiceType authServiceType, String authTypeString) => SizedBox(
+      width: 48,
+      child: RaisedButton(
+          child: Image.asset(
+            imgUrl,
+            width: 21,
+            height: 25,
+          ),
+          elevation: 0,
+          color: color,
+          shape: CircleBorder(),
+          padding: EdgeInsets.all(11.0),
+          onPressed: () => { _checkSignUp(authTypeString, authServiceType) }
+      )
+  );
+
 }
 
-class SNSButton extends StatelessWidget {
+/*class SNSButton extends StatelessWidget {
   final String imgUrl;
   final Color color;
   final AuthServiceType authServiceType;
+  final String authTypeString;
 
-  SNSButton(this.imgUrl, this.color, this.authServiceType);
+  SNSButton(this.imgUrl, this.color, this.authServiceType, this.authTypeString);
 
   @override
   Widget build(BuildContext context) {
     final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    final SignInProviderModel signInProviderModel = Provider.of<SignInProviderModel>(context);
 
     return SizedBox(
         width: 48,
@@ -144,11 +186,11 @@ class SNSButton extends StatelessWidget {
             color: color,
             shape: CircleBorder(),
             padding: EdgeInsets.all(11.0),
-            onPressed: () async => authServiceAdapter.signInWithFirebase(authServiceType)
+            onPressed: () => {  }
         )
     );
   }
-}
+}*/
 
 
 

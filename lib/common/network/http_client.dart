@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
 import 'package:http/http.dart';
 
@@ -9,97 +10,99 @@ class HttpClient {
   static final HttpClient _instance = HttpClient._privateConstructor();
   factory HttpClient() { return _instance; }
 
-  Future<dynamic> getRequest(String path) async {
+  Future<Result<dynamic>> getRequest(String path) async {
     Response response;
     try {
       response = await get(path);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return List<dynamic>();
+          return Result<dynamic>.value(null);
         }else {
-          return jsonDecode(response.body);
+          return Result<dynamic>.value(jsonDecode(response.body));
         }
 
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw ClientErrorException();
+        throw Result<dynamic>.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw ServerErrorException();
+        throw Result<dynamic>.error(ServerErrorException());
       }else {
-        throw UnknownException();
+        throw Result<dynamic>.error(UnknownException());
       }
     }on SocketException {
-      throw ConnectionException();
+      throw Result<dynamic>.error(ConnectionException());
     }
   }
 
-  Future<dynamic> postRequest(String path, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> postRequest(String path, Map<String, dynamic> body) async {
     Response response;
     try {
       response = await post(path, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return List<dynamic>();
+          return Result<dynamic>.value(null);
         }else {
-          return jsonDecode(response.body);
+          return Result<dynamic>.value(jsonDecode(response.body));
         }
+
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw ClientErrorException();
+        throw Result<dynamic>.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw ServerErrorException();
+        throw Result<dynamic>.error(ServerErrorException());
       }else {
-        throw UnknownException();
+        throw Result<dynamic>.error(UnknownException());
       }
     }on SocketException {
-      throw ConnectionException();
+      throw Result<dynamic>.error(ConnectionException());
     }
   }
 
-  Future<dynamic> patchRequest(String path, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> patchRequest(String path, Map<String, dynamic> body) async {
     Response response;
     try {
       response = await patch(path, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return List<dynamic>();
+          return Result<dynamic>.value(null);
         }else {
-          return jsonDecode(response.body);
+          return Result<dynamic>.value(jsonDecode(response.body));
         }
+
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw ClientErrorException();
+        throw Result<dynamic>.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw ServerErrorException();
+        throw Result<dynamic>.error(ServerErrorException());
       }else {
-        throw UnknownException();
+        throw Result<dynamic>.error(UnknownException());
       }
     }on SocketException {
-      throw ConnectionException();
+      throw Result<dynamic>.error(ConnectionException());
     }
   }
 
-  Future<dynamic> deleteRequest(String path) async {
+  Future<Result<dynamic>> deleteRequest(String path) async {
     Response response;
     try {
       response = await delete(path);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return List<dynamic>();
+          return Result<dynamic>.value(null);
         }else {
-          return jsonDecode(response.body);
+          return Result<dynamic>.value(jsonDecode(response.body));
         }
 
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw ClientErrorException();
+        throw Result<dynamic>.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw ServerErrorException();
+        throw Result<dynamic>.error(ServerErrorException());
       }else {
-        throw UnknownException();
+        throw Result<dynamic>.error(UnknownException());
       }
     }on SocketException {
-      throw ConnectionException();
+      throw Result<dynamic>.error(ConnectionException());
     }
   }
 

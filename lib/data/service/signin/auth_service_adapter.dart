@@ -1,8 +1,8 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/data/service/login/auth_service.dart';
-import 'package:deukki/data/service/login/kakao_auth_service.dart';
-import 'package:deukki/data/service/login/sns_auth_service.dart';
+import 'package:deukki/data/service/signin/auth_service.dart';
+import 'package:deukki/data/service/signin/kakao_auth_service.dart';
+import 'package:deukki/data/service/signin/sns_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
@@ -37,13 +37,20 @@ class AuthServiceAdapter implements AuthService {
   }
 
   @override
-  Future<void> signInWithFirebase(AuthServiceType authServiceType) async {
+  Future<String> signInWithFirebase(AuthServiceType authServiceType) async {
+    String authId = "";
     switch(authServiceType) {
       case AuthServiceType.Google:
-        getEmail(() { _snsAuthService.signInWithGoogle(); });
+        await _snsAuthService.signInWithGoogle().then((value) {
+          authId = value;
+        });
+        return authId;
         break;
       case AuthServiceType.Facebook:
-        getEmail(() { _snsAuthService.signInWithFacebook(); });
+        await _snsAuthService.signInWithFacebook().then((value) {
+          authId = value;
+        });
+        return authId;
         break;
       case AuthServiceType.Apple:
 
@@ -53,7 +60,7 @@ class AuthServiceAdapter implements AuthService {
 
   @override
   Future<void> signInWithKakao() async {
-    getEmail(() { _kakaoAuthService.signInWithKakao(); });
+    _getEmail(() { _kakaoAuthService.signInWithKakao(); });
   }
 
 
@@ -83,15 +90,17 @@ class AuthServiceAdapter implements AuthService {
     return true;
   }
 
-  getEmail(Function action) async {
-    String userEmail = await action();
-    if(userEmail.isEmpty) {   //  가입 안되어 있음, 이메일도 제공 안해줌 -> 이메일 입력 화면으로
+  Future<String> _getEmail(Function action) async {
+    String authId = await action();
+    return authId;
+    /*if(userEmail.isEmpty) {   //  가입 안되어 있음, 이메일도 제공 안해줌 -> 이메일 입력 화면으로
 
     }else if(userEmail == "goLogin"){ //  가입 되어 있고 로그인 일때 -> 메인 화면으로
 
     }else {   //  가입 안되어 있고, 이메일도 제공 안해줌 -> 이름 입력 화면으로
 
-    }
+    }*/
+
   }
 
   signInDone(String token, String sharedValue) async {

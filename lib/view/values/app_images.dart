@@ -1,6 +1,6 @@
 
 class AppImages {
-  static const String _basePath = "images/";
+  static const String _basePath = "images";
 
   static String appLogoYellow = "$_basePath/app_logo_yellow.png";
   static String kakaoLogo = "$_basePath/kakao_logo.png";

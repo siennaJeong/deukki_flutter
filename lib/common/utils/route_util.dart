@@ -1,6 +1,6 @@
-import 'package:deukki/view/ui/login/login.dart';
-import 'package:deukki/view/ui/login/sign_up_input.dart';
-import 'package:deukki/view/ui/login/sign_up_terms.dart';
+import 'package:deukki/view/ui/signin/login.dart';
+import 'package:deukki/view/ui/signin/sign_up_input.dart';
+import 'package:deukki/view/ui/signin/sign_up_terms.dart';
 import 'package:deukki/view/ui/main.dart';
 import 'package:deukki/view/ui/splash.dart';
 import 'package:flutter/material.dart';

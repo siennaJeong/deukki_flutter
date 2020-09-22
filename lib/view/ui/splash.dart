@@ -1,21 +1,16 @@
-import 'dart:async';
-
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
-import 'package:deukki/data/service/login/auth_service.dart';
-import 'package:deukki/data/service/login/auth_service_adapter.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/signin/sign_in_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
-import 'package:deukki/view/ui/login/login.dart';
+import 'package:deukki/view/ui/base/provider_widget.dart';
+import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/main.dart';
-import 'package:deukki/view/values/colors.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
-import 'package:deukki/data/service/login/kakao_auth_service.dart';
-import 'package:deukki/data/service/login/sns_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 /*
  * 1. 앱 버전 체크 -> 업데이트 다이얼로그
@@ -66,7 +61,9 @@ class _SplashState extends State<Splash> {
         if(authServiceAdapter.isSignIn) {
           return MainCategory();
         }else {
-          return Login();
+          return ProviderWidget<SignInProviderModel>(
+            Login(), (BuildContext context) => SignInProviderModel.build()
+          );
         }
       }
     );
