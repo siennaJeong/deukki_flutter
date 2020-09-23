@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class SNSAuthService {
   //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  String _email;
 
   Future<bool> firebaseAuthState() async {
 
@@ -18,6 +19,11 @@ class SNSAuthService {
         idToken: googleAuth.idToken
     );
     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(googleCredential);
+    if(userCredential.user.email.isNotEmpty) {
+      _email = userCredential.user.email;
+    }else {
+      _email = "";
+    }
     return googleUser.id;
   }
 
@@ -27,6 +33,11 @@ class SNSAuthService {
       case FacebookAuthLoginResponse.ok:
         final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
         final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+        if(userCredential.user.email.isNotEmpty) {
+          _email = userCredential.user.email;
+        }else {
+          _email = "";
+        }
         return facebookAuthCredential.providerId;
       case FacebookAuthLoginResponse.cancelled:
         print("login cancelled");
@@ -39,5 +50,7 @@ class SNSAuthService {
   Future<String> signInWithApple() async {
 
   }
+
+  String get email => _email;
 }
 

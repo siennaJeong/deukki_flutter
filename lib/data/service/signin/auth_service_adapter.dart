@@ -16,6 +16,7 @@ class AuthServiceAdapter implements AuthService {
   SharedHelper _sharedHelper;
   DBHelper _dbHelper;
   bool isSignIn = false;
+  String email;
   var userVO;
 
   AuthServiceAdapter({@required SharedHelper sharedHelper, @required DBHelper dbHelper}) : _sharedHelper = sharedHelper, _dbHelper = dbHelper;
@@ -37,32 +38,31 @@ class AuthServiceAdapter implements AuthService {
   }
 
   @override
-  Future<String> signInWithFirebase(AuthServiceType authServiceType) async {
+  Future<String> signInWithSNS(AuthServiceType authServiceType) async {
     String authId = "";
     switch(authServiceType) {
       case AuthServiceType.Google:
         await _snsAuthService.signInWithGoogle().then((value) {
           authId = value;
+          email = _snsAuthService.email;
         });
         return authId;
-        break;
       case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
           authId = value;
+          email = _snsAuthService.email;
         });
         return authId;
-        break;
       case AuthServiceType.Apple:
 
         break;
+      case AuthServiceType.Kakao:
+        await _kakaoAuthService.signInWithKakao();
+        email = _kakaoAuthService.email;
+        break;
     }
-  }
 
-  @override
-  Future<void> signInWithKakao() async {
-    _getEmail(() { _kakaoAuthService.signInWithKakao(); });
   }
-
 
   @override
   Future<void> signOut() async {
@@ -88,19 +88,6 @@ class AuthServiceAdapter implements AuthService {
     _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
 
     return true;
-  }
-
-  Future<String> _getEmail(Function action) async {
-    String authId = await action();
-    return authId;
-    /*if(userEmail.isEmpty) {   //  가입 안되어 있음, 이메일도 제공 안해줌 -> 이메일 입력 화면으로
-
-    }else if(userEmail == "goLogin"){ //  가입 되어 있고 로그인 일때 -> 메인 화면으로
-
-    }else {   //  가입 안되어 있고, 이메일도 제공 안해줌 -> 이름 입력 화면으로
-
-    }*/
-
   }
 
   signInDone(String token, String sharedValue) async {

@@ -10,8 +10,7 @@ abstract class AuthService{
   static const String AUTH_TYPE_Google = "google";
   static const String AUTH_TYPE_KAKAO = "kakao";
 
-  Future<void> signInWithKakao();
-  Future<String> signInWithFirebase(AuthServiceType authServiceType);
+  Future<String> signInWithSNS(AuthServiceType authServiceType);
   Future<void> signOut();
   Future<void> userAuthState();
   void dispose();

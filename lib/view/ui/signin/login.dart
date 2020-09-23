@@ -27,16 +27,23 @@ class _LoginState extends State<Login> {
     super.didChangeDependencies();
   }
 
-  void _checkSignUp(String authType, AuthServiceType authServiceType) {
-    authServiceAdapter.signInWithFirebase(authServiceType).then((value) {
-      signInProviderModel.checkSignUp(authType, value).then((val) {
+  void _checkSignUp(String authTypeString, AuthServiceType authServiceType) {
+    authServiceAdapter.signInWithSNS(authServiceType).then((value) {
+      signInProviderModel.checkSignUp(authTypeString, value).then((val) {
         final isSignUp = signInProviderModel.value.checkSignUp;
         if(!isSignUp.hasData) {
           print("isSignUp no data");
         }
         if(isSignUp.result.isValue) {
-          print("isSignUp result : " + isSignUp.result.asValue.value.result.toString());
-          Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL);
+          if(isSignUp.result.asValue.value.result) {
+            Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_MAIN);
+          }else {
+            if(authServiceAdapter.email.isEmpty) {
+              Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL);
+            }else {
+              Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_NAME);
+            }
+          }
         }else if(isSignUp.result.isError) {
           print("isSignUp error : " + isSignUp.result.asError.error.toString());
         }
@@ -98,7 +105,7 @@ class _LoginState extends State<Login> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(70.0))
                   ),
-                  onPressed: () => authServiceAdapter.signInWithKakao(),
+                  onPressed: () => _checkSignUp(AuthService.AUTH_TYPE_KAKAO, AuthServiceType.Kakao),
                 ),  //  카카오톡 로그인
               ),
               Row(
@@ -160,37 +167,5 @@ class _LoginState extends State<Login> {
   );
 
 }
-
-/*class SNSButton extends StatelessWidget {
-  final String imgUrl;
-  final Color color;
-  final AuthServiceType authServiceType;
-  final String authTypeString;
-
-  SNSButton(this.imgUrl, this.color, this.authServiceType, this.authTypeString);
-
-  @override
-  Widget build(BuildContext context) {
-    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    final SignInProviderModel signInProviderModel = Provider.of<SignInProviderModel>(context);
-
-    return SizedBox(
-        width: 48,
-        child: RaisedButton(
-            child: Image.asset(
-              imgUrl,
-              width: 21,
-              height: 25,
-            ),
-            elevation: 0,
-            color: color,
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(11.0),
-            onPressed: () => {  }
-        )
-    );
-  }
-}*/
-
 
 

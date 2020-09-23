@@ -11,6 +11,7 @@ class KakaoAuthService {
   var kakaoUserToken;
   var kakaoAuthCode;
   bool isKakaoInstalled;
+  String _email;
 
   isInstalled() async {
     isKakaoInstalled = await isKakaoTalkInstalled();
@@ -27,7 +28,14 @@ class KakaoAuthService {
       kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
       token = await AccessTokenStore.instance.toStore(kakaoUserToken);
 
+      final User user = await UserApi.instance.me();
+      if(user.kakaoAccount.isEmailValid) {
+        _email = user.kakaoAccount.email;
+      }else {
+        _email = "";
+      }
 
+      return user.id.toString();
     } on KakaoAuthException catch (e) {
       print(e);
     } on KakaoClientException catch (e) {
@@ -35,4 +43,5 @@ class KakaoAuthService {
     }
   }
 
+  String get email => _email;
 }

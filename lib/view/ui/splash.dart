@@ -1,3 +1,4 @@
+import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -30,6 +31,7 @@ void main() async {
             providers: [
               Provider.value(value: SharedHelper()),
               Provider.value(value: DBHelper()),
+              Provider.value(value: HttpClient()),
               ProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
                 update: (BuildContext context, SharedHelper sharedHelper, DBHelper dbHelper, AuthServiceAdapter authServiceAdapter) =>
                     AuthServiceAdapter(sharedHelper: sharedHelper, dbHelper: dbHelper),
