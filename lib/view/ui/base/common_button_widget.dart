@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class CommonRaisedButton extends StatelessWidget {
   final String buttonText, routeName;
   final Color buttonColor, textColor, borderColor;
+  final double fontSize;
 
-  CommonRaisedButton(this.buttonText, this.routeName, this.buttonColor, this.textColor, this.borderColor);
+  CommonRaisedButton(this.buttonText, this.routeName, this.buttonColor, this.textColor, this.borderColor, this.fontSize);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class CommonRaisedButton extends StatelessWidget {
       color: buttonColor,
       elevation: 0,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+          borderRadius: BorderRadius.all(Radius.circular(30)),
           side: BorderSide(
               color: borderColor,
               width: 2.0
@@ -24,7 +25,7 @@ class CommonRaisedButton extends StatelessWidget {
         buttonText,
         style: TextStyle(
             color: textColor,
-            fontSize: 16,
+            fontSize: fontSize,
             fontFamily: "TmoneyRound",
             fontWeight: FontWeight.w700
         ),

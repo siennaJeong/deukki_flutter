@@ -121,6 +121,16 @@ flutter:
         - asset: assets/fonts/TmoneyRoundWindRegular.ttf
         - asset: assets/fonts/TmoneyRoundWindExtraBold.ttf
           weight: 700
+    - family: NotoSansKR
+      fonts:
+        - asset: assets/fonts/NotoSansKR-Black.otf
+          weight: 900
+        - asset: assets/fonts/NotoSansKR-Bold.otf
+          weight: 700
+        - asset: assets/fonts/NotoSansKR-Medium.otf
+          weight: 500
+        - asset: assets/fonts/NotoSansKR-Regular.otf
+          weight: 400
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

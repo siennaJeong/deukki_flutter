@@ -4,16 +4,16 @@ part 'common_result_vo.g.dart';
 
 @JsonSerializable()
 class CommonResultVO {
-  @JsonKey(name: 'responseCode')
-  final int responseCode;
+  @JsonKey(name: 'status')
+  final int status;
+
+  @JsonKey(name: 'message')
+  final String message;
 
   @JsonKey(name: 'result')
-  final bool result;
+  final dynamic result;
 
-  @JsonKey(name: 'resultMessage')
-  final String resultMessage;
-
-  CommonResultVO(this.responseCode, this.result, this.resultMessage);
+  CommonResultVO(this.status, this.message, this.result);
 
   factory CommonResultVO.fromJson(Map<String, dynamic> json) => _$CommonResultVOFromJson(json);
 

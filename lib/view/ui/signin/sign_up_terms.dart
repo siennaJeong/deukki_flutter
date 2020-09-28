@@ -1,9 +1,11 @@
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
-import 'package:deukki/view/ui/base/common_button.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignUpTerms extends BaseWidget {
   @override
@@ -12,6 +14,22 @@ class SignUpTerms extends BaseWidget {
 
 class _SignUpTermsState extends State<SignUpTerms> {
   bool marketingAgree = false;
+  AuthServiceAdapter authServiceAdapter;
+
+  @override
+  void didChangeDependencies() {
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
+    super.didChangeDependencies();
+  }
+
+  String _isEmailExist() {
+
+    if(authServiceAdapter.email.isEmpty) {
+      return GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL;
+    }else {
+      return GetRoutesName.ROUTE_SIGNUP_INPUT_NAME;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +86,10 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 setState(() {
                                   marketingAgree = value;
                                 });
+                                if(marketingAgree) {
+                                  authServiceAdapter.userVO.agreeMarketing = value;
+                                  authServiceAdapter.userVO.marketingMethod = "email";
+                                }
                               },
                             ),
                             termsText(Strings.sign_up_terms_marketing, MainColors.grey_100, null)
@@ -85,18 +107,20 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                     Strings.common_btn_cancel,
                                     GetRoutesName.ROUTE_LOGIN,
                                     Colors.white, MainColors.purple_100,
-                                    MainColors.purple_100
+                                    MainColors.purple_100,
+                                    16
                                 )
                             ),
                             SizedBox(width: 16),
                             Expanded(
                                 flex: 1,
                                 child: CommonRaisedButton(
-                                    Strings.common_btn_ok,
-                                    GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL,
-                                    MainColors.purple_100,
-                                    Colors.white,
-                                    MainColors.purple_100
+                                  Strings.common_btn_ok,
+                                  _isEmailExist(),
+                                  MainColors.purple_100,
+                                  Colors.white,
+                                  MainColors.purple_100,
+                                  16
                                 )
                             )
                           ],

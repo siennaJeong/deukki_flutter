@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:deukki/data/model/user_vo.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -65,7 +63,7 @@ class DBHelper {
   getUser() async {
     final db = await database;
     var res = await db.query(TABLE_USER, where: 'idx = 1');
-    return res.isNotEmpty ? UserVO.fromJson(res.first) : Null;
+    return res.isNotEmpty ? UserVO.fromJson(res.first) : new UserVO('', '', '', '', '', '', false, '');
   }
 
 

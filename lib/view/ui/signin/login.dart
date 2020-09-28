@@ -38,12 +38,9 @@ class _LoginState extends State<Login> {
           if(isSignUp.result.asValue.value.result) {
             Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_MAIN);
           }else {
-            if(authServiceAdapter.email.isEmpty) {
-              Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL);
-            }else {
-              Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_NAME);
-            }
+            Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
           }
+          print(isSignUp.result.asValue.value.result.toString());
         }else if(isSignUp.result.isError) {
           print("isSignUp error : " + isSignUp.result.asError.error.toString());
         }

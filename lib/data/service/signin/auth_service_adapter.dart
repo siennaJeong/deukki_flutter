@@ -1,5 +1,6 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/data/service/signin/sns_auth_service.dart';
@@ -10,14 +11,14 @@ import 'package:flutter/material.dart';
 
 enum AuthServiceType { Kakao, Google, Facebook, Apple }
 
-class AuthServiceAdapter implements AuthService {
+class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   SNSAuthService _snsAuthService;
   KakaoAuthService _kakaoAuthService;
   SharedHelper _sharedHelper;
   DBHelper _dbHelper;
   bool isSignIn = false;
-  String email;
-  var userVO;
+  String email = '';
+  UserVO userVO;
 
   AuthServiceAdapter({@required SharedHelper sharedHelper, @required DBHelper dbHelper}) : _sharedHelper = sharedHelper, _dbHelper = dbHelper;
 
@@ -45,6 +46,7 @@ class AuthServiceAdapter implements AuthService {
         await _snsAuthService.signInWithGoogle().then((value) {
           authId = value;
           email = _snsAuthService.email;
+
         });
         return authId;
       case AuthServiceType.Facebook:
@@ -61,7 +63,8 @@ class AuthServiceAdapter implements AuthService {
         email = _kakaoAuthService.email;
         break;
     }
-
+    userVO.email = email;
+    notifyListeners();
   }
 
   @override
@@ -106,4 +109,5 @@ class AuthServiceAdapter implements AuthService {
   void dispose() {
 
   }
+
 }

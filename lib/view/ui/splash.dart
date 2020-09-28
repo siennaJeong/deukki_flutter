@@ -3,6 +3,7 @@ import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/signin/sign_in_provider_model.dart';
+import 'package:deukki/view/ui/app/app_theme.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
@@ -32,7 +33,8 @@ void main() async {
               Provider.value(value: SharedHelper()),
               Provider.value(value: DBHelper()),
               Provider.value(value: HttpClient()),
-              ProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
+              ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
+                create: (context) => AuthServiceAdapter(dbHelper: null, sharedHelper: null),
                 update: (BuildContext context, SharedHelper sharedHelper, DBHelper dbHelper, AuthServiceAdapter authServiceAdapter) =>
                     AuthServiceAdapter(sharedHelper: sharedHelper, dbHelper: dbHelper),
               ),
@@ -40,6 +42,7 @@ void main() async {
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
               routes: routes,
+              theme: AppThemeDataFactory.prepareThemeData(),
               home: Splash(),
             )
         )
