@@ -1,5 +1,6 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
+import 'package:deukki/common/utils/validator.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
@@ -14,18 +15,19 @@ enum AuthServiceType { Kakao, Google, Facebook, Apple }
 class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   SNSAuthService _snsAuthService;
   KakaoAuthService _kakaoAuthService;
+
   SharedHelper _sharedHelper;
   DBHelper _dbHelper;
+
   bool isSignIn = false;
-  String email = '';
-  UserVO userVO;
+  UserVO _userVO;
 
   AuthServiceAdapter({@required SharedHelper sharedHelper, @required DBHelper dbHelper}) : _sharedHelper = sharedHelper, _dbHelper = dbHelper;
 
   void _init() async {
     _snsAuthService = SNSAuthService();
     _kakaoAuthService = KakaoAuthService();
-    userVO = await _dbHelper.getUser();
+    _userVO = await _dbHelper.getUser();
   }
 
   @override
@@ -40,30 +42,32 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
 
   @override
   Future<String> signInWithSNS(AuthServiceType authServiceType) async {
-    String authId = "";
     switch(authServiceType) {
       case AuthServiceType.Google:
         await _snsAuthService.signInWithGoogle().then((value) {
-          authId = value;
-          email = _snsAuthService.email;
-
+          userVO.socialId = value;
+          userVO.email = _snsAuthService.email;
         });
-        return authId;
+        return userVO.socialId;
+        break;
       case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
-          authId = value;
-          email = _snsAuthService.email;
+          userVO.socialId = value;
+          userVO.email = _snsAuthService.email;
         });
-        return authId;
+        return userVO.socialId;
+        break;
       case AuthServiceType.Apple:
 
         break;
       case AuthServiceType.Kakao:
-        await _kakaoAuthService.signInWithKakao();
-        email = _kakaoAuthService.email;
+        await _kakaoAuthService.signInWithKakao().then((value) {
+          userVO.socialId = value;
+          userVO.email = _kakaoAuthService.email;
+        });
+        return userVO.socialId;
         break;
     }
-    userVO.email = email;
     notifyListeners();
   }
 
@@ -103,6 +107,24 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
       *  - 로컬 DB 에 저장?..
       */
     }
+  }
+
+  UserVO get userVO => _userVO;
+
+  bool canUseEmail(String value) {
+    return Validator().emailValidation(value);
+  }
+
+  bool canUseName(String value) {
+    return Validator().nameValidation(value);
+  }
+
+  bool canUseYear(int value) {
+    return Validator().yearValidation(value);
+  }
+
+  bool canUseMonth(int value) {
+    return Validator().monthValidation(value);
   }
 
   @override

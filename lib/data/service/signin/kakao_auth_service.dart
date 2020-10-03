@@ -13,7 +13,9 @@ class KakaoAuthService {
   bool isKakaoInstalled;
   String _email;
 
-  isInstalled() async {
+  KakaoAuthService() { _isInstalled(); }
+
+  _isInstalled() async {
     isKakaoInstalled = await isKakaoTalkInstalled();
   }
 

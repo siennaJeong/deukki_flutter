@@ -7,6 +7,8 @@ class Strings {
   static const String empty_result_error = "Empty Result Error - Request body is Empty";
   static const String unknown_error = "Unknown Error";
 
+  static const String invalid_input = "형식이 올바르지 않습니다.";
+
   static const String login_for_kakao = "카카오로 시작하기";
 
   static const String common_btn_ok = '확인';
@@ -29,6 +31,8 @@ class Strings {
   static const String sign_up_email = '이메일 주소';
   static const String sign_up_name = '이름';
   static const String sign_up_birth = '생년/월';
+  static const String sign_up_year = 'YYYY';
+  static const String sign_up_month = 'MM';
   static const String sign_up_gender = '성별';
   static const String sign_up_gender_male = '남자';
   static const String sign_up_gender_female = '여자';

@@ -1,11 +1,13 @@
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/provider/signin/sign_in_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 import 'package:deukki/view/values/strings.dart';
 
@@ -22,7 +24,7 @@ class _LoginState extends State<Login> {
 
   @override
   void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
     signInProviderModel = Provider.of<SignInProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
@@ -36,11 +38,10 @@ class _LoginState extends State<Login> {
         }
         if(isSignUp.result.isValue) {
           if(isSignUp.result.asValue.value.result) {
-            Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_MAIN);
+            RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           }else {
-            Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
+            RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
           }
-          print(isSignUp.result.asValue.value.result.toString());
         }else if(isSignUp.result.isError) {
           print("isSignUp error : " + isSignUp.result.asError.error.toString());
         }
@@ -50,6 +51,9 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    KakaoContext.clientId = KAKAO_APP_KEY;
+    KakaoContext.javascriptClientId = KAKAO_JS_KEY;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(

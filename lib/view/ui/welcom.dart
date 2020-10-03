@@ -13,6 +13,13 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+
+  void getRoute() {
+    setState(() {
+      RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,12 +56,12 @@ class _WelcomeState extends State<Welcome> {
               Container(
                 width: 584,
                 child: CommonRaisedButton(
-                    Strings.common_btn_ok,
-                    GetRoutesName.ROUTE_MAIN,
-                    MainColors.purple_100,
-                    Colors.white,
-                    MainColors.purple_100,
-                    24
+                  buttonText: Strings.common_btn_ok,
+                  buttonColor: MainColors.purple_100,
+                  textColor: Colors.white,
+                  borderColor: MainColors.purple_100,
+                  fontSize: 24,
+                  voidCallback: getRoute
                 ),
               )
             ],

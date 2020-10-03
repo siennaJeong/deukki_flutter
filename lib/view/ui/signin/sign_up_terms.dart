@@ -18,17 +18,18 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   @override
   void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
     super.didChangeDependencies();
   }
 
-  String _isEmailExist() {
-
-    if(authServiceAdapter.email.isEmpty) {
-      return GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL;
-    }else {
-      return GetRoutesName.ROUTE_SIGNUP_INPUT_NAME;
-    }
+  void _isEmailExist() {
+    setState(() {
+      if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
+        RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, context);
+      }else {
+        RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, context);
+      }
+    });
   }
 
   @override
@@ -104,23 +105,25 @@ class _SignUpTermsState extends State<SignUpTerms> {
                             Expanded(
                                 flex: 1,
                                 child: CommonRaisedButton(
-                                    Strings.common_btn_cancel,
-                                    GetRoutesName.ROUTE_LOGIN,
-                                    Colors.white, MainColors.purple_100,
-                                    MainColors.purple_100,
-                                    16
+                                  buttonText: Strings.common_btn_cancel,
+                                  buttonColor: Colors.white,
+                                  textColor: MainColors.purple_100,
+                                  borderColor: MainColors.purple_100,
+                                  fontSize: 16,
+                                  //routeName: GetRoutesName.ROUTE_LOGIN,
+                                  voidCallback: null,
                                 )
                             ),
                             SizedBox(width: 16),
                             Expanded(
                                 flex: 1,
                                 child: CommonRaisedButton(
-                                  Strings.common_btn_ok,
-                                  _isEmailExist(),
-                                  MainColors.purple_100,
-                                  Colors.white,
-                                  MainColors.purple_100,
-                                  16
+                                  buttonText: Strings.common_btn_ok,
+                                  buttonColor: MainColors.purple_100,
+                                  textColor: Colors.white,
+                                  borderColor: MainColors.purple_100,
+                                  fontSize: 16,
+                                  voidCallback: _isEmailExist,
                                 )
                             )
                           ],

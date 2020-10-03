@@ -28,4 +28,34 @@ var routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_WELCOME: (BuildContext context) => Welcome(),
 };
 
+class RouteNavigator {
+  go(String routeName, BuildContext context) {
+    switch(routeName) {
+      case GetRoutesName.ROUTE_LOGIN:
+        Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_LOGIN, (Route<dynamic> route) => false);
+        break;
+      case GetRoutesName.ROUTE_TERMS:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
+        break;
+      case GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL);
+        break;
+      case GetRoutesName.ROUTE_SIGNUP_INPUT_NAME:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_NAME);
+        break;
+      case GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH);
+        break;
+      case GetRoutesName.ROUTE_WELCOME:
+        Navigator.popAndPushNamed(context, GetRoutesName.ROUTE_WELCOME);
+        //Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_WELCOME, (Route<dynamic> route) => false);
+        break;
+      case GetRoutesName.ROUTE_MAIN:
+        Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_MAIN, (Route<dynamic> route) => false);
+        break;
+    }
+  }
+
+}
+
 
