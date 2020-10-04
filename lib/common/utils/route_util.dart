@@ -47,8 +47,8 @@ class RouteNavigator {
         Navigator.pushNamed(context, GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH);
         break;
       case GetRoutesName.ROUTE_WELCOME:
-        Navigator.popAndPushNamed(context, GetRoutesName.ROUTE_WELCOME);
-        //Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_WELCOME, (Route<dynamic> route) => false);
+        //Navigator.popAndPushNamed(context, GetRoutesName.ROUTE_WELCOME);
+        Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_WELCOME, (Route<dynamic> route) => false);
         break;
       case GetRoutesName.ROUTE_MAIN:
         Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_MAIN, (Route<dynamic> route) => false);

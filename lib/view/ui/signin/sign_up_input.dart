@@ -180,6 +180,7 @@ class EditWidget extends StatelessWidget {
                                 context,
                                 null,
                                 TextInputType.emailAddress,
+                                TextInputAction.go,
                                 _focusNode,
                                 _textController,
                                 null
@@ -206,9 +207,11 @@ class SignUpInputBirth extends BaseWidget {
 
 class _SignUpInputBirthState extends State<SignUpInputBirth> {
   FocusScopeNode _focusNode;
-  TextEditingController _yearController, _monthController;
+  TextEditingController _yearController = TextEditingController();
+  TextEditingController _monthController = TextEditingController();
   String selectGender;
   AuthServiceAdapter authServiceAdapter;
+  bool isYearValid, isMonthValid;
 
   @override
   void didChangeDependencies() {
@@ -220,7 +223,11 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
   void initState() {
     super.initState();
     _focusNode = FocusScopeNode();
+    _yearController.addListener(() { });
+    _monthController.addListener(() { });
     selectGender = "";
+    isYearValid = false;
+    isMonthValid = false;
   }
 
   @override
@@ -232,20 +239,27 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
   }
 
   void _yearEditingComplete() {
-    if(authServiceAdapter.canUseYear(_yearController as int)) {
+    if(authServiceAdapter.canUseYear(int.parse(_yearController.text))) {
+      this.isYearValid = true;
       _focusNode.nextFocus();
     }
   }
 
   void _monthEditingComplete() {
-    if(!authServiceAdapter.canUseMonth(_monthController as int)) {
+    if(!authServiceAdapter.canUseMonth(int.parse(_monthController.text))) {
       _focusNode.previousFocus();
+      return;
     }
+    this.isMonthValid = true;
     authServiceAdapter.userVO.birthDate = _yearController.text + "-" + _monthController.text;
   }
 
   void _signUpDone() {
-    if(authServiceAdapter.userVO.birthDate.isNotEmpty && selectGender.isNotEmpty) {
+    if(_focusNode.hasFocus) {
+      _focusNode.unfocus();
+      SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    }
+    if(this.isYearValid && this.isMonthValid && this.selectGender.isNotEmpty) {
       RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
     }
   }
@@ -295,7 +309,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                             textColor: MainColors.purple_100,
                             borderColor: MainColors.purple_100,
                             fontSize: 16,
-                            voidCallback: null,
+                            voidCallback: _signUpDone,
                           ),
                         )
                       ],
@@ -312,34 +326,39 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                 Strings.sign_up_birth,
                                 style: Theme.of(context).textTheme.bodyText1
                             ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                    width: 160,
-                                    margin: EdgeInsets.only(top: 8, right: 8),
-                                    child: _inputField(
-                                      context,
-                                      Strings.sign_up_year,
-                                      TextInputType.number,
-                                      _focusNode,
-                                      _yearController,
-                                      _yearEditingComplete
-                                    )
-                                ),
-                                Container(
-                                  width: 112,
-                                  margin: EdgeInsets.only(top: 8),
-                                  child: _inputField(
-                                    context,
-                                    Strings.sign_up_month,
-                                    TextInputType.number,
-                                    _focusNode,
-                                    _monthController,
-                                    _monthEditingComplete
+                            FocusScope(
+                              node: _focusNode,
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                      width: 160,
+                                      margin: EdgeInsets.only(top: 8, right: 8),
+                                      child: _inputField(
+                                          context,
+                                          Strings.sign_up_year,
+                                          TextInputType.number,
+                                          TextInputAction.next,
+                                          null,
+                                          _yearController,
+                                          _yearEditingComplete
+                                      )
                                   ),
-                                ),
-                              ],
-                            ),
+                                  Container(
+                                    width: 112,
+                                    margin: EdgeInsets.only(top: 8),
+                                    child: _inputField(
+                                        context,
+                                        Strings.sign_up_month,
+                                        TextInputType.number,
+                                        TextInputAction.go,
+                                        null,
+                                        _monthController,
+                                        _monthEditingComplete
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                         SizedBox(width: 48),
@@ -361,6 +380,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                   onChanged: (String val) {
                                     setState(() {
                                       selectGender = val;
+                                      authServiceAdapter.userVO.gender = selectGender;
                                     });
                                   },
                                 ),
@@ -372,6 +392,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                   onChanged: (String val) {
                                     setState(() {
                                       selectGender = val;
+                                      authServiceAdapter.userVO.gender = selectGender;
                                     });
                                   },
                                 )
@@ -397,6 +418,7 @@ Widget _inputField(
     BuildContext context,
     String hint,
     TextInputType textInputType,
+    TextInputAction textInputAction,
     FocusNode focusNode,
     TextEditingController textEditingController,
     Function() function) {
@@ -404,13 +426,13 @@ Widget _inputField(
     controller: textEditingController,
     keyboardType: textInputType,
     maxLines: 1,
-    textInputAction: TextInputAction.go,
+    textInputAction: TextInputAction.done,
     style: Theme.of(context).textTheme.bodyText2,
     focusNode: focusNode,
     decoration: InputDecoration(
       hintText: hint,
       hintStyle: TextStyle(
-          fontFamily: 'TmoneyRound',
+          fontFamily: 'NotoSansKR',
           fontWeight: FontWeight.w400,
           color: MainColors.grey_text
       ),

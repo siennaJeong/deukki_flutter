@@ -54,7 +54,7 @@ class _WelcomeState extends State<Welcome> {
                 ),
               ),
               Container(
-                width: 584,
+                width: 530,
                 child: CommonRaisedButton(
                   buttonText: Strings.common_btn_ok,
                   buttonColor: MainColors.purple_100,

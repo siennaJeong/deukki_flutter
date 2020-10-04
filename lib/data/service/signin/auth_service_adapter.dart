@@ -97,16 +97,13 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
     return true;
   }
 
-  signInDone(String token, String sharedValue) async {
-    if(token != null) {
-      //Navigator.pushNamed(context, GetRoutesName.ROUTE_TERMS);
-      _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
+  signInDone() async {
+   // _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
+    /* TODO : 서버 로그인, JWT 토큰 업데이트 */
+  }
 
-      /*
-      * TODO:
-      *  - 로컬 DB 에 저장?..
-      */
-    }
+  signUpDoe() async {
+    /* TODO : 회원가입, 로컬 디비 저장 */
   }
 
   UserVO get userVO => _userVO;

@@ -39,6 +39,7 @@ class _LoginState extends State<Login> {
         if(isSignUp.result.isValue) {
           if(isSignUp.result.asValue.value.result) {
             RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
+            /* TODO : 서버 로그인 */
           }else {
             RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
           }

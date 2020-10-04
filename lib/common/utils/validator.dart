@@ -10,7 +10,7 @@ class Validator {
   }
 
   bool yearValidation(int value) {
-    var year = DateFormat('yyyy').format(DateTime.now()) as int;
+    int year = int.parse(DateFormat('yyyy').format(DateTime.now()));
     if(value < 1900 || value > year) {
       return false;
     }else {

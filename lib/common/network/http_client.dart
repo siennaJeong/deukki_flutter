@@ -17,20 +17,25 @@ class HttpClient {
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return Result<dynamic>.value(null);
+          return Result.value(null);
         }else {
-          return Result<dynamic>.value(jsonDecode(response.body));
+          return Result.value(jsonDecode(response.body));
         }
-
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw Result<dynamic>.error(ClientErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw Result<dynamic>.error(ServerErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ServerErrorException());
       }else {
-        throw Result<dynamic>.error(UnknownException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(UnknownException());
       }
     }on SocketException {
-      throw Result<dynamic>.error(ConnectionException());
+      throw Result.error(ConnectionException());
     }
   }
 
@@ -41,20 +46,26 @@ class HttpClient {
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return Result<dynamic>.value(null);
+          return Result.value(null);
         }else {
-          return Result<dynamic>.value(jsonDecode(response.body));
+          return Result.value(jsonDecode(response.body));
         }
 
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw Result<dynamic>.error(ClientErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw Result<dynamic>.error(ServerErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ServerErrorException());
       }else {
-        throw Result<dynamic>.error(UnknownException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(UnknownException());
       }
     }on SocketException {
-      throw Result<dynamic>.error(ConnectionException());
+      throw Result.error(ConnectionException());
     }
   }
 
@@ -65,20 +76,26 @@ class HttpClient {
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return Result<dynamic>.value(null);
+          return Result.value(null);
         }else {
-          return Result<dynamic>.value(jsonDecode(response.body));
+          return Result.value(jsonDecode(response.body));
         }
 
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw Result<dynamic>.error(ClientErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw Result<dynamic>.error(ServerErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ServerErrorException());
       }else {
-        throw Result<dynamic>.error(UnknownException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(UnknownException());
       }
     }on SocketException {
-      throw Result<dynamic>.error(ConnectionException());
+      throw Result.error(ConnectionException());
     }
   }
 
@@ -89,20 +106,26 @@ class HttpClient {
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
-          return Result<dynamic>.value(null);
+          return Result.value(null);
         }else {
-          return Result<dynamic>.value(jsonDecode(response.body));
+          return Result.value(jsonDecode(response.body));
         }
 
       }else if(statusCode >= 400 && statusCode < 500) {
-        throw Result<dynamic>.error(ClientErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ClientErrorException());
       }else if(statusCode >= 500 && statusCode < 600) {
-        throw Result<dynamic>.error(ServerErrorException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ServerErrorException());
       }else {
-        throw Result<dynamic>.error(UnknownException());
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(UnknownException());
       }
     }on SocketException {
-      throw Result<dynamic>.error(ConnectionException());
+      throw Result.error(ConnectionException());
     }
   }
 

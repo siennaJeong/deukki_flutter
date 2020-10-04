@@ -24,6 +24,8 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   void _isEmailExist() {
     setState(() {
+      authServiceAdapter.userVO.agreeMarketing = marketingAgree;
+      authServiceAdapter.userVO.marketingMethod = "email";
       if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, context);
       }else {
@@ -87,10 +89,6 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 setState(() {
                                   marketingAgree = value;
                                 });
-                                if(marketingAgree) {
-                                  authServiceAdapter.userVO.agreeMarketing = value;
-                                  authServiceAdapter.userVO.marketingMethod = "email";
-                                }
                               },
                             ),
                             termsText(Strings.sign_up_terms_marketing, MainColors.grey_100, null)
@@ -110,7 +108,6 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                   textColor: MainColors.purple_100,
                                   borderColor: MainColors.purple_100,
                                   fontSize: 16,
-                                  //routeName: GetRoutesName.ROUTE_LOGIN,
                                   voidCallback: null,
                                 )
                             ),
