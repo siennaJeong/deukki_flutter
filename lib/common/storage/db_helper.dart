@@ -31,10 +31,10 @@ class DBHelper {
         version: DB_VERSION,
         onCreate: (db, version) {
           db.execute (
-            "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY, version_name TEXT, version TEXT)"
+            "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender TEXT, enable INTEGER, premium INTEGER)"
+            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, enable INTEGER, premium INTEGER)"
           );
           db.execute(
             "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, content_order INTEGER)"
@@ -57,19 +57,45 @@ class DBHelper {
   /* User */
   Future<void> insertUser(UserVO userVO) async {
     final db = await database;
-    await db.insert(TABLE_USER, userVO.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(TABLE_USER, _userToJson(userVO), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   getUser() async {
     final db = await database;
-    var res = await db.query(TABLE_USER, where: 'idx = 1');
-    return res.isNotEmpty ? UserVO.fromJson(res.first) : new UserVO(0, '', '', '', '', false, false);
+    var res = await db.query(TABLE_USER, where: 'idx = 0');
+    return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', false, false);
   }
 
   updateUser(UserVO userVO) async {
     final db = await database;
-    await db.update(TABLE_USER, userVO.toJson(), where: 'idx = 1', whereArgs: [userVO.idx]);
+    await db.update(TABLE_USER, _userToJson(userVO), where: 'idx = 0', whereArgs: [userVO.idx]);
   }
+
+  Map<String, dynamic> _userToJson(UserVO userVO) {
+    var userMap = <String, dynamic> {
+      'idx': userVO.idx,
+      'email': userVO.email,
+      'name': userVO.name,
+      'birth_date': userVO.birthDate,
+      'gender': userVO.gender,
+      'enable': userVO.enable ? 1 : 0,
+      'premium': userVO.premium ? 1 : 0
+    };
+    return userMap;
+  }
+
+  UserVO _userFromJson(Map<String, dynamic> map) {
+    return UserVO(
+      map['idx'] as int,
+      map['email'] as String,
+      map['name'] as String,
+      map['birth_date'] as String,
+      map['gender'] as String,
+      map['enable'] == 1 ? true : false,
+      map['premium'] == 1 ? true : false
+    );
+  }
+
 
   /* Vocabulary */
 

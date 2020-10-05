@@ -32,7 +32,6 @@ void main() async {
             providers: [
               Provider.value(value: SharedHelper()),
               Provider.value(value: DBHelper()),
-              //Provider.value(value: HttpClient()),
               ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
                 create: (context) => AuthServiceAdapter(dbHelper: null, sharedHelper: null),
                 update: (BuildContext context, SharedHelper sharedHelper, DBHelper dbHelper, AuthServiceAdapter authServiceAdapter) =>

@@ -1,8 +1,10 @@
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/signin/sign_in_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/ui/base/custom_radio_widget.dart';
+import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
@@ -95,6 +97,7 @@ class SignUpInputNameState extends State<SignUpInputName> {
   void _isNameValid() {
     setState(() {
       if(_textController != null && authServiceAdapter.canUseName(_textController.text)) {
+        authServiceAdapter.userVO.name = _textController.text;
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH, context);
       }else {
         RouteNavigator().go(null, context);
@@ -209,15 +212,10 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
   FocusScopeNode _focusNode;
   TextEditingController _yearController = TextEditingController();
   TextEditingController _monthController = TextEditingController();
-  String selectGender;
   AuthServiceAdapter authServiceAdapter;
+  SignInProviderModel signInProviderModel;
+  String selectGender;
   bool isYearValid, isMonthValid;
-
-  @override
-  void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
@@ -228,6 +226,13 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
     selectGender = "";
     isYearValid = false;
     isMonthValid = false;
+  }
+
+  @override
+  void didChangeDependencies() {
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    signInProviderModel = Provider.of<SignInProviderModel>(context, listen: false);
+    super.didChangeDependencies();
   }
 
   @override
@@ -261,6 +266,24 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
     }
     if(this.isYearValid && this.isMonthValid && this.selectGender.isNotEmpty) {
       RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
+
+      signInProviderModel.signUp(
+        authServiceAdapter.userVO,
+        authServiceAdapter.socialMethod,
+        authServiceAdapter.socialId,
+        authServiceAdapter.marketingAgree,
+        authServiceAdapter.marketingMethod
+      ).then((value) {
+        final signUpResult = signInProviderModel.value.signUp;
+        if(!signUpResult.hasData) {
+          print("sign up failed");
+        }
+        if(signUpResult.result.isValue) {
+          authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
+        }else if(signUpResult.result.isError) {
+          print("sign up error : " + signUpResult.result.asError.error.toString());
+        }
+      });
     }
   }
   
@@ -380,7 +403,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                   onChanged: (String val) {
                                     setState(() {
                                       selectGender = val;
-                                      authServiceAdapter.userVO.gender = selectGender;
+                                      authServiceAdapter.userVO.gender = "M";
                                     });
                                   },
                                 ),
@@ -392,7 +415,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                   onChanged: (String val) {
                                     setState(() {
                                       selectGender = val;
-                                      authServiceAdapter.userVO.gender = selectGender;
+                                      authServiceAdapter.userVO.gender = "F";
                                     });
                                   },
                                 )

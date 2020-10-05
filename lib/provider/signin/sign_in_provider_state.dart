@@ -3,5 +3,9 @@ import 'package:deukki/provider/provider_model_result.dart';
 
 class SignInProviderState {
   final checkSignUp = ProviderModelResult<CommonResultVO>();
+  final signUp = ProviderModelResult<CommonResultVO>();
+  final signOut = ProviderModelResult<CommonResultVO>();
+  final login = ProviderModelResult<CommonResultVO>();
+  final logout = ProviderModelResult<CommonResultVO>();
 
 }

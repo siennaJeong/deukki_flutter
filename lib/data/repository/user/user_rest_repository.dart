@@ -10,8 +10,8 @@ import 'package:deukki/data/repository/user/user_repository.dart';
 class UserRestRepository implements UserRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, dynamic> _headers(String authJWT) => <String, dynamic> {
-    'Content-Type': 'application/json',
+  Map<String, String> _headers(String authJWT) => <String, String> {
+    'content-Type': 'application/json',
     'authorization': authJWT
   };
 
@@ -20,7 +20,7 @@ class UserRestRepository implements UserRepository {
     'socialId': authId
   };
 
-  Map<String, dynamic> _signupToJson(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) => <String, dynamic> {
+  Map<String, dynamic> _signupToJson(UserVO userVO, String authType, String authId, String agreeMarketing, String marketingMethod) => <String, dynamic> {
     'socialMethod': authType,
     'socialId': authId,
     'email': userVO.email,
@@ -43,7 +43,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) async {
-     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, _headers(""), _signupToJson(userVO, authType, authId, agreeMarketing, marketingMethod));
+     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, "", _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
      if(signUpJson.isValue) {
        return Result.value(CommonResultVO.fromJson(signUpJson.asValue.value as Map<String, dynamic>));
      }else {
@@ -52,8 +52,18 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
+  Future<Result<CommonResultVO>> signOut(String authJWT) async {
+    final signOutJson = await _httpClient.deleteRequest(HttpUrls.SIGN_OUT, authJWT);
+    if(signOutJson.isValue) {
+      return Result.value(CommonResultVO.fromJson(signOutJson.asValue.value as Map<String, dynamic>));
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
   Future<Result<CommonResultVO>> login(String authType, String authId) async {
-    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, _headers(""), _loginToJson(authType, authId));
+    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, "", _loginToJson(authType, authId));
     if(loginJson.isValue) {
       return Result.value(CommonResultVO.fromJson(loginJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -63,7 +73,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> logout(String authJWT) async {
-    final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, _headers(authJWT));
+    final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, authJWT);
     if(logoutJson.isValue) {
       return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -71,14 +81,6 @@ class UserRestRepository implements UserRepository {
     }
   }
 
-  @override
-  Future<Result<CommonResultVO>> signOut(String authJWT) async {
-    final signOutJson = await _httpClient.deleteRequest(HttpUrls.SIGN_OUT, _headers(authJWT));
-    if(signOutJson.isValue) {
-      return Result.value(CommonResultVO.fromJson(signOutJson.asValue.value as Map<String, dynamic>));
-    }else {
-      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
-    }
-  }
+
 
 }

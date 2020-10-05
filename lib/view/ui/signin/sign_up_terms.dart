@@ -34,6 +34,12 @@ class _SignUpTermsState extends State<SignUpTerms> {
     });
   }
 
+  void _onBackPressed() {
+    setState(() {
+      Navigator.of(context).pop();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +114,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                                 textColor: MainColors.purple_100,
                                 borderColor: MainColors.purple_100,
                                 fontSize: 16,
-                                voidCallback: null,
+                                voidCallback: _onBackPressed
                               ),
                             ),
                             SizedBox(width: 16),

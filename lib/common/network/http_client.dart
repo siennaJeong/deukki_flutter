@@ -10,7 +10,7 @@ class HttpClient {
   static final HttpClient _instance = HttpClient._privateConstructor();
   factory HttpClient() { return _instance; }
 
-  Future<Result<dynamic>> getRequest(String path, Map<String, dynamic> headers) async {
+  Future<Result<dynamic>> getRequest(String path, Map<String, String> headers) async {
     Response response;
     try {
       response = await get(path, headers: headers);
@@ -39,10 +39,10 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> postRequest(String path, Map<String, dynamic> headers, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> postRequest(String path, String authJWT, Map<String, dynamic> body) async {
     Response response;
     try {
-      response = await post(path, headers: headers, body: body);
+      response = await post(path, headers: {HttpHeaders.authorizationHeader: authJWT}, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -69,7 +69,7 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> patchRequest(String path, Map<String, dynamic> headers, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> patchRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
     try {
       response = await patch(path, headers: headers, body: body);
@@ -99,10 +99,10 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> deleteRequest(String path, Map<String, dynamic> headers) async {
+  Future<Result<dynamic>> deleteRequest(String path, String authJWT) async {
     Response response;
     try {
-      response = await delete(path, headers: headers);
+      response = await delete(path, headers: {HttpHeaders.authorizationHeader: authJWT});
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {

@@ -46,6 +46,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
     switch(authServiceType) {
       case AuthServiceType.Google:
         await _snsAuthService.signInWithGoogle().then((value) {
+          socialMethod = AuthService.AUTH_TYPE_Google;
           socialId = value;
           userVO.email = _snsAuthService.email;
         });
@@ -53,6 +54,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
         break;
       case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
+          socialMethod = AuthService.AUTH_TYPE_FB;
           socialId = value;
           userVO.email = _snsAuthService.email;
         });
@@ -63,6 +65,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
         break;
       case AuthServiceType.Kakao:
         await _kakaoAuthService.signInWithKakao().then((value) {
+          socialMethod = AuthService.AUTH_TYPE_KAKAO;
           socialId = value;
           userVO.email = _kakaoAuthService.email;
         });
@@ -101,10 +104,13 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   signInDone() async {
    // _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
     /* TODO : 서버 로그인, JWT 토큰 업데이트 */
+
   }
 
-  signUpDoe() async {
-    /* TODO : 회원가입, 로컬 디비 저장 */
+  signUpDone(String authJWT) async {
+    print("auth service adapter jwt : " + authJWT);
+    _sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    _dbHelper.insertUser(userVO);
   }
 
   UserVO get userVO => _userVO;
