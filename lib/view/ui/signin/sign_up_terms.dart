@@ -24,8 +24,8 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   void _isEmailExist() {
     setState(() {
-      authServiceAdapter.userVO.agreeMarketing = marketingAgree;
-      authServiceAdapter.userVO.marketingMethod = "email";
+      authServiceAdapter.marketingAgree = marketingAgree;
+      authServiceAdapter.marketingMethod = "email";
       if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, context);
       }else {
@@ -52,16 +52,16 @@ class _SignUpTermsState extends State<SignUpTerms> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                          margin: EdgeInsets.only(top: 28, bottom: 40),
-                          child: Text(
-                            Strings.sign_up_terms_title,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: "TmoneyRound",
-                                fontSize: 32,
-                                fontWeight: FontWeight.w700
-                            ),
+                        margin: EdgeInsets.only(top: 28, bottom: 40),
+                        child: Text(
+                          Strings.sign_up_terms_title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontFamily: "TmoneyRound",
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700
                           ),
+                        ),
                       ),
                       Container(
                         child: Row(
@@ -101,27 +101,27 @@ class _SignUpTermsState extends State<SignUpTerms> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                                flex: 1,
-                                child: CommonRaisedButton(
-                                  buttonText: Strings.common_btn_cancel,
-                                  buttonColor: Colors.white,
-                                  textColor: MainColors.purple_100,
-                                  borderColor: MainColors.purple_100,
-                                  fontSize: 16,
-                                  voidCallback: null,
-                                )
+                              flex: 1,
+                              child: CommonRaisedButton(
+                                buttonText: Strings.common_btn_cancel,
+                                buttonColor: Colors.white,
+                                textColor: MainColors.purple_100,
+                                borderColor: MainColors.purple_100,
+                                fontSize: 16,
+                                voidCallback: null,
+                              ),
                             ),
                             SizedBox(width: 16),
                             Expanded(
-                                flex: 1,
-                                child: CommonRaisedButton(
-                                  buttonText: Strings.common_btn_ok,
-                                  buttonColor: MainColors.purple_100,
-                                  textColor: Colors.white,
-                                  borderColor: MainColors.purple_100,
-                                  fontSize: 16,
-                                  voidCallback: _isEmailExist,
-                                )
+                              flex: 1,
+                              child: CommonRaisedButton(
+                                buttonText: Strings.common_btn_ok,
+                                buttonColor: MainColors.purple_100,
+                                textColor: Colors.white,
+                                borderColor: MainColors.purple_100,
+                                fontSize: 16,
+                                voidCallback: _isEmailExist,
+                              ),
                             )
                           ],
                         ),

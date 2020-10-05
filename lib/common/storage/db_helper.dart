@@ -34,7 +34,7 @@ class DBHelper {
             "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY, version_name TEXT, version TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender INTEGER, marketing_agree INTEGER)"
+            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY, email TEXT, name TEXT, birth_date TEXT, gender TEXT, enable INTEGER, premium INTEGER)"
           );
           db.execute(
             "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, content_order INTEGER)"
@@ -55,17 +55,21 @@ class DBHelper {
   /* Version */
 
   /* User */
-  Future<void> insertUser(UserVO vo) async {
+  Future<void> insertUser(UserVO userVO) async {
     final db = await database;
-    await db.insert(TABLE_USER, vo.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
+    await db.insert(TABLE_USER, userVO.toJson(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   getUser() async {
     final db = await database;
     var res = await db.query(TABLE_USER, where: 'idx = 1');
-    return res.isNotEmpty ? UserVO.fromJson(res.first) : new UserVO('', '', '', '', '', '', false, '');
+    return res.isNotEmpty ? UserVO.fromJson(res.first) : new UserVO(0, '', '', '', '', false, false);
   }
 
+  updateUser(UserVO userVO) async {
+    final db = await database;
+    await db.update(TABLE_USER, userVO.toJson(), where: 'idx = 1', whereArgs: [userVO.idx]);
+  }
 
   /* Vocabulary */
 

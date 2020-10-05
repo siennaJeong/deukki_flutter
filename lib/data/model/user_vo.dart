@@ -5,11 +5,8 @@ part 'user_vo.g.dart';
 
 @JsonSerializable()
 class UserVO{
-  @JsonKey(name: 'socialMethod')
-  String socialMethod;
-
-  @JsonKey(name: 'socialId')
-  String socialId;
+  @JsonKey(name: 'idx')
+  int idx;
 
   @JsonKey(name: 'email')
   String email;
@@ -23,16 +20,23 @@ class UserVO{
   @JsonKey(name: 'gender')
   String gender;
 
-  @JsonKey(name: 'agreeMarketing')
-  bool agreeMarketing;
+  @JsonKey(name: 'enable')
+  bool enable;
 
-  @JsonKey(name: 'marketingMethod')
-  String marketingMethod;
+  @JsonKey(name: 'premium')
+  bool premium;
 
-
-  UserVO(this.socialMethod, this.socialId, this.email, this.name,
-      this.birthDate, this.gender, this.agreeMarketing, this.marketingMethod);
+  UserVO(
+      this.idx,
+      this.email,
+      this.name,
+      this.birthDate,
+      this.gender,
+      this.enable,
+      this.premium
+      );
 
   factory UserVO.fromJson(Map<String, dynamic> json) => _$UserVOFromJson(json);
+
   Map<String, dynamic> toJson() => _$UserVOToJson(this);
 }

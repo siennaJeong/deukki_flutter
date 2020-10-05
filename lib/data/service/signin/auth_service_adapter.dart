@@ -19,8 +19,9 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   SharedHelper _sharedHelper;
   DBHelper _dbHelper;
 
-  bool isSignIn = false;
+  bool isSignIn, marketingAgree = false;
   UserVO _userVO;
+  String socialId, socialMethod, marketingMethod;
 
   AuthServiceAdapter({@required SharedHelper sharedHelper, @required DBHelper dbHelper}) : _sharedHelper = sharedHelper, _dbHelper = dbHelper;
 
@@ -45,27 +46,27 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
     switch(authServiceType) {
       case AuthServiceType.Google:
         await _snsAuthService.signInWithGoogle().then((value) {
-          userVO.socialId = value;
+          socialId = value;
           userVO.email = _snsAuthService.email;
         });
-        return userVO.socialId;
+        return socialId;
         break;
       case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
-          userVO.socialId = value;
+          socialId = value;
           userVO.email = _snsAuthService.email;
         });
-        return userVO.socialId;
+        return socialId;
         break;
       case AuthServiceType.Apple:
 
         break;
       case AuthServiceType.Kakao:
         await _kakaoAuthService.signInWithKakao().then((value) {
-          userVO.socialId = value;
+          socialId = value;
           userVO.email = _kakaoAuthService.email;
         });
-        return userVO.socialId;
+        return socialId;
         break;
     }
     notifyListeners();
