@@ -2,7 +2,7 @@ import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
-import 'package:deukki/provider/signin/sign_in_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -14,32 +14,30 @@ import 'package:deukki/view/values/strings.dart';
 class Login extends BaseWidget {
   @override
   _LoginState createState() => _LoginState();
-
 }
 
 class _LoginState extends State<Login> {
-  SignInProviderModel signInProviderModel;
+  UserProviderModel signInProviderModel;
   AuthServiceAdapter authServiceAdapter;
   String authId;
 
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
-    signInProviderModel = Provider.of<SignInProviderModel>(context, listen: false);
+    signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
-  void _checkSignUp(String authTypeString, AuthServiceType authServiceType) {
+  void _checkSignUp(String authType, AuthServiceType authServiceType) {
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-      signInProviderModel.checkSignUp(authTypeString, value).then((val) {
+      signInProviderModel.checkSignUp(authType, value).then((val) {
         final isSignUp = signInProviderModel.value.checkSignUp;
         if(!isSignUp.hasData) {
           print("isSignUp no data");
         }
         if(isSignUp.result.isValue) {
           if(isSignUp.result.asValue.value.result) {
-            RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
-            /* TODO : 서버 로그인 */
+            _login(authType, value);
           }else {
             RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
           }
@@ -47,6 +45,21 @@ class _LoginState extends State<Login> {
           print("isSignUp error : " + isSignUp.result.asError.error.toString());
         }
       });
+    });
+  }
+
+  void _login(String authType, String authId) {
+    signInProviderModel.login(authType, authId).then((value) {
+      final loginResult = signInProviderModel.value.login;
+      if(!loginResult.hasData) {
+        print('login no date');
+      }
+      if(loginResult.result.isValue) {
+        if(loginResult.result.asValue.value.result) {
+          authServiceAdapter.signInDone(loginResult.result.asValue.value.result);
+          RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
+        }
+      }
     });
   }
 

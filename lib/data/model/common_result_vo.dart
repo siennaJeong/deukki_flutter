@@ -2,7 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'common_result_vo.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class CommonResultVO {
   @JsonKey(name: 'status')
   final int status;
@@ -16,5 +16,7 @@ class CommonResultVO {
   CommonResultVO(this.status, this.message, this.result);
 
   factory CommonResultVO.fromJson(Map<String, dynamic> json) => _$CommonResultVOFromJson(json);
+
+
 
 }

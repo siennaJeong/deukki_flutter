@@ -34,7 +34,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   @override
   Future<void> userAuthState() async {
     _init();
-    if(_sharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, "").isEmpty) {
+    if(_sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "").isEmpty) {
       isSignIn = false;
     }else {
       isSignIn = true;
@@ -101,14 +101,11 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
     return true;
   }
 
-  signInDone() async {
-   // _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, sharedValue);
-    /* TODO : 서버 로그인, JWT 토큰 업데이트 */
-
+  signInDone(String authJWT) async {
+    _sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
   }
 
   signUpDone(String authJWT) async {
-    print("auth service adapter jwt : " + authJWT);
     _sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
     _dbHelper.insertUser(userVO);
   }

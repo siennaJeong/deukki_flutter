@@ -13,7 +13,7 @@ class _MainCategoryState extends State<MainCategory> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
+    final AuthServiceAdapter authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
     return Scaffold(
       body: Center(

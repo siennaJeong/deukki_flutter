@@ -1,10 +1,9 @@
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
-import 'package:deukki/provider/signin/sign_in_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/ui/base/custom_radio_widget.dart';
-import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
@@ -213,7 +212,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
   TextEditingController _yearController = TextEditingController();
   TextEditingController _monthController = TextEditingController();
   AuthServiceAdapter authServiceAdapter;
-  SignInProviderModel signInProviderModel;
+  UserProviderModel userProviderModel;
   String selectGender;
   bool isYearValid, isMonthValid;
 
@@ -231,7 +230,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    signInProviderModel = Provider.of<SignInProviderModel>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -267,14 +266,14 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
     if(this.isYearValid && this.isMonthValid && this.selectGender.isNotEmpty) {
       RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
 
-      signInProviderModel.signUp(
+      userProviderModel.signUp(
         authServiceAdapter.userVO,
         authServiceAdapter.socialMethod,
         authServiceAdapter.socialId,
         authServiceAdapter.marketingAgree,
         authServiceAdapter.marketingMethod
       ).then((value) {
-        final signUpResult = signInProviderModel.value.signUp;
+        final signUpResult = userProviderModel.value.signUp;
         if(!signUpResult.hasData) {
           print("sign up failed");
         }

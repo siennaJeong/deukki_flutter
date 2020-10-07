@@ -10,11 +10,6 @@ import 'package:deukki/data/repository/user/user_repository.dart';
 class UserRestRepository implements UserRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, String> _headers(String authJWT) => <String, String> {
-    'content-Type': 'application/json',
-    'authorization': authJWT
-  };
-
   Map<String, dynamic> _loginToJson(String authType, String authId) => <String, dynamic> {
     'socialMethod': authType,
     'socialId': authId
@@ -33,7 +28,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId) async {
-    final checkSignUpJson = await _httpClient.getRequest(HttpUrls.SIGN_UP_CHECK + "/$authType/$authId", _headers(""));
+    final checkSignUpJson = await _httpClient.getRequest(HttpUrls.SIGN_UP_CHECK + "/$authType/$authId", HttpUrls.headers(""));
     if(checkSignUpJson.isValue) {
       return Result.value(CommonResultVO.fromJson(checkSignUpJson.asValue.value as Map<String, dynamic>));
     }else {

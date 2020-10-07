@@ -1,4 +1,5 @@
-import 'package:deukki/provider/signin/sign_in_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/provider/version/version_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';
@@ -20,13 +21,13 @@ class GetRoutesName {
 }
 
 var routes = <String, WidgetBuilder> {
-  GetRoutesName.ROUTE_SPLASH: (BuildContext context) => Splash(),
+  GetRoutesName.ROUTE_SPLASH: (BuildContext context) => ProviderWidget<VersionProviderModel>(Splash(), (BuildContext context) => VersionProviderModel.build()),
   GetRoutesName.ROUTE_LOGIN: (BuildContext context) => Login(),
   GetRoutesName.ROUTE_MAIN: (BuildContext context) => MainCategory(),
   GetRoutesName.ROUTE_TERMS: (BuildContext context) => SignUpTerms(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (BuildContext context) => SignUpInputEmail(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (BuildContext context) => SignUpInputName(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (BuildContext context) => ProviderWidget<SignInProviderModel>(SignUpInputBirth(), (BuildContext context) => SignInProviderModel.build()),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (BuildContext context) => ProviderWidget<UserProviderModel>(SignUpInputBirth(), (BuildContext context) => UserProviderModel.build()),
   GetRoutesName.ROUTE_WELCOME: (BuildContext context) => Welcome(),
 };
 
