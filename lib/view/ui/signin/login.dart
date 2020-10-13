@@ -1,3 +1,4 @@
+import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -55,7 +56,7 @@ class _LoginState extends State<Login> {
         print('login no date');
       }
       if(loginResult.result.isValue) {
-        if(loginResult.result.asValue.value.result) {
+        if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
         }

@@ -18,8 +18,9 @@ class Strings {
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
-  static const String login_sns_other_type = '또는';
+  static const String dialog_btn_update_cancel = '앱 종료';
 
+  static const String login_sns_other_type = '또는';
   static const String sign_up_terms_title = '바름드끼 시작하기';
   static const String sign_up_terms_terms = '이용약관';
   static const String sign_up_terms_dot = ' · ';

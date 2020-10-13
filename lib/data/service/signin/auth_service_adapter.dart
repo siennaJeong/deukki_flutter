@@ -2,9 +2,11 @@ import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/common/utils/validator.dart';
 import 'package:deukki/data/model/user_vo.dart';
+import 'package:deukki/data/model/version_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/data/service/signin/sns_auth_service.dart';
+import 'package:deukki/provider/version/version_provider_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
@@ -19,13 +21,14 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   SharedHelper _sharedHelper;
   DBHelper _dbHelper;
 
-  bool isSignIn, marketingAgree = false;
+  bool marketingAgree = false;
   UserVO _userVO;
-  String socialId, socialMethod, marketingMethod;
+  String socialId, socialMethod, marketingMethod, authJWT = "";
 
-  AuthServiceAdapter({@required SharedHelper sharedHelper, @required DBHelper dbHelper}) : _sharedHelper = sharedHelper, _dbHelper = dbHelper;
+  AuthServiceAdapter({@required SharedHelper sharedHelper}) : _sharedHelper = sharedHelper;
 
   void _init() async {
+    _dbHelper = DBHelper();
     _snsAuthService = SNSAuthService();
     _kakaoAuthService = KakaoAuthService();
     _userVO = await _dbHelper.getUser();
@@ -34,11 +37,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   @override
   Future<void> userAuthState() async {
     _init();
-    if(_sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "").isEmpty) {
-      isSignIn = false;
-    }else {
-      isSignIn = true;
-    }
+    authJWT = _sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "");
   }
 
   @override

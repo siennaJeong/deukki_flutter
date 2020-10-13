@@ -1,4 +1,8 @@
+import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/data/model/faq_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
+import 'package:deukki/data/model/version_vo.dart';
+import 'package:deukki/data/repository/version/version_repository.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -7,10 +11,10 @@ const int DB_VERSION = 1;
 
 const String TABLE_VERSION = 'version';
 const String TABLE_USER = 'user';
-const String TABLE_CATEGORY_BIG = 'category_big';
+const String TABLE_CATEGORY_LARGE = 'category_large';
 const String TABLE_CATEGORY_MEDIUM = 'category_medium';
 const String TABLE_CATEGORY_SMALL = 'category_small';
-const String TABLE_SENTENCE = 'sentence';
+const String TABLE_FAQ = 'faq';
 
 class DBHelper {
   DBHelper._();
@@ -31,30 +35,57 @@ class DBHelper {
         version: DB_VERSION,
         onCreate: (db, version) {
           db.execute (
-            "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version TEXT)"
+            "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version INTEGER)"
           );
           db.execute(
             "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, enable INTEGER, premium INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_BIG(id TEXT, title TEXT, content_order INTEGER)"
+            "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, description TEXT, content_order INTEGER, premium INTEGER, enable INTEGER, large_id TEXT)"
+            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, large_id TEXT)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_SMALL(id TEXT, title TEXT, description TEXT, content_order INTEGER, premium INTEGER, enable INTEGER, medium_id TEXT)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_SENTENCE(id TEXT, content TEXT, content_order INTEGER, cutline_score INTEGER, enable INTEGER, small_id TEXT)"
+            "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
           );
         }
     );
   }
 
-  /* Version */
+  /* ============================ Version ============================ */
+  Future<void> insertVersion(int appVersion, int categoryLarge, int categoryMedium, int categorySmall, int faqVersion) async {
+    final db = await database;
+    Batch batch = db.batch();
+    _versionToList(appVersion, categoryLarge, categoryMedium, categorySmall, faqVersion).forEach((val) {
+      VersionVOwithDB vOwithDB = VersionVOwithDB.fromJson(val);
+      batch.insert(TABLE_VERSION, vOwithDB.toJson());
+    });
+    batch.commit();
+  }
 
-  /* User */
+  Future<List<Map>> getVersion() async {
+    final db = await database;
+    var res = await db.query(TABLE_VERSION);
+    return res.isNotEmpty ? res : null;
+  }
+
+  updateVersion(VersionVOwithDB vOwithDB) async {
+    final db = await database;
+    await db.update(TABLE_VERSION, vOwithDB.toJson(), where: 'version_name = ?', whereArgs: [vOwithDB.versionName]);
+  }
+
+  List<Map<String, dynamic>> _versionToList(int appVersion, int categoryLarge, int categoryMedium, int categorySmall, int faqVersion) {
+    List<Map<String, dynamic>> versions = [];
+    versions.add(new VersionVOwithDB(0, VersionRepository.APP_VERSION, appVersion).toJson());
+    versions.add(new VersionVOwithDB(1, VersionRepository.CATEGORY_LARGE_VERSION, categoryLarge).toJson());
+    versions.add(new VersionVOwithDB(2, VersionRepository.CATEGORY_MEDIUM_VERSION, categoryMedium).toJson());
+    versions.add(new VersionVOwithDB(3, VersionRepository.CATEGORY_SMALL_VERSION, categorySmall).toJson());
+    versions.add(new VersionVOwithDB(4, VersionRepository.FAQ_VERSION, faqVersion).toJson());
+    return versions;
+  }
+
+  /* ============================ User ============================ */
   Future<void> insertUser(UserVO userVO) async {
     final db = await database;
     await db.insert(TABLE_USER, _userToJson(userVO), conflictAlgorithm: ConflictAlgorithm.replace);
@@ -68,7 +99,7 @@ class DBHelper {
 
   updateUser(UserVO userVO) async {
     final db = await database;
-    await db.update(TABLE_USER, _userToJson(userVO), where: 'idx = 0', whereArgs: [userVO.idx]);
+    await db.update(TABLE_USER, _userToJson(userVO), where: 'idx = 0');
   }
 
   Map<String, dynamic> _userToJson(UserVO userVO) {
@@ -97,7 +128,59 @@ class DBHelper {
   }
 
 
-  /* Vocabulary */
+  /* ============================ Category ============================ */
+  Future<void> insertCategoryLarge(List<dynamic> categoryLarges) async {
+    final db = await database;
+    Batch batch = db.batch();
+    categoryLarges.forEach((val) {
+      CategoryLargeVO categoryLargeVO = CategoryLargeVO.fromJson(val);
+      batch.insert(TABLE_CATEGORY_LARGE, categoryLargeVO.toJson());
+    });
+    batch.commit();
+  }
 
-  /* Sentence */
+  Future<void> insertCategoryMedium(String largeId, List<dynamic> categoryMediums) async {
+    final db = await database;
+    Batch batch = db.batch();
+    categoryMediums.forEach((val) {
+      CategoryMediumVO categoryMediumVO = CategoryMediumVO.fromJson(val);
+      batch.insert(TABLE_CATEGORY_MEDIUM, _categoryMediumToJson(categoryMediumVO, largeId));
+    });
+    batch.commit();
+  }
+
+  getCategories() async {
+    final db = await database;
+    var res = await db.query(TABLE_CATEGORY_LARGE);
+    return res.isNotEmpty ? res : null;
+  }
+
+  Map<String, dynamic> _categoryMediumToJson(CategoryMediumVO mediumVO, String largeId) {
+    var map = <String, dynamic> {
+      'id': mediumVO.id,
+      'title': mediumVO.title,
+      'sequence': mediumVO.sequence,
+      'premium': mediumVO.premium ? 1 : 0,
+      'large_id': largeId
+    };
+    return map;
+  }
+
+
+  /* ============================ FAQ ============================ */
+  Future<void> insertFaq(List<dynamic> faqs) async {
+    final db = await database;
+    Batch batch = db.batch();
+    faqs.forEach((val) {
+      FaqVO faqVO = FaqVO.fromJson(val);
+      batch.insert(TABLE_FAQ, faqVO.toJson());
+    });
+    batch.commit();
+  }
+
+  getFaqs() async {
+    final db = await database;
+    var res = await db.query(TABLE_FAQ);
+    return res.isNotEmpty ? res : null;
+  }
 }

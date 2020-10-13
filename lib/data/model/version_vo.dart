@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'version_vo.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class AppVersionVO {
   @JsonKey(name: 'idx')
   int idx;
@@ -20,7 +20,7 @@ class AppVersionVO {
   Map<String, dynamic> toJson() => _$AppVersionVOToJson(this);
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class CategoryVersionVO {
   @JsonKey(name: 'idx')
   int idx;
@@ -41,7 +41,7 @@ class CategoryVersionVO {
 
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class FaqVersionVO {
   @JsonKey(name: 'version')
   int version;
@@ -50,4 +50,21 @@ class FaqVersionVO {
 
   factory FaqVersionVO.fromJson(Map<String, dynamic> json) => _$FaqVersionVOFromJson(json);
   Map<String, dynamic> toJson() => _$FaqVersionVOToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true)
+class VersionVOwithDB {
+  @JsonKey(name: 'idx')
+  int idx;
+
+  @JsonKey(name: 'version_name')
+  String versionName;
+
+  @JsonKey(name: 'version')
+  int version;
+
+  VersionVOwithDB(this.idx, this.versionName, this.version);
+
+  factory VersionVOwithDB.fromJson(Map<String, dynamic> json) => _$VersionVOwithDBFromJson(json);
+  Map<String, dynamic> toJson() => _$VersionVOwithDBToJson(this);
 }

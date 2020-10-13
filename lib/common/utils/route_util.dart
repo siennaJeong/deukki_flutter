@@ -21,7 +21,7 @@ class GetRoutesName {
 }
 
 var routes = <String, WidgetBuilder> {
-  GetRoutesName.ROUTE_SPLASH: (BuildContext context) => ProviderWidget<VersionProviderModel>(Splash(), (BuildContext context) => VersionProviderModel.build()),
+  GetRoutesName.ROUTE_SPLASH: (BuildContext context) => Splash(),
   GetRoutesName.ROUTE_LOGIN: (BuildContext context) => Login(),
   GetRoutesName.ROUTE_MAIN: (BuildContext context) => MainCategory(),
   GetRoutesName.ROUTE_TERMS: (BuildContext context) => SignUpTerms(),

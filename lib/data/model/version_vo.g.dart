@@ -48,3 +48,18 @@ Map<String, dynamic> _$FaqVersionVOToJson(FaqVersionVO instance) =>
     <String, dynamic>{
       'version': instance.version,
     };
+
+VersionVOwithDB _$VersionVOwithDBFromJson(Map<String, dynamic> json) {
+  return VersionVOwithDB(
+    json['idx'] as int,
+    json['version_name'] as String,
+    json['version'] as int,
+  );
+}
+
+Map<String, dynamic> _$VersionVOwithDBToJson(VersionVOwithDB instance) =>
+    <String, dynamic>{
+      'idx': instance.idx,
+      'version_name': instance.versionName,
+      'version': instance.version,
+    };

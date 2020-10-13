@@ -1,5 +1,6 @@
 
 class HttpUrls {
+  static const String MESSAGE_SUCCESS = "Success";
   static const String SERVER_URL = "http://dev-api.deukki.com";
 
   static const String CHECK_ALL_VERSION = "$SERVER_URL/versions";
@@ -7,6 +8,8 @@ class HttpUrls {
   static const String CHECK_CATEGORY_VERSION = "$SERVER_URL/versions/categories";
   static const String CHECK_FAQ_VERSION = "$SERVER_URL/versions/faq";
   static const String CHECK_FORCE_UPDATE = "$SERVER_URL/versions/update";
+
+  static const String INIT_DATA = "$SERVER_URL/init-data";
 
   static const String SIGN_UP_CHECK = "$SERVER_URL/users/check-signup";
   static const String GET_USER_INFO = "$SERVER_URL/users/me";

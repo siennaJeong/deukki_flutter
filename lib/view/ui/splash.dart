@@ -13,13 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-/*
- * 1. 앱 버전 체크 -> 업데이트 다이얼로그
- * 2. 로그인 체크 -> 로그인 화면
- * 3. 카테고리 버전 체크
- * 4. 도움말 버전 체크
- */
+import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,11 +25,17 @@ void main() async {
         MultiProvider(
             providers: [
               Provider.value(value: SharedHelper()),
-              Provider.value(value: DBHelper()),
-              ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
-                create: (context) => AuthServiceAdapter(dbHelper: null, sharedHelper: null),
-                update: (BuildContext context, SharedHelper sharedHelper, DBHelper dbHelper, AuthServiceAdapter authServiceAdapter) =>
-                    AuthServiceAdapter(sharedHelper: sharedHelper, dbHelper: dbHelper),
+              Provider<Database>(
+                create: (context) => DBHelper().initDB(),
+                lazy: true,
+              ),
+              ChangeNotifierProxyProvider<SharedHelper, AuthServiceAdapter>(
+                create: (context) => AuthServiceAdapter(sharedHelper: null),
+                update: (BuildContext context, SharedHelper sharedHelper, AuthServiceAdapter authServiceAdapter) =>
+                    AuthServiceAdapter(sharedHelper: sharedHelper),
+              ),
+              ChangeNotifierProvider<VersionProviderModel>(
+                create: (_) => VersionProviderModel.build(),
               ),
             ],
             child: MaterialApp(
@@ -61,6 +61,7 @@ class _SplashState extends State<Splash> {
   @override
   void didChangeDependencies() {
     versionProviderModel = Provider.of<VersionProviderModel>(context, listen: false);
+    versionProviderModel.checkAllVersion();
     super.didChangeDependencies();
   }
 
@@ -69,8 +70,16 @@ class _SplashState extends State<Splash> {
     return Consumer<AuthServiceAdapter>(
       builder: (context, authServiceAdapter, child) {
         authServiceAdapter.userAuthState();
-        if(authServiceAdapter.isSignIn) {
-          return MainCategory();
+        if(authServiceAdapter.authJWT.isNotEmpty) {
+          versionProviderModel.checkForceUpdate(authServiceAdapter.authJWT).then((value) {
+            final checkResult = versionProviderModel.value.checkForceUpdate;
+            if(checkResult.result.asValue.value.result) {
+              return Container(width: 0.0, height: 0.0,);
+            }else {
+              return MainCategory();
+            }
+          });
+          return Container();
         }else {
           return ProviderWidget<UserProviderModel>(
             Login(), (BuildContext context) => UserProviderModel.build()

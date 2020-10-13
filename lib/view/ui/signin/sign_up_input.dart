@@ -372,7 +372,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> {
                                         context,
                                         Strings.sign_up_month,
                                         TextInputType.number,
-                                        TextInputAction.go,
+                                        TextInputAction.done,
                                         null,
                                         _monthController,
                                         _monthEditingComplete
@@ -448,7 +448,7 @@ Widget _inputField(
     controller: textEditingController,
     keyboardType: textInputType,
     maxLines: 1,
-    textInputAction: TextInputAction.done,
+    textInputAction: textInputAction,
     style: Theme.of(context).textTheme.bodyText2,
     focusNode: focusNode,
     decoration: InputDecoration(
