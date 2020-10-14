@@ -2,7 +2,7 @@ import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
-import 'package:deukki/provider/version/version_provider_model.dart';
+import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/app/app_theme.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
@@ -34,8 +34,8 @@ void main() async {
                 update: (BuildContext context, SharedHelper sharedHelper, AuthServiceAdapter authServiceAdapter) =>
                     AuthServiceAdapter(sharedHelper: sharedHelper),
               ),
-              ChangeNotifierProvider<VersionProviderModel>(
-                create: (_) => VersionProviderModel.build(),
+              ChangeNotifierProvider<ResourceProviderModel>(
+                create: (_) => ResourceProviderModel.build(),
               ),
             ],
             child: MaterialApp(
@@ -56,11 +56,11 @@ class Splash extends BaseWidget {
 }
 
 class _SplashState extends State<Splash> {
-  VersionProviderModel versionProviderModel;
+  ResourceProviderModel versionProviderModel;
 
   @override
   void didChangeDependencies() {
-    versionProviderModel = Provider.of<VersionProviderModel>(context, listen: false);
+    versionProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     versionProviderModel.checkAllVersion();
     super.didChangeDependencies();
   }

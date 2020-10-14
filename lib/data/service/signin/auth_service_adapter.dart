@@ -2,11 +2,9 @@ import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/common/utils/validator.dart';
 import 'package:deukki/data/model/user_vo.dart';
-import 'package:deukki/data/model/version_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/data/service/signin/sns_auth_service.dart';
-import 'package:deukki/provider/version/version_provider_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 

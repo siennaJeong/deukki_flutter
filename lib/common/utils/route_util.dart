@@ -1,5 +1,4 @@
 import 'package:deukki/provider/user/user_provider_model.dart';
-import 'package:deukki/provider/version/version_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';

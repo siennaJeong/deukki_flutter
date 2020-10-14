@@ -1,21 +1,33 @@
 
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/data/repository/category/category_repository.dart';
+import 'package:deukki/data/repository/category/category_rest_repository.dart';
 import 'package:deukki/data/repository/version/version_repository.dart';
 import 'package:deukki/data/repository/version/version_rest_repository.dart';
 import 'package:deukki/provider/provider_model.dart';
-import 'package:deukki/provider/version/version_provider_state.dart';
+import 'package:deukki/provider/resource/resource_provider_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:package_info/package_info.dart';
 
-class VersionProviderModel extends ProviderModel<VersionProviderState> {
-  VersionProviderModel({@required VersionRepository versionRepository, @required DBHelper dbHelper})
-      : assert(versionRepository != null),
+class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
+  ResourceProviderModel({
+    @required VersionRepository versionRepository,
+    @required CategoryRepository categoryRepository,
+    @required DBHelper dbHelper})
+      : assert(versionRepository != null && categoryRepository != null),
         _versionRepository = versionRepository,
+        _categoryRepository = categoryRepository,
         _dbHelper = dbHelper,
-        super(VersionProviderState());
+        super(ResourceProviderState());
 
-  factory VersionProviderModel.build() => VersionProviderModel(versionRepository: VersionRestRepository(), dbHelper: DBHelper());
+  factory ResourceProviderModel.build() =>
+      ResourceProviderModel(
+          versionRepository: VersionRestRepository(),
+          categoryRepository: CategoryRestRepository(),
+          dbHelper: DBHelper()
+      );
   final VersionRepository _versionRepository;
+  final CategoryRepository _categoryRepository;
   final DBHelper _dbHelper;
   PackageInfo _packageInfo;
 
@@ -50,19 +62,27 @@ class VersionProviderModel extends ProviderModel<VersionProviderState> {
         _initData();
         return;
       }else {
-        //  version 낮을때 카테고리 업데이트
         for(int i = 1 ; i < dbVersion.length ; i++) {
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION &&
-          dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
+          dbVersion.elementAt(i).values.elementAt(2) == versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
             print("large category update");
+           _dbHelper.deleteAllResource().then((value) {
+             _initData();
+           });
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_MEDIUM_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]) {
             print("medium category update");
+            _dbHelper.deleteAllResource().then((value) {
+              _initData();
+            });
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.FAQ_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultFaq[VersionRepository.VERSION]) {
             print("faq update");
+            _dbHelper.deleteAllResource().then((value) {
+              _initData();
+            });
           }
         }
       }
@@ -87,8 +107,26 @@ class VersionProviderModel extends ProviderModel<VersionProviderState> {
 
   Future<void> checkForceUpdate(String authJWT) async {
     _packageInfo = await PackageInfo.fromPlatform();
-    //final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
+    ///final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
     final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
     await value.checkForceUpdate.set(checkForceUpdate, notifyListeners);
+  }
+
+  Future<void> getCategoryLarge() async {
+    final getCategoryLarge = _categoryRepository.getCategoryLarge();
+    getCategoryLarge.then((value) {
+      _dbHelper.delete(TABLE_CATEGORY_LARGE).then((val) {
+        _dbHelper.insertCategoryLarge(value.asValue.value.toList());
+      });
+    });
+  }
+
+  Future<void> getCategoryMedium(String largeId) async {
+    final getCategoryMedium = _categoryRepository.getCategoryMedium();
+    getCategoryMedium.then((value) {
+      _dbHelper.delete(TABLE_CATEGORY_MEDIUM).then((val) {
+        _dbHelper.insertCategoryMedium(largeId, value.asValue.value.toList());
+      });
+    });
   }
 }

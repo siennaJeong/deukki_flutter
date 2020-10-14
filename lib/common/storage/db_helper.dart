@@ -132,6 +132,7 @@ class DBHelper {
   Future<void> insertCategoryLarge(List<dynamic> categoryLarges) async {
     final db = await database;
     Batch batch = db.batch();
+    batch.delete(TABLE_CATEGORY_LARGE);
     categoryLarges.forEach((val) {
       CategoryLargeVO categoryLargeVO = CategoryLargeVO.fromJson(val);
       batch.insert(TABLE_CATEGORY_LARGE, categoryLargeVO.toJson());
@@ -149,9 +150,9 @@ class DBHelper {
     batch.commit();
   }
 
-  getCategories() async {
+  getCategories(String tableName) async {
     final db = await database;
-    var res = await db.query(TABLE_CATEGORY_LARGE);
+    var res = await db.query(tableName);
     return res.isNotEmpty ? res : null;
   }
 
@@ -171,6 +172,7 @@ class DBHelper {
   Future<void> insertFaq(List<dynamic> faqs) async {
     final db = await database;
     Batch batch = db.batch();
+    batch.delete(TABLE_FAQ);
     faqs.forEach((val) {
       FaqVO faqVO = FaqVO.fromJson(val);
       batch.insert(TABLE_FAQ, faqVO.toJson());
@@ -182,5 +184,18 @@ class DBHelper {
     final db = await database;
     var res = await db.query(TABLE_FAQ);
     return res.isNotEmpty ? res : null;
+  }
+
+
+  Future<int> delete(String tableName) async {
+    final db = await database;
+    return await db.delete(tableName);
+  }
+
+  Future<int> deleteAllResource() async {
+    final db = await database;
+    await db.delete(TABLE_CATEGORY_LARGE);
+    await db.delete(TABLE_CATEGORY_MEDIUM);
+    return await db.delete(TABLE_FAQ);
   }
 }
