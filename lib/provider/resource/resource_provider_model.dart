@@ -64,7 +64,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       }else {
         for(int i = 1 ; i < dbVersion.length ; i++) {
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION &&
-          dbVersion.elementAt(i).values.elementAt(2) == versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
+          dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
             print("large category update");
            _dbHelper.deleteAllResource().then((value) {
              _initData();
@@ -107,8 +107,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
 
   Future<void> checkForceUpdate(String authJWT) async {
     _packageInfo = await PackageInfo.fromPlatform();
-    ///final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
-    final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
+    final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
+    ///final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
     await value.checkForceUpdate.set(checkForceUpdate, notifyListeners);
   }
 
