@@ -26,7 +26,7 @@ class _MainCategoryState extends State<MainCategory> {
       body: Center(
         child: Stack(
           children: <Widget>[
-
+            Text('main')
           ],
         )
       ),

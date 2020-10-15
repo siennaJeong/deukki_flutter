@@ -61,37 +61,24 @@ class Splash extends BaseWidget {
 }
 
 class _SplashState extends State<Splash> {
+  ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
-  ResourceProviderModel versionProviderModel;
-  Widget returnWidget;
-
-  @override
-  void initState() {
-    super.initState();
-    versionProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    authServiceAdapter.userAuthState();
-    versionProviderModel.checkAllVersion();
-  }
 
   @override
   void didChangeDependencies() {
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel.checkAllVersion();
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    authServiceAdapter.userAuthState();
     if(authServiceAdapter.authJWT.isNotEmpty) {
-      versionProviderModel.checkForceUpdate(authServiceAdapter.authJWT);
+      resourceProviderModel.checkForceUpdate(authServiceAdapter.authJWT);
     }
     super.didChangeDependencies();
   }
 
   Widget _widget() {
-    final updateResult = versionProviderModel.value.checkForceUpdate;
-    if(authServiceAdapter.authJWT.isEmpty) {
-      returnWidget = ProviderWidget<UserProviderModel>(
-          Login(), (BuildContext context) => UserProviderModel.build()
-      );
-    }else if(!updateResult.hasData) {
-      returnWidget = _splash();
-    }else {
-      returnWidget = Stack(
+    if(resourceProviderModel.requireInstall) {
+      return Stack(
         children: <Widget>[
           Positioned.fill(
             child: BackdropFilter(
@@ -106,61 +93,19 @@ class _SplashState extends State<Splash> {
           )
         ],
       );
+    }else {
+      if(authServiceAdapter.authJWT.isNotEmpty) {
+        return MainCategory();
+      }else {
+        return ProviderWidget<UserProviderModel>(
+            Login(), (BuildContext context) => UserProviderModel.build()
+        );
+      }
     }
-    return returnWidget;
   }
-
-  Widget _splash() => Scaffold(
-    backgroundColor: MainColors.yellow_100,
-    body: Center(
-      child: Container(
-        child: Text("!!"),
-      ),
-    )
-  );
 
   @override
   Widget build(BuildContext context) {
     return _widget();
-      /*Consumer<AuthServiceAdapter>(
-      builder: (context, authServiceAdapter, child) {
-        authServiceAdapter.userAuthState();
-        if(authServiceAdapter.authJWT.isNotEmpty) {
-          versionProviderModel.checkForceUpdate(authServiceAdapter.authJWT).then((value) {
-            final checkResult = versionProviderModel.value.checkForceUpdate;
-            if(checkResult.result.asValue.value.result) {
-              /*return Stack(
-                children: <Widget>[
-                  BaseDialog(content: Strings.dialog_title_update, btnOk: Strings.dialog_btn_update_ok, btnCancel: Strings.dialog_btn_update_cancel),
-                  Positioned.fill(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 5,
-                        sigmaY: 5
-                      ),
-                      child: Container(
-                        color: Colors.black.withOpacity(0),
-                      ),
-                    ),
-                  )
-                ],
-              );*/
-              returnWidget = BaseDialog(
-                  content: Strings.dialog_title_update,
-                  btnOk: Strings.dialog_btn_update_ok,
-                  btnCancel: Strings.dialog_btn_update_cancel
-              );
-            }else {
-              returnWidget = MainCategory();
-            }
-          });
-          return returnWidget;
-        }else {
-          return ProviderWidget<UserProviderModel>(
-            Login(), (BuildContext context) => UserProviderModel.build()
-          );
-        }
-      }
-    );*/
   }
 }

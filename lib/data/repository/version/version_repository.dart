@@ -10,6 +10,7 @@ abstract class VersionRepository {
   static const String CATEGORY_MEDIUM_VERSION = 'mediumVersion';
   static const String CATEGORY_SMALL_VERSION = 'smallVersion';
   static const String FAQ_VERSION = 'faqVersion';
+  static const String FORCE_UPDATE = 'requireInstall';
 
   Future<Result<CommonResultVO>> initData();
   Future<Result<CommonResultVO>> checkAllVersion();

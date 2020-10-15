@@ -31,6 +31,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   final DBHelper _dbHelper;
   PackageInfo _packageInfo;
 
+  bool requireInstall = false;
+
   Future<void> _initData() async {
     final initData = _versionRepository.initData();
     initData.then((value) {
@@ -107,9 +109,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
 
   Future<void> checkForceUpdate(String authJWT) async {
     _packageInfo = await PackageInfo.fromPlatform();
-    final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
-    ///final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
-    await value.checkForceUpdate.set(checkForceUpdate, notifyListeners);
+    ///final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
+    final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
+    checkForceUpdate.then((value) {
+      requireInstall = value.asValue.value.result;
+    });
   }
 
   Future<void> getCategoryLarge() async {
