@@ -62,7 +62,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
             versionResultFaq[VersionRepository.VERSION]
         );
         _initData();
-        return;
       }else {
         for(int i = 1 ; i < dbVersion.length ; i++) {
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION &&
@@ -109,8 +108,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
 
   Future<void> checkForceUpdate(String authJWT) async {
     _packageInfo = await PackageInfo.fromPlatform();
-    ///final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
-    final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
+    final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
+    ///final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
     checkForceUpdate.then((value) {
       requireInstall = value.asValue.value.result;
     });

@@ -9,6 +9,7 @@ import 'package:deukki/view/ui/welcom.dart';
 import 'package:flutter/material.dart';
 
 class GetRoutesName {
+  static const String FINISH = "finish";
   static const String ROUTE_SPLASH = "/splash";
   static const String ROUTE_LOGIN = "/login";
   static const String ROUTE_MAIN = "/main";
@@ -33,6 +34,9 @@ var routes = <String, WidgetBuilder> {
 class RouteNavigator {
   go(String routeName, BuildContext context) {
     switch(routeName) {
+      case GetRoutesName.FINISH:
+        Navigator.pop(context, true);
+        break;
       case GetRoutesName.ROUTE_LOGIN:
         Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_LOGIN, (Route<dynamic> route) => false);
         break;

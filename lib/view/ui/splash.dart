@@ -66,7 +66,7 @@ class _SplashState extends State<Splash> {
 
   @override
   void didChangeDependencies() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     resourceProviderModel.checkAllVersion();
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     authServiceAdapter.userAuthState();
