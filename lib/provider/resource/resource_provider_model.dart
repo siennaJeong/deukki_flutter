@@ -7,6 +7,7 @@ import 'package:deukki/data/repository/version/version_rest_repository.dart';
 import 'package:deukki/provider/provider_model.dart';
 import 'package:deukki/provider/resource/resource_provider_state.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info/package_info.dart';
 
 class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
@@ -107,9 +108,13 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   }
 
   Future<void> checkForceUpdate(String authJWT) async {
+    var checkForceUpdate;
     _packageInfo = await PackageInfo.fromPlatform();
-    final checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
-    ///final checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
+    if(kDebugMode) {
+      checkForceUpdate = _versionRepository.checkForceUpdate(3, authJWT);
+    }else {
+      checkForceUpdate = _versionRepository.checkForceUpdate(int.parse(_packageInfo.buildNumber), authJWT);
+    }
     checkForceUpdate.then((value) {
       requireInstall = value.asValue.value.result;
     });

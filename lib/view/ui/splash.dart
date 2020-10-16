@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/resource/database_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/app/app_theme.dart';
@@ -30,6 +31,7 @@ void main() async {
         MultiProvider(
             providers: [
               Provider.value(value: SharedHelper()),
+              Provider.value(value: DBHelper()),
               Provider<Database>(
                 create: (context) => DBHelper().initDB(),
                 lazy: true,
@@ -40,7 +42,12 @@ void main() async {
                     AuthServiceAdapter(sharedHelper: sharedHelper),
               ),
               ChangeNotifierProvider<ResourceProviderModel>(
-                create: (_) => ResourceProviderModel.build(),
+                create: (context) => ResourceProviderModel.build(),
+              ),
+              ChangeNotifierProxyProvider<DBHelper, DataProvider>(
+                create: (context) => DataProvider([], dbHelper: DBHelper()),
+                update: (context, dbHelper, previous) => DataProvider(previous.categoryLargeList, dbHelper: dbHelper),
+                lazy: true,
               ),
             ],
             child: MaterialApp(

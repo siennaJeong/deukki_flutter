@@ -3,6 +3,7 @@ import 'package:deukki/data/model/faq_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/model/version_vo.dart';
 import 'package:deukki/data/repository/version/version_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,7 +17,7 @@ const String TABLE_CATEGORY_MEDIUM = 'category_medium';
 const String TABLE_CATEGORY_SMALL = 'category_small';
 const String TABLE_FAQ = 'faq';
 
-class DBHelper {
+class DBHelper{
   DBHelper._();
   static final DBHelper _dbHelper = DBHelper._();
   factory DBHelper() => _dbHelper;
@@ -150,7 +151,7 @@ class DBHelper {
     batch.commit();
   }
 
-  getCategories(String tableName) async {
+  Future<List<Map<String, dynamic>>> getCategories(String tableName) async {
     final db = await database;
     var res = await db.query(tableName);
     return res.isNotEmpty ? res : null;
