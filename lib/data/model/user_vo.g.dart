@@ -13,6 +13,7 @@ UserVO _$UserVOFromJson(Map<String, dynamic> json) {
     json['name'] as String,
     json['birthDate'] as String,
     json['gender'] as String,
+    json['defaultVoice'] as String,
     json['enable'] as bool,
     json['premium'] as bool,
   );
@@ -24,6 +25,7 @@ Map<String, dynamic> _$UserVOToJson(UserVO instance) => <String, dynamic>{
       'name': instance.name,
       'birthDate': instance.birthDate,
       'gender': instance.gender,
+      'defaultVoice': instance.defaultVoice,
       'enable': instance.enable,
       'premium': instance.premium,
     };

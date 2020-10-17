@@ -1,5 +1,6 @@
 
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 import 'package:deukki/data/repository/category/category_rest_repository.dart';
 import 'package:deukki/data/repository/version/version_repository.dart';
@@ -136,5 +137,10 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         _dbHelper.insertCategoryMedium(largeId, value.asValue.value.toList());
       });
     });
+  }
+
+  Future<void> getCategorySmall(String mediumId) async {
+    final getCategorySmall = _categoryRepository.getCategorySmall(mediumId);
+    await value.getCategorySmall.set(getCategorySmall, notifyListeners);
   }
 }

@@ -20,21 +20,17 @@ class UserVO{
   @JsonKey(name: 'gender')
   String gender;
 
+  @JsonKey(name: 'defaultVoice')
+  String defaultVoice;
+
   @JsonKey(name: 'enable')
   bool enable;
 
   @JsonKey(name: 'premium')
   bool premium;
 
-  UserVO(
-      this.idx,
-      this.email,
-      this.name,
-      this.birthDate,
-      this.gender,
-      this.enable,
-      this.premium
-      );
+
+  UserVO(this.idx, this.email, this.name, this.birthDate, this.gender, this.defaultVoice, this.enable, this.premium);
 
   factory UserVO.fromJson(Map<String, dynamic> json) => _$UserVOFromJson(json);
 

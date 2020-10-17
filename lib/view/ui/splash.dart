@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
-import 'package:deukki/provider/resource/database_provider.dart';
+import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/app/app_theme.dart';
@@ -11,7 +11,7 @@ import 'package:deukki/view/ui/base/base_button_dialog.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
-import 'package:deukki/view/ui/main.dart';
+import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -31,7 +31,9 @@ void main() async {
         MultiProvider(
             providers: [
               Provider.value(value: SharedHelper()),
-              Provider.value(value: DBHelper()),
+              ChangeNotifierProvider<DBHelper>(
+                create: (context) => DBHelper(),
+              ),
               Provider<Database>(
                 create: (context) => DBHelper().initDB(),
                 lazy: true,
@@ -44,10 +46,9 @@ void main() async {
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
               ),
-              ChangeNotifierProxyProvider<DBHelper, DataProvider>(
-                create: (context) => DataProvider([], dbHelper: DBHelper()),
-                update: (context, dbHelper, previous) => DataProvider(previous.categoryLargeList, dbHelper: dbHelper),
-                lazy: true,
+              ChangeNotifierProxyProvider<DBHelper, CategoryProvider>(
+                create: (context) => CategoryProvider([], dbHelper: null),
+                update: (BuildContext context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
               ),
             ],
             child: MaterialApp(

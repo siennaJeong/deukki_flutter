@@ -32,8 +32,15 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<List<dynamic>>> getCategorySmall() async {
-
+  Future<Result<List<CategoryMediumVO>>> getCategorySmall(String mediumId) async {
+    final categorySmallListJson = await _httpClient.getRequest(HttpUrls.CATEGORY_SMALL + "?mediumId=$mediumId", HttpUrls.headers(""));
+    if(categorySmallListJson.isValue) {
+      return Result.value((categorySmallListJson.asValue.value['result'] as List)
+          .map((smallJson) => CategoryMediumVO.fromJson(smallJson as Map<String, dynamic>))
+          .toList());
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
   }
 
   @override

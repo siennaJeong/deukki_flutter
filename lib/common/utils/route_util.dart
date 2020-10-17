@@ -1,15 +1,14 @@
-import 'package:deukki/common/storage/db_helper.dart';
-import 'package:deukki/provider/resource/database_provider.dart';
+import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
+import 'package:deukki/view/ui/category/category_small.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';
 import 'package:deukki/view/ui/signin/sign_up_terms.dart';
-import 'package:deukki/view/ui/main.dart';
+import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/ui/splash.dart';
 import 'package:deukki/view/ui/welcom.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class GetRoutesName {
   static const String FINISH = "finish";
@@ -21,17 +20,19 @@ class GetRoutesName {
   static const String ROUTE_SIGNUP_INPUT_NAME = "/signUpInputName";
   static const String ROUTE_SIGNUP_INPUT_BIRTH = "/signUpInputBirth";
   static const String ROUTE_WELCOME = "/welcome";
+  static const String ROUTE_CATEGORY_SMALL = "/categorySmall";
 }
 
-var routes = <String, WidgetBuilder> {
-  GetRoutesName.ROUTE_SPLASH: (BuildContext context) => Splash(),
-  GetRoutesName.ROUTE_LOGIN: (BuildContext context) => Login(),
-  GetRoutesName.ROUTE_MAIN: (BuildContext context) => MainCategory(),
-  GetRoutesName.ROUTE_TERMS: (BuildContext context) => SignUpTerms(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (BuildContext context) => SignUpInputEmail(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (BuildContext context) => SignUpInputName(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (BuildContext context) => ProviderWidget<UserProviderModel>(SignUpInputBirth(), (BuildContext context) => UserProviderModel.build()),
-  GetRoutesName.ROUTE_WELCOME: (BuildContext context) => Welcome(),
+final routes = <String, WidgetBuilder> {
+  GetRoutesName.ROUTE_SPLASH: (context) => Splash(),
+  GetRoutesName.ROUTE_LOGIN: (context) => Login(),
+  GetRoutesName.ROUTE_MAIN: (context) => MainCategory(),
+  GetRoutesName.ROUTE_TERMS: (context) => SignUpTerms(),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (context) => SignUpInputEmail(),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (context) => SignUpInputName(),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => ProviderWidget<UserProviderModel>(SignUpInputBirth(), (context) => UserProviderModel.build()),
+  GetRoutesName.ROUTE_WELCOME: (context) => Welcome(),
+  GetRoutesName.ROUTE_CATEGORY_SMALL: (context) => CategorySmall(),
 };
 
 class RouteNavigator {
@@ -61,6 +62,9 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_MAIN:
         Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_MAIN, (Route<dynamic> route) => false);
+        break;
+      case GetRoutesName.ROUTE_CATEGORY_SMALL:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_CATEGORY_SMALL);
         break;
     }
   }

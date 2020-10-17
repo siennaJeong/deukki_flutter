@@ -1,7 +1,7 @@
-import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
-import 'package:deukki/data/service/signin/auth_service_adapter.dart';
-import 'package:deukki/provider/resource/database_provider.dart';
+import 'package:deukki/provider/resource/category_provider.dart';
+import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -16,87 +16,94 @@ class MainCategory extends BaseWidget {
 }
 
 class _MainCategoryState extends State<MainCategory> {
-  AuthServiceAdapter authServiceAdapter;
-  DataProvider dataProvider;
-  List<CategoryLargeVO> largeList;
-  int _selectIndex;
+  CategoryProvider categoryProvider;
+  ResourceProviderModel resourceProviderModel;
 
   @override
   void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    dataProvider = Provider.of<DataProvider>(context);
-    _selectIndex = -1;
+    categoryProvider = Provider.of<CategoryProvider>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
   Widget _categoryLargeList() {
 
-    if(dataProvider.categoryLargeList.length > 0) {
-      largeList = dataProvider.categoryLargeList;
-    }
+    void _onSelected(int index, String largeId) {
+      categoryProvider.onSelected(index);
+      categoryProvider.setMediumCategory(largeId).then((value) {
+        resourceProviderModel.getCategorySmall(categoryProvider.firstMediumId).then((value) {
+          final smallListResult = resourceProviderModel.value.getCategorySmall;
+          if(smallListResult.hasData) {
+            categoryProvider.setSmallCategory(smallListResult.result.asValue.value);
+          }
+          RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
+        });
 
-    _onSelected(int index) {
-      setState(() {
-        _selectIndex = index;
       });
     }
 
-    return ListView.builder(
-      shrinkWrap: true,
-      scrollDirection: Axis.horizontal,
-      itemCount: dataProvider.categoryLargeList.length,
-      itemBuilder: (BuildContext context, index) {
-        CategoryLargeVO largeVO = dataProvider.categoryLargeList[index];
-        String subString;
-        if(largeVO.title.length > 2) {
-          subString = largeVO.title.substring(0, largeVO.title.length - 3);
-          subString = subString.replaceAll(" ", "\n");
-        }else {
-          subString = largeVO.title;
-        }
+    return Selector<CategoryProvider, List<CategoryLargeVO>>(
+      selector: (context, categoryProvider) => categoryProvider.categoryLargeList,
+      builder: (context, largeList, child) {
+        return ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: largeList.length,
+          itemBuilder: (BuildContext context, index) {
+            CategoryLargeVO largeVO = largeList[index];
+            String subString;
+            if(largeVO.title.length > 2) {
+              subString = largeVO.title.substring(0, largeVO.title.length - 3);
+              subString = subString.replaceAll(" ", "\n");
+            }else {
+              subString = largeVO.title;
+            }
 
-        return GestureDetector(
-          child: Card(
-            color: _selectIndex != null && _selectIndex == index ? Colors.white : MainColors.randomColor[index],
-            margin: EdgeInsets.only(left: 8, right: 8),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-              side: BorderSide(
-                color: MainColors.randomColor[index],
-                width: 2.5,
-              ),
-            ),
-            elevation: 0,
-            child: Container(
-              width: 133,
-              child: Center(
-                child: Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: [
-                    Image.asset(_selectIndex != null && _selectIndex == index ? AppImages.randomImageColor[index] : AppImages.randomImage[index]),
-                    Text(
-                      subString,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontFamily: "TmoneyRound",
-                        fontWeight: FontWeight.w700,
-                        color: _selectIndex != null && _selectIndex == index ? MainColors.randomColor[index] : Colors.white,
-                      ),
+            return GestureDetector(
+              child: Card(
+                color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? Colors.white : MainColors.randomColor[index],
+                margin: EdgeInsets.only(left: 8, right: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                  side: BorderSide(
+                    color: MainColors.randomColor[index],
+                    width: 2.5,
+                  ),
+                ),
+                elevation: 0,
+                child: Container(
+                  width: 133,
+                  child: Center(
+                    child: Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        Image.asset(categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? AppImages.randomImageColor[index] : AppImages.randomImage[index]),
+                        Text(
+                          subString,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontFamily: "TmoneyRound",
+                            fontWeight: FontWeight.w700,
+                            color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? MainColors.randomColor[index] : Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-          onTap: () => _onSelected(index),
+              onTap: () => _onSelected(index, largeVO.id),    //  ListView Item Click
+            );
+          },
         );
-      },
+      }
     );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: MainColors.yellow_20,
       body: Center(

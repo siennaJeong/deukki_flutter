@@ -17,7 +17,7 @@ const String TABLE_CATEGORY_MEDIUM = 'category_medium';
 const String TABLE_CATEGORY_SMALL = 'category_small';
 const String TABLE_FAQ = 'faq';
 
-class DBHelper{
+class DBHelper with ChangeNotifier{
   DBHelper._();
   static final DBHelper _dbHelper = DBHelper._();
   factory DBHelper() => _dbHelper;
@@ -39,7 +39,7 @@ class DBHelper{
             "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, enable INTEGER, premium INTEGER)"
+            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, voice TEXT, enable INTEGER, premium INTEGER)"
           );
           db.execute(
             "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
@@ -95,7 +95,7 @@ class DBHelper{
   getUser() async {
     final db = await database;
     var res = await db.query(TABLE_USER, where: 'idx = 0');
-    return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', false, false);
+    return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', '', false, false);
   }
 
   updateUser(UserVO userVO) async {
@@ -110,6 +110,7 @@ class DBHelper{
       'name': userVO.name,
       'birth_date': userVO.birthDate,
       'gender': userVO.gender,
+      'voice': userVO.defaultVoice,
       'enable': userVO.enable ? 1 : 0,
       'premium': userVO.premium ? 1 : 0
     };
@@ -123,6 +124,7 @@ class DBHelper{
       map['name'] as String,
       map['birth_date'] as String,
       map['gender'] as String,
+      map['voice'] as String,
       map['enable'] == 1 ? true : false,
       map['premium'] == 1 ? true : false
     );
@@ -157,6 +159,12 @@ class DBHelper{
     return res.isNotEmpty ? res : null;
   }
 
+  Future<List<Map<String, dynamic>>> getCategoryMedium(String largeId) async {
+    final db = await database;
+    var res = await db.query(TABLE_CATEGORY_MEDIUM, where: 'large_id = ?', whereArgs: [largeId]);
+    return res.isNotEmpty ? res : null;
+  }
+
   Map<String, dynamic> _categoryMediumToJson(CategoryMediumVO mediumVO, String largeId) {
     var map = <String, dynamic> {
       'id': mediumVO.id,
@@ -166,6 +174,15 @@ class DBHelper{
       'large_id': largeId
     };
     return map;
+  }
+
+  CategoryMediumVO mediumFromJson(Map<String, dynamic> map) {
+    return CategoryMediumVO(
+      map['id'] as String,
+      map['title'] as String,
+      map['sequence'] as int,
+      map['premium'] == 1 ? true : false
+    );
   }
 
 
@@ -198,5 +215,9 @@ class DBHelper{
     await db.delete(TABLE_CATEGORY_LARGE);
     await db.delete(TABLE_CATEGORY_MEDIUM);
     return await db.delete(TABLE_FAQ);
+  }
+
+  void dispose() {
+
   }
 }
