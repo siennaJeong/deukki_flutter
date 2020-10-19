@@ -5,6 +5,7 @@ import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
+import 'package:deukki/view/ui/category/stage_dialog.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -23,6 +24,8 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
   AnimationController _animationController;
+  final random = Random();
+  final List<Color> randomColor = [];
 
   @override
   void initState() {
@@ -36,6 +39,11 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+
+    categoryProvider.sentenceList.forEach((element) {
+      randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
+    });
+
     super.didChangeDependencies();
   }
 
@@ -52,7 +60,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _listWidget() {
-    final random = Random();
     List<num> mainAxis = [];
     categoryProvider.sentenceList.forEach((element) {
       String temp = element.content.replaceAll(" ", "");
@@ -67,13 +74,12 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       mainAxis.add(num);
     });
     return Selector<CategoryProvider, List<SentenceVO>>(
-      selector: (context, categoryProvider) => categoryProvider.sentenceList,
+      selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
         return Expanded(
           child: Container(
             margin: EdgeInsets.only(left: 40, bottom: 25),
             child: StaggeredGridView.countBuilder(
-                primary: false,
                 shrinkWrap: true,
                 crossAxisCount: 2,
                 crossAxisSpacing: 8.0,
@@ -82,7 +88,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 itemCount: sentences.length,
                 itemBuilder: (BuildContext context, index) {
                   return _listItemWidget(
-                    random.nextInt(MainColors.randomColorSmall.length),
+                    randomColor[index],
                     sentences[index]);
                 },
                 staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
@@ -93,11 +99,11 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     );
   }
 
-  Widget _listItemWidget(int random, SentenceVO sentenceVO) {
+  Widget _listItemWidget(Color colors, SentenceVO sentenceVO) {
     return GestureDetector(
       child: Card(
         elevation: 0,
-        color: MainColors.randomColorSmall[random],
+        color: colors,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Center(
           child: Stack(
@@ -121,7 +127,20 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           ),
         ),
       ),
-      onTap: () {},   //  ListView Item Click
+      onTap: () => {                //  ListView Item Click
+        resourceProviderModel.getSentenceStage(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+          final stageResult = resourceProviderModel.value.getSentenceStage;
+          if(stageResult.hasData) {
+            categoryProvider.setStage(stageResult.result.asValue.value);
+          }
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return StageDialog(title: sentenceVO.content,);
+              }
+          );
+        }),
+      },
     );
   }
 

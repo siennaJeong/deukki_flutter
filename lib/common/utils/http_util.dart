@@ -22,7 +22,10 @@ class HttpUrls {
   static const String CATEGORY_LARGE = "$CATEGORY/large";
   static const String CATEGORY_MEDIUM = "$CATEGORY/medium";
   static const String CATEGORY_SMALL = "$CATEGORY/small";
+
   static const String SENTENCE = "$SERVER_URL/sentences";
+  static const String SENTENCE_STAGE = "/stages";
+  static const String SENTENCE_LEARN = "/learning";
 
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-Type': 'application/json',

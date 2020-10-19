@@ -7,6 +7,7 @@ import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
+import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 
 class CategoryRestRepository implements CategoryRepository {
@@ -50,6 +51,18 @@ class CategoryRestRepository implements CategoryRepository {
     if(sentenceListJson.isValue) {
       return Result.value((sentenceListJson.asValue.value['result'] as List)
           .map((json) => SentenceVO.fromJson(json as Map<String, dynamic>))
+          .toList());
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<List<StageVO>>> getSentenceStage(String authJWT, String sentenceId) async {
+    final stageListJson = await _httpClient.getRequest(HttpUrls.SENTENCE + "/$sentenceId" + HttpUrls.SENTENCE_STAGE, HttpUrls.headers(authJWT));
+    if(stageListJson.isValue) {
+      return Result.value((stageListJson.asValue.value['result'] as List)
+          .map((json) => StageVO.fromJson(json as Map<String, dynamic>))
           .toList());
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));

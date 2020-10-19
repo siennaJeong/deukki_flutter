@@ -148,4 +148,9 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     final getSentence = _categoryRepository.getSentence(authJWT, smallId);
     await value.getSentence.set(getSentence, notifyListeners);
   }
+
+  Future<void> getSentenceStage(String authJWT, String sentenceId) async {
+    final getSentenceStage = _categoryRepository.getSentenceStage(authJWT, sentenceId);
+    await value.getSentenceStage.set(getSentenceStage, notifyListeners);
+  }
 }

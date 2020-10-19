@@ -46,6 +46,8 @@ class Strings {
 
   static const String category_new = 'new';
 
+  static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
+
   static const String mypage_report = '리포트';
   static const String mypage_report_title = '님, 바름리포트는 매주 월요일에 발행됩니다.';
   static const String mypage_report_script = '바름리포트로';

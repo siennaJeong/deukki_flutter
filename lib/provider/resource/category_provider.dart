@@ -2,6 +2,7 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
+import 'package:deukki/data/model/stage_vo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryLargeVO> _categoryLargeList = [];
   List<CategoryMediumVO> _categoryMediumList = [];
   List<SentenceVO> _sentenceList = [];
+  List<StageVO> _stageList = [];
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectIndex = -1;
@@ -25,6 +27,7 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryMediumVO> get categoryMediumList => [..._categoryMediumList];
   List<CategoryLargeVO> get categoryLargeList => [..._categoryLargeList];
   List<SentenceVO> get sentenceList => [..._sentenceList];
+  List<StageVO> get stageList => [..._stageList];
 
   Future<void> fetchAndSetLargeCategory() async {
     if(dbHelper.database != null) {
@@ -48,6 +51,11 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setStage(list) async {
+    this._stageList = list;
+    notifyListeners();
+  }
+
   void onSelected(int index) {
     this.selectIndex = index;
     notifyListeners();
@@ -59,8 +67,6 @@ class CategoryProvider with ChangeNotifier {
 
   setLargeId(String largeId) => _largeId = largeId;
   setMediumId(String mediumId) => _mediumId = mediumId;
-  setMediumTitle(String mediumTitle) {
-    _mediumTitle = mediumTitle;
-    notifyListeners();
-  }
+  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
+
 }
