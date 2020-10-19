@@ -1,30 +1,43 @@
 
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedHelper {
-  static Future<SharedPreferences> get _getSharedInstance async => _sharedPreferences ??= await SharedPreferences.getInstance();
+class SharedHelper with ChangeNotifier{
+  SharedHelper._();
+  static final SharedHelper _sharedHelper = SharedHelper._();
+  factory SharedHelper() => _sharedHelper;
+
   static SharedPreferences _sharedPreferences;
 
-  SharedHelper() { initShared(); }
+  Future<SharedPreferences> get sharedPreference async {
+    if(_sharedPreferences != null) return _sharedPreferences;
+    _sharedPreferences = await initShared();
+    return _sharedPreferences;
+  }
 
-  static Future<SharedPreferences> initShared() async {
-    _sharedPreferences = await _getSharedInstance;
+  initShared() async {
+    _sharedPreferences = await SharedPreferences.getInstance();
+    notifyListeners();
     return _sharedPreferences;
   }
 
   setIntSharedPref(String key, int value) async {
-    await _sharedPreferences.setInt(key, value);
+    final shared = await sharedPreference;
+    await shared.setInt(key, value);
   }
 
-  int getIntSharedPref(String key, [int defValue]) {
-    return _sharedPreferences.getInt(key) ?? defValue ?? 0;
+  getIntSharedPref(String key, [int defValue]) async {
+    final shared = await sharedPreference;
+    return shared.getInt(key) ?? defValue ?? 0;
   }
 
   setStringSharedPref(String key, String value) async {
-    await _sharedPreferences.setString(key, value);
+    final shared = await sharedPreference;
+    await shared.setString(key, value);
   }
 
-  String getStringSharedPref(String key, [String defValue]) {
-    return _sharedPreferences.getString(key) ?? defValue ?? "";
+  getStringSharedPref(String key, [String defValue]) async {
+    final shared = await sharedPreference;
+    return shared.getString(key) ?? defValue ?? "";
   }
 }

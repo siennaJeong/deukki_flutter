@@ -44,6 +44,8 @@ class Strings {
   static const String main_btn_my = 'MY';
   static const String main_script = '올바른 발음부터 시작하는 한국어 듣기 완성';
 
+  static const String category_new = 'new';
+
   static const String mypage_report = '리포트';
   static const String mypage_report_title = '님, 바름리포트는 매주 월요일에 발행됩니다.';
   static const String mypage_report_script = '바름리포트로';

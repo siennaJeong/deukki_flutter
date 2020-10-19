@@ -9,6 +9,7 @@ import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/app/app_theme.dart';
 import 'package:deukki/view/ui/base/base_button_dialog.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
+import 'package:deukki/view/ui/base/m_scroll_behavior.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/category/main.dart';
@@ -19,6 +20,7 @@ import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 void main() async {
@@ -30,31 +32,37 @@ void main() async {
     runApp(
         MultiProvider(
             providers: [
-              Provider.value(value: SharedHelper()),
               ChangeNotifierProvider<DBHelper>(
                 create: (context) => DBHelper(),
-              ),
-              Provider<Database>(
-                create: (context) => DBHelper().initDB(),
                 lazy: true,
               ),
-              ChangeNotifierProxyProvider<SharedHelper, AuthServiceAdapter>(
-                create: (context) => AuthServiceAdapter(sharedHelper: null),
-                update: (BuildContext context, SharedHelper sharedHelper, AuthServiceAdapter authServiceAdapter) =>
-                    AuthServiceAdapter(sharedHelper: sharedHelper),
+              ChangeNotifierProvider<SharedHelper>(
+                create: (context) => SharedHelper(),
+                lazy: true,
               ),
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
               ),
+              ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
+                create: (context) => AuthServiceAdapter("", sharedHelper: null, dbHelper: null),
+                update: (context, sharedHelper, dbHelper, previous) =>
+                    AuthServiceAdapter(previous.authJWT, sharedHelper: sharedHelper, dbHelper: dbHelper),
+              ),
               ChangeNotifierProxyProvider<DBHelper, CategoryProvider>(
                 create: (context) => CategoryProvider([], dbHelper: null),
-                update: (BuildContext context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
+                update: (context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
               ),
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
               routes: routes,
               theme: AppThemeDataFactory.prepareThemeData(),
+              builder: (context, child) {
+                return ScrollConfiguration(
+                  behavior: MyScrollBehavior(),
+                  child: child,
+                );
+              },
               home: Splash(),
             )
         )
@@ -76,8 +84,7 @@ class _SplashState extends State<Splash> {
   void didChangeDependencies() {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     resourceProviderModel.checkAllVersion();
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    authServiceAdapter.userAuthState();
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
     if(authServiceAdapter.authJWT.isNotEmpty) {
       resourceProviderModel.checkForceUpdate(authServiceAdapter.authJWT);
     }

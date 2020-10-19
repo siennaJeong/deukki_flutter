@@ -6,6 +6,7 @@ import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
+import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 
 class CategoryRestRepository implements CategoryRepository {
@@ -36,7 +37,7 @@ class CategoryRestRepository implements CategoryRepository {
     final categorySmallListJson = await _httpClient.getRequest(HttpUrls.CATEGORY_SMALL + "?mediumId=$mediumId", HttpUrls.headers(""));
     if(categorySmallListJson.isValue) {
       return Result.value((categorySmallListJson.asValue.value['result'] as List)
-          .map((smallJson) => CategoryMediumVO.fromJson(smallJson as Map<String, dynamic>))
+          .map((json) => CategoryMediumVO.fromJson(json as Map<String, dynamic>))
           .toList());
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
@@ -44,8 +45,15 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> getSentence() async {
-
+  Future<Result<List<SentenceVO>>> getSentence(String authJWT, String mediumId) async {
+    final sentenceListJson = await _httpClient.getRequest(HttpUrls.SENTENCE + "?mediumId=$mediumId", HttpUrls.headers(authJWT));
+    if(sentenceListJson.isValue) {
+      return Result.value((sentenceListJson.asValue.value['result'] as List)
+          .map((json) => SentenceVO.fromJson(json as Map<String, dynamic>))
+          .toList());
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
   }
 
 }

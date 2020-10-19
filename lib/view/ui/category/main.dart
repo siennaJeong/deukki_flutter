@@ -1,5 +1,6 @@
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
@@ -16,25 +17,26 @@ class MainCategory extends BaseWidget {
 }
 
 class _MainCategoryState extends State<MainCategory> {
+  AuthServiceAdapter authServiceAdapter;
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
 
   @override
   void didChangeDependencies() {
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
   Widget _categoryLargeList() {
-
     void _onSelected(int index, String largeId) {
       categoryProvider.onSelected(index);
       categoryProvider.setMediumCategory(largeId).then((value) {
-        resourceProviderModel.getCategorySmall(categoryProvider.firstMediumId).then((value) {
-          final smallListResult = resourceProviderModel.value.getCategorySmall;
-          if(smallListResult.hasData) {
-            categoryProvider.setSmallCategory(smallListResult.result.asValue.value);
+        resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getMediumId()).then((value) {
+          final sentenceResult = resourceProviderModel.value.getSentence;
+          if(sentenceResult.hasData) {
+            categoryProvider.setSentence(sentenceResult.result.asValue.value);
           }
           RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
         });
@@ -61,12 +63,12 @@ class _MainCategoryState extends State<MainCategory> {
 
             return GestureDetector(
               child: Card(
-                color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? Colors.white : MainColors.randomColor[index],
+                color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? Colors.white : MainColors.randomColorMain[index],
                 margin: EdgeInsets.only(left: 8, right: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
                   side: BorderSide(
-                    color: MainColors.randomColor[index],
+                    color: MainColors.randomColorMain[index],
                     width: 2.5,
                   ),
                 ),
@@ -77,7 +79,10 @@ class _MainCategoryState extends State<MainCategory> {
                     child: Stack(
                       alignment: AlignmentDirectional.center,
                       children: [
-                        Image.asset(categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? AppImages.randomImageColor[index] : AppImages.randomImage[index]),
+                        Image.asset(
+                            categoryProvider.selectIndex != null && categoryProvider.selectIndex == index
+                                ? AppImages.randomImageColor[index]
+                                : AppImages.randomImage[index]),
                         Text(
                           subString,
                           textAlign: TextAlign.center,
@@ -85,7 +90,9 @@ class _MainCategoryState extends State<MainCategory> {
                             fontSize: 24,
                             fontFamily: "TmoneyRound",
                             fontWeight: FontWeight.w700,
-                            color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? MainColors.randomColor[index] : Colors.white,
+                            color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index
+                                ? MainColors.randomColorMain[index]
+                                : Colors.white,
                           ),
                         ),
                       ],

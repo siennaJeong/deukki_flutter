@@ -1,17 +1,19 @@
 
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CategoryProvider with ChangeNotifier {
   final DBHelper dbHelper;
   int selectIndex;
-  String largeId;
-  String firstMediumId;
+  String _largeId;
+  String _mediumId;
+  String _mediumTitle;
   List<CategoryLargeVO> _categoryLargeList = [];
   List<CategoryMediumVO> _categoryMediumList = [];
-  List<CategoryMediumVO> _categorySmallList = [];
+  List<SentenceVO> _sentenceList = [];
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectIndex = -1;
@@ -22,7 +24,7 @@ class CategoryProvider with ChangeNotifier {
 
   List<CategoryMediumVO> get categoryMediumList => [..._categoryMediumList];
   List<CategoryLargeVO> get categoryLargeList => [..._categoryLargeList];
-  List<CategoryMediumVO> get categorySmallList => [..._categorySmallList];
+  List<SentenceVO> get sentenceList => [..._sentenceList];
 
   Future<void> fetchAndSetLargeCategory() async {
     if(dbHelper.database != null) {
@@ -33,15 +35,16 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> setMediumCategory(String largeId) async {
-    this.largeId = largeId;
+    setLargeId(largeId);
     final mediumList = await dbHelper.getCategoryMedium(largeId);
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
-    firstMediumId = _categoryMediumList[0].id;
+    setMediumId(_categoryMediumList[0].id);
+    setMediumTitle(_categoryMediumList[0].title);
     notifyListeners();
   }
 
-  Future<void> setSmallCategory(list) async {
-    this._categorySmallList = list;
+  Future<void> setSentence(list) async {
+    this._sentenceList = list;
     notifyListeners();
   }
 
@@ -50,4 +53,11 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  getLargeId() => _largeId;
+  getMediumId() => _mediumId;
+  getMediumTitle() => _mediumTitle;
+
+  setLargeId(String largeId) => _largeId = largeId;
+  setMediumId(String mediumId) => _mediumId = mediumId;
+  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
 }

@@ -20,4 +20,11 @@ class AppImages {
 
   static List<String> randomImage = [categoryLargeBasic, categoryLargePractice, categoryLargeBusiness, categoryLargeWord];
   static List<String> randomImageColor = [categoryLargeBasicPurple, categoryLargePracticeBlue, categoryLargeBusinessGreen, categoryLargeWordYellow];
+
+  static String backBtn = "$_basePath/back_btn.png";
+  static String expandMore = "$_basePath/expand_more.png";
+
+  static String emptyStar = "$_basePath/icon_empty_star.png";
+  static String halfStar = "$_basePath/icon_half_star.png";
+  static String fullStar = "$_basePath/icon_full_star.png";
 }

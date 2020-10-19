@@ -33,6 +33,9 @@ class MainColors {
   static const Color grey_70 = const Color.fromRGBO(197,197,197,1);
   static const Color grey_border = const Color.fromRGBO(207,207,207,1);
   static const Color grey_google = const Color.fromRGBO(240,240,240,1);
+  
+  static const Color black_50 = const Color.fromRGBO(0, 0, 0, 0.5);
 
-  static List<Color> randomColor = [purple_80, blue_80, green_80, yellow_100];
+  static List<Color> randomColorMain = [purple_80, blue_80, green_80, yellow_100];
+  static List<Color> randomColorSmall = [yellow_60, blue_60, green_60, purple_60];
 }

@@ -1,4 +1,5 @@
-import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/category/category_small.dart';
@@ -9,6 +10,7 @@ import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/ui/splash.dart';
 import 'package:deukki/view/ui/welcom.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GetRoutesName {
   static const String FINISH = "finish";

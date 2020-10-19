@@ -9,33 +9,41 @@ import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum AuthServiceType { Kakao, Google, Facebook, Apple }
 
-class AuthServiceAdapter extends ChangeNotifier implements AuthService {
+class AuthServiceAdapter extends ChangeNotifier implements AuthService{
+  final SharedHelper sharedHelper;
+  final DBHelper dbHelper;
   SNSAuthService _snsAuthService;
   KakaoAuthService _kakaoAuthService;
 
-  SharedHelper _sharedHelper;
-  DBHelper _dbHelper;
-
   bool marketingAgree = false;
   UserVO _userVO;
-  String socialId, socialMethod, marketingMethod, authJWT = "";
+  String _authJWT;
+  String socialId, socialMethod, marketingMethod;
 
-  AuthServiceAdapter({@required SharedHelper sharedHelper}) : _sharedHelper = sharedHelper;
+  AuthServiceAdapter(this._authJWT, {this.sharedHelper, this.dbHelper}) {
+    if(sharedHelper != null) {
+      userAuthState();
+    }
+  }
 
   void _init() async {
-    _dbHelper = DBHelper();
     _snsAuthService = SNSAuthService();
     _kakaoAuthService = KakaoAuthService();
-    _userVO = await _dbHelper.getUser();
+    _userVO = await dbHelper.getUser();
   }
 
   @override
   Future<void> userAuthState() async {
     _init();
-    authJWT = _sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "");
+    if(sharedHelper.sharedPreference != null) {
+      print("shared non null");
+      authJWT = await sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "") as String;
+      notifyListeners();
+    }
   }
 
   @override
@@ -93,18 +101,18 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
     //_sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
     //Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN);
 
-    _sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
 
     return true;
   }
 
   signInDone(String authJWT) async {
-    _sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
   }
 
   signUpDone(String authJWT) async {
-    _sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
-    _dbHelper.insertUser(userVO);
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    dbHelper.insertUser(userVO);
   }
 
   UserVO get userVO => _userVO;
@@ -128,6 +136,13 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService {
   @override
   void dispose() {
 
+  }
+
+  String get authJWT => _authJWT;
+
+  set authJWT(String value) {
+    _authJWT = value;
+    notifyListeners();
   }
 
 }
