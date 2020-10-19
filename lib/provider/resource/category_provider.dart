@@ -59,5 +59,8 @@ class CategoryProvider with ChangeNotifier {
 
   setLargeId(String largeId) => _largeId = largeId;
   setMediumId(String mediumId) => _mediumId = mediumId;
-  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
+  setMediumTitle(String mediumTitle) {
+    _mediumTitle = mediumTitle;
+    notifyListeners();
+  }
 }

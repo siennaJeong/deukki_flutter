@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:deukki/data/model/sentence_vo.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -19,7 +21,7 @@ class CategorySmall extends StatefulWidget {
 class _CategorySmallState extends State<CategorySmall> with SingleTickerProviderStateMixin {
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
-
+  AuthServiceAdapter authServiceAdapter;
   AnimationController _animationController;
 
   @override
@@ -33,6 +35,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -48,7 +51,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     });
   }
 
-  Widget _sentenceList() {
+  Widget _listWidget() {
     final random = Random();
     List<num> mainAxis = [];
     categoryProvider.sentenceList.forEach((element) {
@@ -78,7 +81,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 scrollDirection: Axis.horizontal,
                 itemCount: sentences.length,
                 itemBuilder: (BuildContext context, index) {
-                  return _listItem(
+                  return _listItemWidget(
                     random.nextInt(MainColors.randomColorSmall.length),
                     sentences[index].content,
                     sentences[index].avgScore,
@@ -94,7 +97,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     );
   }
 
-  Widget _listItem(int random, String content, double avgScore, int premium, int isNew) {
+  Widget _listItemWidget(int random, String content, double avgScore, int premium, int isNew) {
     return GestureDetector(
       child: Card(
         elevation: 0,
@@ -115,9 +118,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   ),
                 ),
               ),
-              Positioned(child: _premiumTag(premium)),
-              Positioned(left: 4, bottom: 4, child: _newTag(isNew)),
-              Positioned(right: 0, top: 0, child: _scoreTag(avgScore)),
+              Positioned(child: _premiumTagWidget(premium)),
+              Positioned(left: 4, bottom: 4, child: _newTagWidget(isNew)),
+              Positioned(right: 0, top: 0, child: _scoreTagWidget(avgScore)),
             ],
           ),
         ),
@@ -126,7 +129,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     );
   }
 
-  Widget _newTag(int isNew) {
+  Widget _newTagWidget(int isNew) {
     if(isNew == 1) {
       return Container(
         margin: EdgeInsets.only(left: 2, bottom: 4),
@@ -153,7 +156,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     }
   }
 
-  Widget _premiumTag(int premium) {
+  Widget _premiumTagWidget(int premium) {
     if(premium == 1) {
       return Container(
         width: double.infinity,
@@ -170,7 +173,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     }
   }
 
-  Widget _scoreTag(double avgScore) {
+  Widget _scoreTagWidget(double avgScore) {
     String firstStar, secondStar, thirdStar;
     if(avgScore != null) {
       if(avgScore > 0 && avgScore < 1) {
@@ -252,12 +255,31 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                       ),
                     ],
                   ),
-                  onTap: () => {  },   //  More List Button
+                  onTap: () => {                      //  More List Button
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context) {
+                        return MediumCategoryListDialog(
+                          title: categoryProvider.getMediumTitle(),
+                          list: categoryProvider.categoryMediumList,
+                        );
+                      }
+                    ).then((value) => {
+                      resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
+                        categoryProvider.setMediumTitle(value[0]);
+                        final sentenceResult = resourceProviderModel.value.getSentence;
+                        if(sentenceResult.hasData) {
+                          categoryProvider.setSentence(sentenceResult.result.asValue.value);
+                        }
+                      })
+                    }),
+                  },
                 ),
               ],
             ),
             SizedBox(height: 16),
-            _sentenceList(),
+            _listWidget(),
           ],
         ),
       ),
