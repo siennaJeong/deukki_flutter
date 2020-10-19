@@ -39,9 +39,8 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
           itemCount: list.length,
           itemBuilder: (BuildContext context, index) {
             return _listItemWidget(
-                list[index].title,
                 randomProgress[random.nextInt(randomProgress.length)],
-                list[index].id,
+                list[index],
                 index,
                 list.length
             );
@@ -51,7 +50,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
     );
   }
 
-  Widget _listItemWidget(String title, double progress, String id, int index, int length) {
+  Widget _listItemWidget(double progress, CategoryMediumVO mediumVO, int index, int length) {
     return GestureDetector(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -61,7 +60,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             width: double.infinity,
             margin: EdgeInsets.only(bottom: 10),
             child: Text(
-              title,
+              mediumVO.title,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: MainColors.grey_100,
@@ -91,7 +90,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
           _divider(index, length),
         ],
       ),
-      onTap: () => { Navigator.of(context).pop([title, id]) },    //  List Item Button
+      onTap: () => { Navigator.of(context).pop([mediumVO.title, mediumVO.id]) },    //  List Item Button
     );
   }
 

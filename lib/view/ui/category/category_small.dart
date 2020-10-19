@@ -83,11 +83,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 itemBuilder: (BuildContext context, index) {
                   return _listItemWidget(
                     random.nextInt(MainColors.randomColorSmall.length),
-                    sentences[index].content,
-                    sentences[index].avgScore,
-                    sentences[index].premium,
-                    sentences[index].isNew
-                  );
+                    sentences[index]);
                 },
                 staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
             ),
@@ -97,7 +93,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     );
   }
 
-  Widget _listItemWidget(int random, String content, double avgScore, int premium, int isNew) {
+  Widget _listItemWidget(int random, SentenceVO sentenceVO) {
     return GestureDetector(
       child: Card(
         elevation: 0,
@@ -113,14 +109,14 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   alignment: AlignmentDirectional.center,
                   padding: EdgeInsets.only(top: 40, bottom: 40, left: 20, right: 20),
                   child: Text(
-                    content,
+                    sentenceVO.content,
                     style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               ),
-              Positioned(child: _premiumTagWidget(premium)),
-              Positioned(left: 4, bottom: 4, child: _newTagWidget(isNew)),
-              Positioned(right: 0, top: 0, child: _scoreTagWidget(avgScore)),
+              Positioned(child: _premiumTagWidget(sentenceVO.premium)),
+              Positioned(left: 4, bottom: 4, child: _newTagWidget(sentenceVO.isNew)),
+              Positioned(right: 0, top: 0, child: _scoreTagWidget(sentenceVO.avgScore)),
             ],
           ),
         ),
