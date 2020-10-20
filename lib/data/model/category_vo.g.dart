@@ -26,6 +26,8 @@ CategoryMediumVO _$CategoryMediumVOFromJson(Map<String, dynamic> json) {
     json['id'] as String,
     json['title'] as String,
     json['sequence'] as int,
+    json['achiveStars'] as int,
+    json['totalStars'] as int,
     json['premium'] as bool,
   );
 }
@@ -35,5 +37,7 @@ Map<String, dynamic> _$CategoryMediumVOToJson(CategoryMediumVO instance) =>
       'id': instance.id,
       'title': instance.title,
       'sequence': instance.sequence,
+      'achiveStars': instance.archiveStars,
+      'totalStars': instance.totalStars,
       'premium': instance.premium,
     };

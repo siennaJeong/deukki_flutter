@@ -127,6 +127,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       ),
       onTap: () => {                //  ListView Item Click
         resourceProviderModel.getSentenceStage(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+          categoryProvider.selectStageIndex = null;
           final stageResult = resourceProviderModel.value.getSentenceStage;
           if(stageResult.hasData) {
             categoryProvider.setStage(stageResult.result.asValue.value);

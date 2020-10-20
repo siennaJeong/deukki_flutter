@@ -40,7 +40,6 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   Future<void> userAuthState() async {
     _init();
     if(sharedHelper.sharedPreference != null) {
-      print("shared non null");
       authJWT = await sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "") as String;
       notifyListeners();
     }
@@ -108,10 +107,12 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
 
   signInDone(String authJWT) async {
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    _authJWT = authJWT;
   }
 
   signUpDone(String authJWT) async {
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    _authJWT = authJWT;
     dbHelper.insertUser(userVO);
   }
 

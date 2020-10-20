@@ -38,7 +38,6 @@ class _StageDialogState extends State<StageDialog> {
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-
     for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
       if(categoryProvider.stageList[i - 1].score != null) {
         _preScore.add(true);
@@ -46,7 +45,6 @@ class _StageDialogState extends State<StageDialog> {
         _preScore.add(false);
       }
     }
-
     super.didChangeDependencies();
   }
 

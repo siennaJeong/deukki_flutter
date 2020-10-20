@@ -45,7 +45,7 @@ class DBHelper with ChangeNotifier{
             "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, large_id TEXT)"
+            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, archive_star INTEGER, total_star INTEGER, large_id TEXT)"
           );
           db.execute(
             "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
@@ -181,6 +181,8 @@ class DBHelper with ChangeNotifier{
       map['id'] as String,
       map['title'] as String,
       map['sequence'] as int,
+      map['archive_star'] as int,
+      map['total_star'] as int,
       map['premium'] == 1 ? true : false
     );
   }

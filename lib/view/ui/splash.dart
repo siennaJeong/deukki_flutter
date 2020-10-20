@@ -84,7 +84,7 @@ class _SplashState extends State<Splash> {
   void didChangeDependencies() {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     resourceProviderModel.checkAllVersion();
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     if(authServiceAdapter.authJWT.isNotEmpty) {
       resourceProviderModel.checkForceUpdate(authServiceAdapter.authJWT);
     }

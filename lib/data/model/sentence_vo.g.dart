@@ -11,7 +11,7 @@ SentenceVO _$SentenceVOFromJson(Map<String, dynamic> json) {
     json['id'] as String,
     json['content'] as String,
     json['sequence'] as int,
-    (json['avg_score'] as num)?.toDouble(),
+    (json['avgScore'] as num)?.toDouble(),
     json['premium'] as int,
     json['new'] as int,
   );
@@ -22,7 +22,7 @@ Map<String, dynamic> _$SentenceVOToJson(SentenceVO instance) =>
       'id': instance.id,
       'content': instance.content,
       'sequence': instance.sequence,
-      'avg_score': instance.avgScore,
+      'avgScore': instance.avgScore,
       'premium': instance.premium,
       'new': instance.isNew,
     };

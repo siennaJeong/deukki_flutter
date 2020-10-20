@@ -13,7 +13,7 @@ class SentenceVO {
   @JsonKey(name: 'sequence')
   int sequence;
 
-  @JsonKey(name: 'avg_score')
+  @JsonKey(name: 'avgScore')
   double avgScore;
 
   @JsonKey(name: 'premium')
