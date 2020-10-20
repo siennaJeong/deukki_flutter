@@ -30,8 +30,8 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   Widget _categoryLargeList() {
-    void _onSelected(int index, String largeId) {
-      categoryProvider.onSelected(index);
+    void _onSelectedLarge(int index, String largeId) {
+      categoryProvider.onSelectedLarge(index);
       categoryProvider.setMediumCategory(largeId).then((value) {
         resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getMediumId()).then((value) {
           final sentenceResult = resourceProviderModel.value.getSentence;
@@ -63,7 +63,7 @@ class _MainCategoryState extends State<MainCategory> {
 
             return GestureDetector(
               child: Card(
-                color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index ? Colors.white : MainColors.randomColorMain[index],
+                color: categoryProvider.selectLargeIndex != null && categoryProvider.selectLargeIndex == index ? Colors.white : MainColors.randomColorMain[index],
                 margin: EdgeInsets.only(left: 8, right: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),
@@ -80,7 +80,7 @@ class _MainCategoryState extends State<MainCategory> {
                       alignment: AlignmentDirectional.center,
                       children: [
                         Image.asset(
-                            categoryProvider.selectIndex != null && categoryProvider.selectIndex == index
+                            categoryProvider.selectLargeIndex != null && categoryProvider.selectLargeIndex == index
                                 ? AppImages.randomImageColor[index]
                                 : AppImages.randomImage[index]),
                         Text(
@@ -90,7 +90,7 @@ class _MainCategoryState extends State<MainCategory> {
                             fontSize: 24,
                             fontFamily: "TmoneyRound",
                             fontWeight: FontWeight.w700,
-                            color: categoryProvider.selectIndex != null && categoryProvider.selectIndex == index
+                            color: categoryProvider.selectLargeIndex != null && categoryProvider.selectLargeIndex == index
                                 ? MainColors.randomColorMain[index]
                                 : Colors.white,
                           ),
@@ -100,7 +100,7 @@ class _MainCategoryState extends State<MainCategory> {
                   ),
                 ),
               ),
-              onTap: () => _onSelected(index, largeVO.id),    //  ListView Item Click
+              onTap: () => _onSelectedLarge(index, largeVO.id),    //  ListView Item Click
             );
           },
         );

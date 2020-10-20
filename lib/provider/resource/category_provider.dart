@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 
 class CategoryProvider with ChangeNotifier {
   final DBHelper dbHelper;
-  int selectIndex;
+  int selectLargeIndex;
+  int selectStageIndex;
   String _largeId;
   String _mediumId;
   String _mediumTitle;
@@ -18,7 +19,8 @@ class CategoryProvider with ChangeNotifier {
   List<StageVO> _stageList = [];
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
-    this.selectIndex = -1;
+    this.selectLargeIndex = -1;
+    this.selectStageIndex = -1;
     if(dbHelper != null) {
       fetchAndSetLargeCategory();
     }
@@ -56,10 +58,17 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onSelected(int index) {
-    this.selectIndex = index;
+  void onSelectedLarge(int index) {
+    this.selectLargeIndex = index;
     notifyListeners();
   }
+
+  void onSelectedStage(int index) {
+    this.selectStageIndex = index;
+    notifyListeners();
+  }
+
+
 
   getLargeId() => _largeId;
   getMediumId() => _mediumId;

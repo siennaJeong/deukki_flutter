@@ -45,6 +45,7 @@ class Strings {
   static const String main_script = '올바른 발음부터 시작하는 한국어 듣기 완성';
 
   static const String category_new = 'new';
+  static const String start_btn = 'Start';
 
   static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
 

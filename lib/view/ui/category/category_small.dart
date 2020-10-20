@@ -87,9 +87,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 scrollDirection: Axis.horizontal,
                 itemCount: sentences.length,
                 itemBuilder: (BuildContext context, index) {
-                  return _listItemWidget(
-                    randomColor[index],
-                    sentences[index]);
+                  return _listItemWidget(randomColor[index], sentences[index]);
                 },
                 staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
             ),
