@@ -35,3 +35,20 @@ class CategoryMediumVO extends CategoryLargeVO {
   factory CategoryMediumVO.fromJson(Map<String, dynamic> json) => _$CategoryMediumVOFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryMediumVOToJson(this);
 }
+
+@JsonSerializable(explicitToJson: true)
+class MediumStarsVO {
+  @JsonKey(name: 'id')
+  String id;
+
+  @JsonKey(name: 'achiveStars')
+  int archiveStars;
+
+  @JsonKey(name: 'totalStars')
+  int totalStars;
+
+  MediumStarsVO(this.id, this.archiveStars, this.totalStars);
+
+  factory MediumStarsVO.fromJson(Map<String, dynamic> json) => _$MediumStarsVOFromJson(json);
+  Map<String, dynamic> toJson() => _$MediumStarsVOToJson(this);
+}

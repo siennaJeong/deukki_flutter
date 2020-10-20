@@ -153,6 +153,20 @@ class DBHelper with ChangeNotifier{
     batch.commit();
   }
 
+  Future<void> updateCategoryMedium(List<dynamic> mediumStars) async {
+    final db = await database;
+    Batch batch = db.batch();
+    mediumStars.forEach((val) {
+      MediumStarsVO mediumStarsVO = MediumStarsVO.fromJson(val);
+      batch.update(TABLE_CATEGORY_MEDIUM,
+          {'archive_star': mediumStarsVO.archiveStars == null ? 0 : mediumStarsVO.archiveStars , 'total_star': mediumStarsVO.totalStars},
+          where: 'id = ?',
+          whereArgs: ['${mediumStarsVO.id}']
+      );
+    });
+    batch.commit();
+  }
+
   Future<List<Map<String, dynamic>>> getCategories(String tableName) async {
     final db = await database;
     var res = await db.query(tableName);
@@ -170,6 +184,8 @@ class DBHelper with ChangeNotifier{
       'id': mediumVO.id,
       'title': mediumVO.title,
       'sequence': mediumVO.sequence,
+      'archive_star': mediumVO.archiveStars == null ? 0 : mediumVO.archiveStars,
+      'total_star': mediumVO.totalStars == null ? 0 : mediumVO.totalStars,
       'premium': mediumVO.premium ? 1 : 0,
       'large_id': largeId
     };

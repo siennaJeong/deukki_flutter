@@ -1,7 +1,9 @@
 
 import 'dart:ui';
 
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/stage_vo.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
@@ -25,7 +27,9 @@ class StageDialog extends StatefulWidget {
 class _StageDialogState extends State<StageDialog> {
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
+  AuthServiceAdapter authServiceAdapter;
   String _title;
+  int _selectedStageIdx, _selectedIndex;
   bool _isStart;
   List<bool> _preScore = [true];
 
@@ -38,6 +42,8 @@ class _StageDialogState extends State<StageDialog> {
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
       if(categoryProvider.stageList[i - 1].score != null) {
         _preScore.add(true);
@@ -45,6 +51,7 @@ class _StageDialogState extends State<StageDialog> {
         _preScore.add(false);
       }
     }
+    categoryProvider.setSentenceTitle(_title);
     super.didChangeDependencies();
   }
 
@@ -168,7 +175,7 @@ class _StageDialogState extends State<StageDialog> {
           ),
         ),
       ),
-      onTap: () => { _onSelectedStage(index) },
+      onTap: () => { _onSelectedStage(index, stageVO.stageIdx) },
     );
   }
 
@@ -192,14 +199,25 @@ class _StageDialogState extends State<StageDialog> {
     );
   }
 
-  void _onSelectedStage(int index) {            //  ListView Item Click
+  void _onSelectedStage(int index, int stageIdx) {            //  ListView Item Click
     _isStart = _preScore[index] ? true : false;
+    _selectedIndex = index;
+    _selectedStageIdx = stageIdx;
     categoryProvider.onSelectedStage(index);
   }
 
   void _stageStart() {        //  Start Click
     if(_isStart) {
-      print("Start OK");
+      resourceProviderModel.getPronunciation(
+        authServiceAdapter.authJWT,
+        categoryProvider.selectedSentence.id,
+        _selectedStageIdx,
+        _selectedIndex == 1 ? true : false,
+        null
+      ).then((value) {
+
+        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+      });
     }
   }
 

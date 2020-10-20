@@ -14,7 +14,9 @@ class ResourceProviderState {
   final checkForceUpdate = ProviderModelResult<CommonResultVO>();
   final getCategoryLarge = ProviderModelResult<List<CategoryLargeVO>>();
   final getCategoryMedium = ProviderModelResult<List<CategoryMediumVO>>();
+  final getCategoryMediumStar = ProviderModelResult<List<MediumStarsVO>>();
   final getCategorySmall = ProviderModelResult<List<dynamic>>();
   final getSentence = ProviderModelResult<List<SentenceVO>>();
-  final getSentenceStage = ProviderModelResult<List<StageVO>>();
+  final getSentenceStages = ProviderModelResult<List<StageVO>>();
+  final getPronunciation = ProviderModelResult<Map<String, dynamic>>();
 }

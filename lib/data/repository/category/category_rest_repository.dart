@@ -24,7 +24,7 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<List<dynamic>>> getCategoryMedium() async {
+  Future<Result<List<dynamic>>> getCategoryMedium(String largeId) async {
     final categoryMediumListJson = await _httpClient.getRequest(HttpUrls.CATEGORY_MEDIUM, HttpUrls.headers(""));
     if(categoryMediumListJson.isValue) {
       return Result.value(categoryMediumListJson.asValue.value['result']);
@@ -32,6 +32,17 @@ class CategoryRestRepository implements CategoryRepository {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
+
+  @override
+  Future<Result<List<dynamic>>> getCategoryMediumStar(String authJWT, String largeId) async {
+    final starListJson = await _httpClient.getRequest(HttpUrls.CATEGORY_MEDIUM_SCORE + "?largeId=$largeId", HttpUrls.headers(authJWT));
+    if(starListJson.isValue) {
+      return Result.value(starListJson.asValue.value['result']);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
 
   @override
   Future<Result<List<CategoryMediumVO>>> getCategorySmall(String mediumId) async {
@@ -58,7 +69,7 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<List<StageVO>>> getSentenceStage(String authJWT, String sentenceId) async {
+  Future<Result<List<StageVO>>> getSentenceStages(String authJWT, String sentenceId) async {
     final stageListJson = await _httpClient.getRequest(HttpUrls.SENTENCE + "/$sentenceId" + HttpUrls.SENTENCE_STAGE, HttpUrls.headers(authJWT));
     if(stageListJson.isValue) {
       return Result.value((stageListJson.asValue.value['result'] as List)
@@ -69,4 +80,13 @@ class CategoryRestRepository implements CategoryRepository {
     }
   }
 
+  @override
+  Future<Result<Map<String, dynamic>>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
+    final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=M", HttpUrls.headers(authJWT));
+    if(pronunciationJson.isValue) {
+      return Result.value(pronunciationJson.asValue.value['result']);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
 }

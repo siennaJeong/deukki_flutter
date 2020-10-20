@@ -29,8 +29,14 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   }
 
   Widget _listWidget(List<CategoryMediumVO> list) {
-    final random = Random();                                      //  test
-    List<double> randomProgress = [0.4, 0.6, 0.2, 0, 0.5, 0.7];   //  test
+    List<double> scores = [];   //  test
+    for(int i = 0 ; i < list.length ; i++) {
+      if(list[i].archiveStars == null) {
+        scores.add(0.0);
+      }else {
+        scores.add(list[i].archiveStars / list[i].totalStars);
+      }
+    }
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
@@ -39,7 +45,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
           itemCount: list.length,
           itemBuilder: (BuildContext context, index) {
             return _listItemWidget(
-                randomProgress[random.nextInt(randomProgress.length)],
+                scores[index],
                 list[index],
                 index,
                 list.length

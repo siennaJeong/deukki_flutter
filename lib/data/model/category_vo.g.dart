@@ -41,3 +41,18 @@ Map<String, dynamic> _$CategoryMediumVOToJson(CategoryMediumVO instance) =>
       'totalStars': instance.totalStars,
       'premium': instance.premium,
     };
+
+MediumStarsVO _$MediumStarsVOFromJson(Map<String, dynamic> json) {
+  return MediumStarsVO(
+    json['id'] as String,
+    json['achiveStars'] as int,
+    json['totalStars'] as int,
+  );
+}
+
+Map<String, dynamic> _$MediumStarsVOToJson(MediumStarsVO instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'achiveStars': instance.archiveStars,
+      'totalStars': instance.totalStars,
+    };

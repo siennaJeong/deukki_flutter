@@ -32,7 +32,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   final CategoryRepository _categoryRepository;
   final DBHelper _dbHelper;
   PackageInfo _packageInfo;
-
   bool requireInstall = false;
 
   Future<void> _initData() async {
@@ -130,12 +129,19 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     });
   }
 
-  Future<void> getCategoryMedium(String largeId) async {
-    final getCategoryMedium = _categoryRepository.getCategoryMedium();
+  Future<void> getCategoryMedium( String largeId) async {
+    final getCategoryMedium = _categoryRepository.getCategoryMedium(largeId);
     getCategoryMedium.then((value) {
       _dbHelper.delete(TABLE_CATEGORY_MEDIUM).then((val) {
         _dbHelper.insertCategoryMedium(largeId, value.asValue.value.toList());
       });
+    });
+  }
+
+  Future<void> getCategoryMediumStar(String authJWT, String largeId) async {
+    final getCategoryMediumStar = _categoryRepository.getCategoryMediumStar(authJWT, largeId);
+    getCategoryMediumStar.then((value) {
+      _dbHelper.updateCategoryMedium(value.asValue.value.toList());
     });
   }
 
@@ -149,8 +155,13 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     await value.getSentence.set(getSentence, notifyListeners);
   }
 
-  Future<void> getSentenceStage(String authJWT, String sentenceId) async {
-    final getSentenceStage = _categoryRepository.getSentenceStage(authJWT, sentenceId);
-    await value.getSentenceStage.set(getSentenceStage, notifyListeners);
+  Future<void> getSentenceStages(String authJWT, String sentenceId) async {
+    final getSentenceStage = _categoryRepository.getSentenceStages(authJWT, sentenceId);
+    await value.getSentenceStages.set(getSentenceStage, notifyListeners);
+  }
+
+  Future<void> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
+    final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
+    await value.getPronunciation.set(getPronunciation, notifyListeners);
   }
 }

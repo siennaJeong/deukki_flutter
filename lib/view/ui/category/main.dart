@@ -32,6 +32,7 @@ class _MainCategoryState extends State<MainCategory> {
   Widget _categoryLargeList() {
     void _onSelectedLarge(int index, String largeId) {
       categoryProvider.onSelectedLarge(index);
+      resourceProviderModel.getCategoryMediumStar(authServiceAdapter.authJWT, largeId);
       categoryProvider.setMediumCategory(largeId).then((value) {
         resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getMediumId()).then((value) {
           final sentenceResult = resourceProviderModel.value.getSentence;

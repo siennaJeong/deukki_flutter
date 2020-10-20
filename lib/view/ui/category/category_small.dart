@@ -54,6 +54,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   void _onBackPressed() {
+    categoryProvider.onSelectedLarge(null);
     setState(() {
       Navigator.of(context).pop();
     });
@@ -126,9 +127,10 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       ),
       onTap: () => {                //  ListView Item Click
-        resourceProviderModel.getSentenceStage(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+        resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
           categoryProvider.selectStageIndex = null;
-          final stageResult = resourceProviderModel.value.getSentenceStage;
+          categoryProvider.onSelectedSentence(sentenceVO);
+          final stageResult = resourceProviderModel.value.getSentenceStages;
           if(stageResult.hasData) {
             categoryProvider.setStage(stageResult.result.asValue.value);
           }
@@ -236,67 +238,70 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(top: 14, left: 44),
-                  child: GestureDetector(
-                    child: Image.asset(AppImages.backBtn, width: 44, height: 44,),  //  Back button
-                    onTap: () => { _onBackPressed() },
+    return WillPopScope(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Stack(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(top: 14, left: 44),
+                    child: GestureDetector(
+                      child: Image.asset(AppImages.backBtn, width: 44, height: 44,),  //  Back button
+                      onTap: () => { _onBackPressed() },
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 19, bottom: 20),
-                        child: Text('${categoryProvider.getMediumTitle()}', style: Theme.of(context).textTheme.subtitle1,),
-                      ),
-                      SizedBox(width: 8),
-                      Container(
-                        child: FadeTransition(
-                          opacity: _animationController,
-                          child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
+                  GestureDetector(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 19, bottom: 20),
+                          child: Text('${categoryProvider.getMediumTitle()}', style: Theme.of(context).textTheme.subtitle1,),
                         ),
-                      ),
-                    ],
+                        SizedBox(width: 8),
+                        Container(
+                          child: FadeTransition(
+                            opacity: _animationController,
+                            child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
+                          ),
+                        ),
+                      ],
+                    ),
+                    onTap: () => {                      //  More List Button
+                      showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context) {
+                            return MediumCategoryListDialog(
+                              title: categoryProvider.getMediumTitle(),
+                              list: categoryProvider.categoryMediumList,
+                            );
+                          }
+                      ).then((value) => {
+                        resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
+                          categoryProvider.setMediumTitle(value[0]);
+                          final sentenceResult = resourceProviderModel.value.getSentence;
+                          if(sentenceResult.hasData) {
+                            categoryProvider.setSentence(sentenceResult.result.asValue.value);
+                          }
+                        })
+                      }),
+                    },
                   ),
-                  onTap: () => {                      //  More List Button
-                    showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return MediumCategoryListDialog(
-                          title: categoryProvider.getMediumTitle(),
-                          list: categoryProvider.categoryMediumList,
-                        );
-                      }
-                    ).then((value) => {
-                      resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
-                        categoryProvider.setMediumTitle(value[0]);
-                        final sentenceResult = resourceProviderModel.value.getSentence;
-                        if(sentenceResult.hasData) {
-                          categoryProvider.setSentence(sentenceResult.result.asValue.value);
-                        }
-                      })
-                    }),
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 16),
-            _listWidget(),
-          ],
+                ],
+              ),
+              SizedBox(height: 16),
+              _listWidget(),
+            ],
+          ),
         ),
       ),
+      onWillPop: _onBackPressed,
     );
   }
 }

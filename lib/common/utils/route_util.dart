@@ -3,6 +3,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/category/category_small.dart';
+import 'package:deukki/view/ui/category/stage/stage_quiz.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';
 import 'package:deukki/view/ui/signin/sign_up_terms.dart';
@@ -23,6 +24,7 @@ class GetRoutesName {
   static const String ROUTE_SIGNUP_INPUT_BIRTH = "/signUpInputBirth";
   static const String ROUTE_WELCOME = "/welcome";
   static const String ROUTE_CATEGORY_SMALL = "/categorySmall";
+  static const String ROUTE_STAGE_QUIZ = "/stageQuiz";
 }
 
 final routes = <String, WidgetBuilder> {
@@ -35,6 +37,7 @@ final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => ProviderWidget<UserProviderModel>(SignUpInputBirth(), (context) => UserProviderModel.build()),
   GetRoutesName.ROUTE_WELCOME: (context) => Welcome(),
   GetRoutesName.ROUTE_CATEGORY_SMALL: (context) => CategorySmall(),
+  GetRoutesName.ROUTE_STAGE_QUIZ: (context) => StageQuiz()
 };
 
 class RouteNavigator {
@@ -67,6 +70,9 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_CATEGORY_SMALL:
         Navigator.pushNamed(context, GetRoutesName.ROUTE_CATEGORY_SMALL);
+        break;
+      case GetRoutesName.ROUTE_STAGE_QUIZ:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_STAGE_QUIZ);
         break;
     }
   }

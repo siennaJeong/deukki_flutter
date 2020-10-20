@@ -13,6 +13,8 @@ class CategoryProvider with ChangeNotifier {
   String _largeId;
   String _mediumId;
   String _mediumTitle;
+  SentenceVO selectedSentence;
+  String _sentenceTitle;
   List<CategoryLargeVO> _categoryLargeList = [];
   List<CategoryMediumVO> _categoryMediumList = [];
   List<SentenceVO> _sentenceList = [];
@@ -30,6 +32,16 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryLargeVO> get categoryLargeList => [..._categoryLargeList];
   List<SentenceVO> get sentenceList => [..._sentenceList];
   List<StageVO> get stageList => [..._stageList];
+
+  getLargeId() => _largeId;
+  getMediumId() => _mediumId;
+  getMediumTitle() => _mediumTitle;
+  getSentenceTitle() => _sentenceTitle;
+
+  setLargeId(String largeId) => _largeId = largeId;
+  setMediumId(String mediumId) => _mediumId = mediumId;
+  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
+  setSentenceTitle(String sentenceTitle) => _sentenceTitle = sentenceTitle;
 
   Future<void> fetchAndSetLargeCategory() async {
     if(dbHelper.database != null) {
@@ -68,14 +80,9 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-
-  getLargeId() => _largeId;
-  getMediumId() => _mediumId;
-  getMediumTitle() => _mediumTitle;
-
-  setLargeId(String largeId) => _largeId = largeId;
-  setMediumId(String mediumId) => _mediumId = mediumId;
-  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
+  void onSelectedSentence(SentenceVO sentenceVO) {
+    this.selectedSentence = sentenceVO;
+    notifyListeners();
+  }
 
 }
