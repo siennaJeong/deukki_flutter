@@ -53,11 +53,12 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     super.dispose();
   }
 
-  void _onBackPressed() {
+  Future<bool> _onBackPressed() {
     categoryProvider.onSelectedLarge(null);
     setState(() {
       Navigator.of(context).pop();
     });
+    return Future(() => true);
   }
 
   Widget _listWidget() {

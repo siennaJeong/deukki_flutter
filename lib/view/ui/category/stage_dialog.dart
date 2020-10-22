@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
@@ -215,7 +216,12 @@ class _StageDialogState extends State<StageDialog> {
         _selectedIndex == 1 ? true : false,
         null
       ).then((value) {
-
+        final commonResult = resourceProviderModel.value.getPronunciation;
+        final pronunResult = commonResult.result.asValue.value.result;
+        categoryProvider.setPronunciationList(
+            pronunResult['wrongPronunciationList'],
+            PronunciationVO.fromJson(pronunResult['rightPronunciation'])
+        );
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
       });
     }

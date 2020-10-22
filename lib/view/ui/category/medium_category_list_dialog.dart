@@ -31,7 +31,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   Widget _listWidget(List<CategoryMediumVO> list) {
     List<double> scores = [];   //  test
     for(int i = 0 ; i < list.length ; i++) {
-      if(list[i].archiveStars == null) {
+      if(list[i].archiveStars == 0) {
         scores.add(0.0);
       }else {
         scores.add(list[i].archiveStars / list[i].totalStars);

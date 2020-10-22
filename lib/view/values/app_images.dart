@@ -27,4 +27,11 @@ class AppImages {
   static String emptyStar = "$_basePath/icon_empty_star.png";
   static String halfStar = "$_basePath/icon_half_star.png";
   static String fullStar = "$_basePath/icon_full_star.png";
+
+  static String bookmarkNormal = "$_basePath/icon_bookmark_normal.png";
+  static String bookmarkActive = "$_basePath/icon_bookmark_active.png";
+  static String playNormal = "$_basePath/icon_play.png";
+  static String playFast = "$_basePath/play_fast.png";
+  static String speaker = "$_basePath/icon_speaker_less.png";
+
 }

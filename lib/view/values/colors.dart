@@ -7,6 +7,7 @@ class MainColors {
   static const Color yellow_60 = const Color.fromRGBO(255,240,139,1);
   static const Color yellow_40 = const Color.fromRGBO(255,244,173,1);
   static const Color yellow_20 = const Color.fromRGBO(252,247,212,1);
+  static const Color yellow_opacity50 = const Color.fromRGBO(252,247,212,50);
 
   static const Color green_100 = const Color.fromRGBO(32,189,148,1);
   static const Color green_80 = const Color.fromRGBO(115,231,173,1);
@@ -15,6 +16,7 @@ class MainColors {
   static const Color green_20 = const Color.fromRGBO(199,245,222,1);
 
   static const Color blue_facebook = const Color.fromRGBO(24,119,242,1);
+  static const Color blue_opacity50 = const Color.fromRGBO(24,119,242,0.5);
   static const Color blue_100 = const Color.fromRGBO(82,149,255,1);
   static const Color blue_80 = const Color.fromRGBO(104,184,255,1);
   static const Color blue_60 = const Color.fromRGBO(173,231,255,1);

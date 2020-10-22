@@ -6,6 +6,7 @@ import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
+import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
@@ -81,10 +82,10 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<Map<String, dynamic>>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
+  Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
     final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=M", HttpUrls.headers(authJWT));
     if(pronunciationJson.isValue) {
-      return Result.value(pronunciationJson.asValue.value['result']);
+      return Result.value(CommonResultVO.fromJson(pronunciationJson.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

@@ -44,6 +44,7 @@ dependencies:
   flare_splash_screen: ^3.0.1
   json_serializable: ^3.4.1
   build_runner: ^1.9.0
+  dotted_border: ^1.0.6
 
   # ======== Social Login API =========
   kakao_flutter_sdk: ^0.4.2
@@ -107,6 +108,8 @@ flutter:
     - images/kakao_logo.png
     - images/kakao_logo_yellow.png
     - images/expand_more.png
+    - images/play_fast.png
+    - images/icon_speaker_less.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

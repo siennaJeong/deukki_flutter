@@ -1,6 +1,7 @@
 
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,21 +9,27 @@ import 'package:flutter/material.dart';
 
 class CategoryProvider with ChangeNotifier {
   final DBHelper dbHelper;
+  bool isBookmark;
   int selectLargeIndex;
   int selectStageIndex;
+  double stepProgress;
   String _largeId;
   String _mediumId;
   String _mediumTitle;
   SentenceVO selectedSentence;
   String _sentenceTitle;
+  PronunciationVO _rightPronunciation;
   List<CategoryLargeVO> _categoryLargeList = [];
   List<CategoryMediumVO> _categoryMediumList = [];
   List<SentenceVO> _sentenceList = [];
   List<StageVO> _stageList = [];
+  List<PronunciationVO> _pronunciationList = [];
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
+    this.isBookmark = false;
+    this.stepProgress = 0.2;
     if(dbHelper != null) {
       fetchAndSetLargeCategory();
     }
@@ -32,16 +39,19 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryLargeVO> get categoryLargeList => [..._categoryLargeList];
   List<SentenceVO> get sentenceList => [..._sentenceList];
   List<StageVO> get stageList => [..._stageList];
+  List<PronunciationVO> get pronunciationList => [..._pronunciationList];
 
   getLargeId() => _largeId;
   getMediumId() => _mediumId;
   getMediumTitle() => _mediumTitle;
   getSentenceTitle() => _sentenceTitle;
+  getRightPronun() => _rightPronunciation;
 
   setLargeId(String largeId) => _largeId = largeId;
   setMediumId(String mediumId) => _mediumId = mediumId;
   setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
   setSentenceTitle(String sentenceTitle) => _sentenceTitle = sentenceTitle;
+  setRightPronun(PronunciationVO rightPronun) => _rightPronunciation = rightPronun;
 
   Future<void> fetchAndSetLargeCategory() async {
     if(dbHelper.database != null) {
@@ -80,8 +90,32 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void onBookMark(bool isBookmark) {
+    this.isBookmark = isBookmark;
+    notifyListeners();
+  }
+
+  void setStepProgress() {
+    this.stepProgress = this.stepProgress + 0.2;
+    notifyListeners();
+  }
+
   void onSelectedSentence(SentenceVO sentenceVO) {
     this.selectedSentence = sentenceVO;
+    notifyListeners();
+  }
+
+  Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {
+    if(this._pronunciationList.length > 0) {
+      this._pronunciationList.clear();
+    }
+    setRightPronun(rightPronunciation);
+    pronunList.forEach((element) {
+      PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
+      this._pronunciationList.add(pronunciationVO);
+    });
+    this._pronunciationList.add(rightPronunciation);
+    this._pronunciationList.shuffle();
     notifyListeners();
   }
 
