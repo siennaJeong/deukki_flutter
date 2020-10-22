@@ -1,6 +1,8 @@
 
+import 'dart:io';
+
 import 'package:deukki/common/storage/db_helper.dart';
-import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 import 'package:deukki/data/repository/category/category_rest_repository.dart';
 import 'package:deukki/data/repository/version/version_repository.dart';
@@ -10,6 +12,7 @@ import 'package:deukki/provider/resource/resource_provider_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info/package_info.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   ResourceProviderModel({
@@ -161,7 +164,23 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   }
 
   Future<void> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
+    List<dynamic> wrongList = [];
+    PronunciationVO rightPronun;
+    String fileName = "$sentenceId";
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
+    Directory directory = await getApplicationDocumentsDirectory();
+    String fileDir = directory.path;
+    getPronunciation.then((value) {
+      final result = value.asValue.value.result;
+      rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
+      _categoryRepository.saveAudioFile(fileDir, rightPronun.downloadUrl, fileName + "-" + rightPronun.pIdx.toString() + "-" + "M.mp3");
+      wrongList = result['wrongPronunciationList'] as List;
+      wrongList.forEach((element) {
+        PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
+        _categoryRepository.saveAudioFile(fileDir, pronunciationVO.downloadUrl, fileName + "-" + pronunciationVO.pIdx.toString() + "-" + "M.mp3");
+      });
+    });
   }
+
 }

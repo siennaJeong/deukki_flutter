@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
@@ -10,6 +12,7 @@ import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
+import 'package:http/http.dart';
 
 class CategoryRestRepository implements CategoryRepository {
   final HttpClient _httpClient = HttpClient();
@@ -90,4 +93,15 @@ class CategoryRestRepository implements CategoryRepository {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
+
+  @override
+  Future<void> saveAudioFile(String dir, String url, String fileName) async {
+    File file = new File('$dir/$fileName');
+    var request = await get(url);
+    var bytes = request.bodyBytes;//close();
+    await file.writeAsBytes(bytes);
+    print("save audio file path  : " + file.path);
+  }
+
+
 }

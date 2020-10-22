@@ -45,6 +45,8 @@ dependencies:
   json_serializable: ^3.4.1
   build_runner: ^1.9.0
   dotted_border: ^1.0.6
+  #assets_audio_player: ^2.0.10
+  just_audio: ^0.5.4
 
   # ======== Social Login API =========
   kakao_flutter_sdk: ^0.4.2
