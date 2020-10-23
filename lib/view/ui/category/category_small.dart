@@ -26,6 +26,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   AnimationController _animationController;
   final random = Random();
   final List<Color> randomColor = [];
+  List<num> mainAxis = [];
 
   @override
   void initState() {
@@ -40,9 +41,12 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
-    categoryProvider.sentenceList.forEach((element) {
-      randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
-    });
+    if(randomColor.length <= 0) {
+      categoryProvider.sentenceList.forEach((element) {
+        randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
+      });
+      print("category provider random color");
+    }
 
     super.didChangeDependencies();
   }
@@ -62,19 +66,21 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _listWidget() {
-    List<num> mainAxis = [];
-    categoryProvider.sentenceList.forEach((element) {
-      String temp = element.content.replaceAll(" ", "");
-      var num;
-      if(temp.length >= 1 && temp.length <= 2) {
-        num = temp.length / 2.5;
-      }else if(temp.length > 2 && temp.length < 6) {
-        num = temp.length / 3;
-      }else {
-        num = temp.length / 3.6;
-      }
-      mainAxis.add(num);
-    });
+    if(mainAxis.length <= 0) {
+      categoryProvider.sentenceList.forEach((element) {
+        String temp = element.content.replaceAll(" ", "");
+        var num;
+        if(temp.length >= 1 && temp.length <= 2) {
+          num = temp.length / 2.5;
+        }else if(temp.length > 2 && temp.length < 6) {
+          num = temp.length / 3;
+        }else {
+          num = temp.length / 3.6;
+        }
+        mainAxis.add(num);
+        print("listWidget sentence list ");
+      });
+    }
     return Selector<CategoryProvider, List<SentenceVO>>(
       selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
@@ -239,6 +245,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -289,6 +296,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           final sentenceResult = resourceProviderModel.value.getSentence;
                           if(sentenceResult.hasData) {
                             categoryProvider.setSentence(sentenceResult.result.asValue.value);
+                            mainAxis = [];
                           }
                         })
                       }),

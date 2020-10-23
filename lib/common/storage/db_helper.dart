@@ -1,3 +1,4 @@
+import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/faq_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
@@ -15,6 +16,7 @@ const String TABLE_USER = 'user';
 const String TABLE_CATEGORY_LARGE = 'category_large';
 const String TABLE_CATEGORY_MEDIUM = 'category_medium';
 const String TABLE_CATEGORY_SMALL = 'category_small';
+const String TABLE_AUDIO_PATH = 'audio_path';
 const String TABLE_FAQ = 'faq';
 
 class DBHelper with ChangeNotifier{
@@ -49,6 +51,9 @@ class DBHelper with ChangeNotifier{
           );
           db.execute(
             "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
+          );
+          db.execute(
+            "CREATE TABLE $TABLE_AUDIO_PATH(sentence_id TEXT, stage_idx INTEGER, path TEXT)"
           );
         }
     );
@@ -201,6 +206,21 @@ class DBHelper with ChangeNotifier{
       map['total_star'] as int,
       map['premium'] == 1 ? true : false
     );
+  }
+
+  /* ============================ Audio File Path ============================ */
+  Future<void> insertAudioFile(String sentenceId, int stageIdx, String path) async {
+    final db = await database;
+    Batch batch = db.batch();
+    AudioFilePathVO audioFileVO = AudioFilePathVO(sentenceId, stageIdx, path);
+    batch.insert(TABLE_AUDIO_PATH, audioFileVO.toJson());
+    batch.commit();
+  }
+
+  Future<List<Map<String, dynamic>>> getFilePath(int stageIdx) async {
+    final db = await database;
+    var res = await db.query(TABLE_AUDIO_PATH, where: 'stage_idx = ?', whereArgs: [stageIdx]);
+    return res.isNotEmpty ? res : null;
   }
 
 

@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
                   margin: EdgeInsets.only(top: 50),
                   width: 160,
                   child: Image.asset(
-                    AppImages.appLogoYellow,
+                    AppImages.appLogoMint,
                   )
               ),
               Container(

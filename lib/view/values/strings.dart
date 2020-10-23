@@ -50,11 +50,20 @@ class Strings {
 
   static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
 
-  static const String play_speed_15 = "x1.5";
-  static const String play_speed_20 = "x2.0";
-  static const String play_speed_25 = "x2.5";
-  static const String play_speed_30 = "x3.0";
-  static const String right_pronunciation = "올바른 발음";
+  static const String play_speed_15 = 'x1.5';
+  static const String play_speed_20 = 'x2.0';
+  static const String play_speed_25 = 'x2.5';
+  static const String play_speed_30 = 'x3.0';
+  static const String right_pronunciation = '올바른 발음';
+  static const String quiz_result_good = 'GOOD!';
+  static const String quiz_result_great = 'GREAT!!';
+  static const String thank_you = 'Thank You!';
+  static const String record_again = '다시 발음하기';
+  static const String star = '별 ';
+  static const String earn_star = '개 획득!';
+  static const String tap_record = '탭하여 녹음하기';
+  static const String record_script = '님! 직접 소리내어 발음해 주시면\n주간 리포트에 발음 분석도 해드려요!';
+  static const String record_quiet_script = '조용한 곳에서 노란색 권장 성량에 맞추어 발음해 주세요.';
 
   static const String mypage_report = '리포트';
   static const String mypage_report_title = '님, 바름리포트는 매주 월요일에 발행됩니다.';

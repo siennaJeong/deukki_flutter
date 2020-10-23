@@ -1,8 +1,14 @@
+import 'dart:async';
+import 'dart:math';
+import 'dart:ui';
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
-import 'package:deukki/view/ui/splash.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -11,7 +17,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hardware_buttons/hardware_buttons.dart';
 import 'package:provider/provider.dart';
+import 'package:volume/volume.dart';
 
 class StageQuiz extends StatefulWidget {
   @override
@@ -25,9 +33,32 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   AnimationController _controller;
   Animation _animation, _delayAnimation;
 
+  final random = Random();
+  AudioPlayer _audioPlayer;
+  AudioManager _audioManager;
+  StreamSubscription _volumeButtionEvent;
+  AudioFilePathVO randomPath;
+  int maxVol, currentVol;
+  var deviceWidth;
+  var deviceHeight;
+
+
   @override
   void initState() {
     _controller = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
+    _audioPlayer = AudioPlayer();
+    _audioManager = AudioManager.STREAM_MUSIC;
+    _volumeButtionEvent = volumeButtonEvents.listen((event) {
+      switch(event) {
+        case VolumeButtonEvent.VOLUME_UP:
+          _setVolume(true);
+          break;
+        case VolumeButtonEvent.VOLUME_DOWN:
+          _setVolume(false);
+          break;
+      }
+    });
+    initVolume();
     super.initState();
   }
 
@@ -37,6 +68,54 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     stageProvider = Provider.of<StageProvider>(context);
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    _volumeButtionEvent?.cancel();
+    super.dispose();
+  }
+
+  _setRandomPath() {
+    randomPath = resourceProviderModel.audioFile[random.nextInt(resourceProviderModel.audioFile.length)];
+    print("random : " + randomPath.stageIdx.toString());
+  }
+
+  Future<void> initVolume() async {
+    await Volume.controlVolume(AudioManager.STREAM_MUSIC);
+    currentVol = await Volume.getVol;
+    maxVol = await Volume.getMaxVol;
+  }
+
+  _setVolume(bool isUp) async {
+    if(isUp) {
+      currentVol++;
+      if(currentVol >= maxVol) {
+        currentVol = maxVol;
+      }
+      Volume.setVol(currentVol, showVolumeUI: ShowVolumeUI.HIDE);
+    }else {
+      currentVol--;
+      if(currentVol <= 0) {
+        currentVol = 0;
+      }
+      Volume.setVol(currentVol, showVolumeUI: ShowVolumeUI.HIDE);
+    }
+  }
+
+  _playLocal(String filePath, double speed) async {
+    await _audioPlayer.play(filePath, isLocal: true);
+    _audioPlayer.setVolume((currentVol / maxVol) * 10);
+    _audioPlayer.setPlaybackRate(playbackRate: speed);
+    _playStateListener();
+  }
+
+  _playStateListener() async {
+    _audioPlayer.onPlayerCompletion.listen((event) {
+      stageProvider.setPlaying(false);
+      stageProvider.setPlayCount();
+    });
   }
 
   Widget _header() {
@@ -179,7 +258,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     );
   }
 
-  Widget _playButtonWidget(double width) {
+  Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
     String soundIcons;
     if(categoryProvider.stepProgress == 0.4) {
@@ -203,6 +282,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }else {
       soundIcons = AppImages.speaker;
     }
+
     return Container(
       width: width,
       margin: EdgeInsets.only(top: 32),
@@ -217,20 +297,35 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                 width: 2.0
             )
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              !stageProvider.isPlaying ? Strings.play_btn : "",
-              style: TextStyle(
-                fontSize: 16,
-                fontFamily: "TmoneyRound",
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
+        child: _dataLoadingWidget(soundIcons, playSpeed),
+        onPressed: () {               //  Play Button Click
+          if(!stageProvider.isPlaying) {
+            _playLocal(randomPath.path, stageProvider.playRate);
+            stageProvider.setPlaying(true);
+            stageProvider.setFirstHeight(14);
+            stageProvider.setSecondHeight(18);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _dataLoadingWidget(String soundIcons, String playSpeed) {
+    if(resourceProviderModel.audioFile.length > 0) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            !stageProvider.isPlaying ? Strings.play_btn : "",
+            style: TextStyle(
+              fontSize: 16,
+              fontFamily: "TmoneyRound",
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
             ),
-            SizedBox(width: 2),
-            Container(
+          ),
+          SizedBox(width: 2),
+          Container(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -257,28 +352,27 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                   ),
                 ],
               )
-            ),
-            Container(
-              child: Text(
-                playSpeed,
-                style: TextStyle(
-                    fontSize: !stageProvider.isPlaying ? 12 : 0,
-                    fontFamily: "NotoSansKR",
-                    fontWeight: FontWeight.w400,
-                    color: Colors.white
-                ),
+          ),
+          Container(
+            child: Text(
+              playSpeed,
+              style: TextStyle(
+                  fontSize: !stageProvider.isPlaying ? 12 : 0,
+                  fontFamily: "NotoSansKR",
+                  fontWeight: FontWeight.w400,
+                  color: Colors.white
               ),
             ),
-          ],
-        ),
-        onPressed: () {                   //  Play button
-          stageProvider.isPlaying ? stageProvider.setPlaying(false) : stageProvider.setPlaying(true);
-          //stageProvider.setPlayCount();     //  오디오 플레이 완료된 후에 count 시키기
-          stageProvider.setFirstHeight(14);
-          stageProvider.setSecondHeight(18);
-        },
-      ),
-    );
+          ),
+        ],
+      );
+    }else {
+      return Container(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white), strokeWidth: 1.0,),
+      );
+    }
   }
 
   Widget _listWidget(double width) {            //  ListView
@@ -359,9 +453,11 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           ],
         ),
       ),
-      onTap: () => {                   // List Item Click
+      onTap: () => {                   // List Item Click (Quiz answer click)
         if(!stageProvider.isPlaying && stageProvider.playCount > 0) {
-          stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation)
+          stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation),
+          stageProvider.setAnswerCount(),
+          _answerResultDialog(pronunciationVO.pIdx),
         }
       },
     );
@@ -437,12 +533,88 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
   }
 
+  void _answerResultDialog(int pIdx) {
+    String bgImages, answerResult;
+    if(stageProvider.answerCount < 5) {
+      if(pIdx == randomPath.stageIdx) {
+        bgImages = AppImages.blueBgImage;
+        answerResult = Strings.quiz_result_great;
+        stageProvider.setPlayRate();
+      }else {
+        bgImages = AppImages.greenBgImage;
+        answerResult = Strings.quiz_result_good;
+      }
+      //  정답지 레이아웃 다시. path 랜덤 시키기.
+      categoryProvider.setStepProgress();
+      stageProvider.onSelectedAnswer(-1, "");
+      randomPath = resourceProviderModel.audioFile[random.nextInt(resourceProviderModel.audioFile.length)];
+      print("random : " + randomPath.stageIdx.toString());
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.pop(context);
+            });
+            return Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                    child: Container(color: Colors.black.withOpacity(0.1)),
+                  ),
+                ),
+                Dialog(
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                      Positioned(
+                          child: Container(
+                            width: deviceWidth * 0.35,
+                            child: Image.asset(bgImages),
+                          )
+                      ),
+                      Positioned(
+                        child: Container(
+                          child: Text(
+                            answerResult,
+                            style: Theme.of(context).textTheme.headline3,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            );
+          });
+    }else {
+      //  Stage 완료 했을때. -> play speed 가 2 이상일때는 별 3개 1.25 ~ 1.5 일때 별 2개 1일때 별 1개. 별 2개부터 great!
+      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+      if(stageProvider.playRate <= 1.0) {
+        categoryProvider.setStageScore(1);
+      }else if(stageProvider.playRate > 1.0 && stageProvider.playRate <= 1.5) {
+        categoryProvider.setStageScore(2);
+      }else {
+        categoryProvider.setStageScore(3);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    var deviceWidth = MediaQuery.of(context).size.width;
-    var deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
     var ratioWidth;
     ratioWidth = deviceWidth * 0.64;
+
+    if(randomPath == null) {
+      if(resourceProviderModel.audioFile.length > 0 && categoryProvider.pronunciationList.length > 0) {
+        _setRandomPath();
+      }
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
@@ -463,4 +635,5 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       ),
     );
   }
+
 }

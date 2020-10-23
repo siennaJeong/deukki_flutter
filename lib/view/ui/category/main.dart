@@ -129,7 +129,7 @@ class _MainCategoryState extends State<MainCategory> {
                     alignment: AlignmentDirectional.center,
                     padding: EdgeInsets.only(top: 25, bottom: 25),
                     child: Image.asset(
-                      AppImages.appLogoYellow,
+                      AppImages.appLogoMint,
                       width: 122,
                     ),
                   ),

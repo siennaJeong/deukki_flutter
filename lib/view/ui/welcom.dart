@@ -34,7 +34,7 @@ class _WelcomeState extends State<Welcome> {
                 margin: EdgeInsets.only(top: 45, bottom: 38),
                 width: 245,
                 child: Image.asset(
-                  AppImages.appLogoYellow
+                  AppImages.appLogoMint
                 ),
               ),
               Container(

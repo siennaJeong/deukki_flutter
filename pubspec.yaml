@@ -46,7 +46,10 @@ dependencies:
   build_runner: ^1.9.0
   dotted_border: ^1.0.6
   #assets_audio_player: ^2.0.10
-  just_audio: ^0.5.4
+  audioplayers: ^0.16.1
+  volume: ^1.0.1
+  hardware_buttons: ^1.0.0
+
 
   # ======== Social Login API =========
   kakao_flutter_sdk: ^0.4.2
@@ -81,6 +84,7 @@ flutter:
   assets:
     - images/app_logo_white.png
     - images/app_logo_yellow.png
+    - images/app_logo_mint.png
     - images/apple_logo.png
     - images/arrow_back_btn.png
     - images/back_btn.png
@@ -112,6 +116,10 @@ flutter:
     - images/expand_more.png
     - images/play_fast.png
     - images/icon_speaker_less.png
+    - images/blue_bg_shape.png
+    - images/green_bg_shape.png
+    - images/white_bg_shape.png
+    - images/yellow_bg_shape.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

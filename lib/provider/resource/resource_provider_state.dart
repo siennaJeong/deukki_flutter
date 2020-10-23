@@ -20,4 +20,5 @@ class ResourceProviderState {
   final getSentence = ProviderModelResult<List<SentenceVO>>();
   final getSentenceStages = ProviderModelResult<List<StageVO>>();
   final getPronunciation = ProviderModelResult<CommonResultVO>();
+  final saveAudioFile = ProviderModelResult<String>();
 }

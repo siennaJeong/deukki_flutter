@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 import 'package:deukki/data/repository/category/category_rest_repository.dart';
@@ -36,6 +37,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   final DBHelper _dbHelper;
   PackageInfo _packageInfo;
   bool requireInstall = false;
+  List<AudioFilePathVO> audioFile = [];
+  List<AudioFilePathVO> filePathList = [];
 
   Future<void> _initData() async {
     final initData = _versionRepository.initData();
@@ -167,20 +170,55 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     List<dynamic> wrongList = [];
     PronunciationVO rightPronun;
     String fileName = "$sentenceId";
+    final dbFilePath = await _dbHelper.getFilePath(stageIdx);
+    if(dbFilePath != null) {
+      filePathList = dbFilePath.map((items) => AudioFilePathVO.fromJson(items)).toList();
+    }
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
+
     Directory directory = await getApplicationDocumentsDirectory();
     String fileDir = directory.path;
-    getPronunciation.then((value) {
-      final result = value.asValue.value.result;
+
+    if(this.audioFile.length > 0) {
+      this.audioFile.clear();
+    }
+
+    getPronunciation.then((val) {
+      final result = val.asValue.value.result;
       rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
-      _categoryRepository.saveAudioFile(fileDir, rightPronun.downloadUrl, fileName + "-" + rightPronun.pIdx.toString() + "-" + "M.mp3");
+      if(filePathList != null && filePathList.toString().contains("$fileName-${rightPronun.pIdx.toString()}-$voice.mp3")) {
+        setAudioFile(sentenceId, rightPronun.pIdx, "$fileDir/$fileName-${rightPronun.pIdx.toString()}-$voice.mp3");
+      }else {
+        _categoryRepository.saveAudioFile(
+            fileDir,
+            rightPronun.downloadUrl,
+            "$fileName-${rightPronun.pIdx.toString()}-$voice.mp3").then((value) {
+              setAudioFile(sentenceId, rightPronun.pIdx, value);
+              _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
+        });
+      }
+
       wrongList = result['wrongPronunciationList'] as List;
       wrongList.forEach((element) {
         PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
-        _categoryRepository.saveAudioFile(fileDir, pronunciationVO.downloadUrl, fileName + "-" + pronunciationVO.pIdx.toString() + "-" + "M.mp3");
+        if(filePathList != null && filePathList.toString().contains("$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3")) {
+          setAudioFile(sentenceId, pronunciationVO.pIdx, "$fileDir/$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3");
+        }else {
+          _categoryRepository.saveAudioFile(
+              fileDir,
+              pronunciationVO.downloadUrl,
+              "$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3").then((value) {
+                setAudioFile(sentenceId, pronunciationVO.pIdx, value);
+                _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
+          });
+        }
       });
     });
   }
 
+  void setAudioFile(String sentenceId, int pIdx, String path) {
+    this.audioFile.add(AudioFilePathVO(sentenceId, pIdx, path));
+    notifyListeners();
+  }
 }

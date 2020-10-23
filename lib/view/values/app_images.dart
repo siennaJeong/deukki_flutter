@@ -2,7 +2,7 @@
 class AppImages {
   static const String _basePath = "images";
 
-  static String appLogoYellow = "$_basePath/app_logo_yellow.png";
+  static String appLogoMint = "$_basePath/app_logo_mint.png";
   static String kakaoLogo = "$_basePath/kakao_logo.png";
   static String googleLogo = "$_basePath/google_g_logo.png";
   static String facebookLogo = "$_basePath/facebook_logo.png";
@@ -33,5 +33,10 @@ class AppImages {
   static String playNormal = "$_basePath/icon_play.png";
   static String playFast = "$_basePath/play_fast.png";
   static String speaker = "$_basePath/icon_speaker_less.png";
+
+  static String greenBgImage = "$_basePath/green_bg_shape.png";
+  static String blueBgImage = "$_basePath/blue_bg_shape.png";
+  static String whiteBgImage = "$_basePath/white_bg_shape.png";
+  static String yellowBgImage = "$_basePath/yellow_bg_shape.png";
 
 }

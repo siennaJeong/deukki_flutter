@@ -8,7 +8,6 @@ import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
-import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
@@ -86,7 +85,7 @@ class CategoryRestRepository implements CategoryRepository {
 
   @override
   Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
-    final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=M", HttpUrls.headers(authJWT));
+    final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=$voice", HttpUrls.headers(authJWT));
     if(pronunciationJson.isValue) {
       return Result.value(CommonResultVO.fromJson(pronunciationJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -95,13 +94,15 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<void> saveAudioFile(String dir, String url, String fileName) async {
+  Future<String> saveAudioFile(String dir, String url, String fileName) async {
     File file = new File('$dir/$fileName');
     var request = await get(url);
-    var bytes = request.bodyBytes;//close();
+    var bytes = request.bodyBytes;
     await file.writeAsBytes(bytes);
-    print("save audio file path  : " + file.path);
+    if(file.path.isNotEmpty) {
+      return file.path;
+    }else {
+      return null;
+    }
   }
-
-
 }

@@ -214,7 +214,7 @@ class _StageDialogState extends State<StageDialog> {
         categoryProvider.selectedSentence.id,
         _selectedStageIdx,
         _selectedIndex == 1 ? true : false,
-        null
+        "M"       //  가입시 사용자가 선택한 성별로
       ).then((value) {
         final commonResult = resourceProviderModel.value.getPronunciation;
         final pronunResult = commonResult.result.asValue.value.result;

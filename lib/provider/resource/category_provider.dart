@@ -12,12 +12,13 @@ class CategoryProvider with ChangeNotifier {
   bool isBookmark;
   int selectLargeIndex;
   int selectStageIndex;
+  int stageScore;
   double stepProgress;
   String _largeId;
   String _mediumId;
   String _mediumTitle;
-  SentenceVO selectedSentence;
   String _sentenceTitle;
+  SentenceVO selectedSentence;
   PronunciationVO _rightPronunciation;
   List<CategoryLargeVO> _categoryLargeList = [];
   List<CategoryMediumVO> _categoryMediumList = [];
@@ -30,6 +31,7 @@ class CategoryProvider with ChangeNotifier {
     this.selectStageIndex = -1;
     this.isBookmark = false;
     this.stepProgress = 0.2;
+    this.stageScore = 0;
     if(dbHelper != null) {
       fetchAndSetLargeCategory();
     }
@@ -45,7 +47,7 @@ class CategoryProvider with ChangeNotifier {
   getMediumId() => _mediumId;
   getMediumTitle() => _mediumTitle;
   getSentenceTitle() => _sentenceTitle;
-  getRightPronun() => _rightPronunciation;
+  PronunciationVO getRightPronun() => _rightPronunciation;
 
   setLargeId(String largeId) => _largeId = largeId;
   setMediumId(String mediumId) => _mediumId = mediumId;
@@ -72,6 +74,7 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> setSentence(list) async {
     this._sentenceList = list;
+    print("category provider set sentence");
     notifyListeners();
   }
 
@@ -102,6 +105,11 @@ class CategoryProvider with ChangeNotifier {
 
   void onSelectedSentence(SentenceVO sentenceVO) {
     this.selectedSentence = sentenceVO;
+    notifyListeners();
+  }
+
+  void setStageScore(int stageScore) {
+    this.stageScore = stageScore;
     notifyListeners();
   }
 

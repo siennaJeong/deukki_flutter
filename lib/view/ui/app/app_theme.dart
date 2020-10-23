@@ -6,11 +6,13 @@ class AppThemeDataFactory {
     accentColor: MainColors.grey_100,
     backgroundColor: Colors.white,
     buttonColor: MainColors.purple_100,
+    cardColor: MainColors.none_color,
     fontFamily: 'TmoneyRound',
     textTheme: TextTheme(
       headline3: TextStyle(
         fontSize: 40,
-        fontWeight: FontWeight.w700
+        fontWeight: FontWeight.w700,
+        color: Colors.white
       ),
       headline4: TextStyle(
         fontSize: 32,

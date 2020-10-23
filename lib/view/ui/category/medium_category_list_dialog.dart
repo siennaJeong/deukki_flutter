@@ -20,6 +20,7 @@ class MediumCategoryListDialog extends StatefulWidget {
 class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   String _title;
   List<CategoryMediumVO> _list;
+  List<double> scores = [];   //  test
 
   @override
   void initState() {
@@ -29,12 +30,13 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   }
 
   Widget _listWidget(List<CategoryMediumVO> list) {
-    List<double> scores = [];   //  test
-    for(int i = 0 ; i < list.length ; i++) {
-      if(list[i].archiveStars == 0) {
-        scores.add(0.0);
-      }else {
-        scores.add(list[i].archiveStars / list[i].totalStars);
+    if(scores.length <= 0) {
+      for(int i = 0 ; i < list.length ; i++) {
+        if(list[i].archiveStars == 0) {
+          scores.add(0.0);
+        }else {
+          scores.add(list[i].archiveStars / list[i].totalStars);
+        }
       }
     }
     return Expanded(
