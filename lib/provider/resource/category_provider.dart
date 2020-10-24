@@ -74,7 +74,6 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> setSentence(list) async {
     this._sentenceList = list;
-    print("category provider set sentence");
     notifyListeners();
   }
 

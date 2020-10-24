@@ -24,7 +24,7 @@ class _MainCategoryState extends State<MainCategory> {
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    categoryProvider = Provider.of<CategoryProvider>(context);
+    categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }

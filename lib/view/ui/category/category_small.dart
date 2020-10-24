@@ -27,6 +27,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   final random = Random();
   final List<Color> randomColor = [];
   List<num> mainAxis = [];
+  List<SentenceVO> sentenceList = [];
 
   @override
   void initState() {
@@ -38,14 +39,17 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
-    if(randomColor.length <= 0) {
-      categoryProvider.sentenceList.forEach((element) {
+    final isSetData = resourceProviderModel.value.getSentence;
+    if(isSetData.hasData) {
+      /*if(sentenceList.length <= 0) {
+        sentenceList = categoryProvider.sentenceList;
+      }*/
+      isSetData.result.asValue.value.forEach((element) {
         randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
       });
-      print("category provider random color");
     }
 
     super.didChangeDependencies();
@@ -65,22 +69,27 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     return Future(() => true);
   }
 
-  Widget _listWidget() {
-    if(mainAxis.length <= 0) {
-      categoryProvider.sentenceList.forEach((element) {
-        String temp = element.content.replaceAll(" ", "");
-        var num;
-        if(temp.length >= 1 && temp.length <= 2) {
-          num = temp.length / 2.5;
-        }else if(temp.length > 2 && temp.length < 6) {
-          num = temp.length / 3;
-        }else {
-          num = temp.length / 3.6;
-        }
-        mainAxis.add(num);
-        print("listWidget sentence list ");
-      });
+  void _setMainAxis() {
+    if(mainAxis.length > 0) {
+      mainAxis.clear();
     }
+    categoryProvider.sentenceList.forEach((element) {
+      print("main axis");
+      String temp = element.content.replaceAll(" ", "");
+      var num;
+      if(temp.length >= 1 && temp.length <= 2) {
+        num = temp.length / 2.5;
+      }else if(temp.length > 2 && temp.length < 6) {
+        num = temp.length / 3;
+      }else {
+        num = temp.length / 3.6;
+      }
+      mainAxis.add(num);
+    });
+  }
+
+  Widget _listWidget() {
+    _setMainAxis();
     return Selector<CategoryProvider, List<SentenceVO>>(
       selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
@@ -154,6 +163,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   Widget _newTagWidget(int isNew) {
     if(isNew == 1) {
+      print("new tag widget");
       return Container(
         margin: EdgeInsets.only(left: 2, bottom: 4),
         padding: EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
@@ -175,6 +185,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       );
     }else {
+      print("new tag widget null");
       return Container();
     }
   }
@@ -182,14 +193,14 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   Widget _premiumTagWidget(int premium) {
     if(premium == 1) {
       return Container(
-        width: double.infinity,
-        height: double.infinity,
-        alignment: AlignmentDirectional.center,
-        decoration: BoxDecoration(
-          color: MainColors.black_50,
-          borderRadius: BorderRadius.circular(24)
-        ),
-        child: Icon(Icons.lock, size: 28, color: Colors.white,)
+          width: double.infinity,
+          height: double.infinity,
+          alignment: AlignmentDirectional.center,
+          decoration: BoxDecoration(
+              color: MainColors.black_50,
+              borderRadius: BorderRadius.circular(24)
+          ),
+          child: Icon(Icons.lock, size: 28, color: Colors.white,)
       );
     }else {
       return Container();
@@ -224,6 +235,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         secondStar = AppImages.fullStar;
         thirdStar = AppImages.fullStar;
       }
+      print("avg score widget");
       return Container(
         padding: EdgeInsets.only(left: 7, bottom: 7),
         decoration: BoxDecoration(
@@ -239,6 +251,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       );
     }else {
+      print("avg score widget null");
       return Container();
     }
   }
@@ -296,7 +309,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           final sentenceResult = resourceProviderModel.value.getSentence;
                           if(sentenceResult.hasData) {
                             categoryProvider.setSentence(sentenceResult.result.asValue.value);
-                            mainAxis = [];
+                            _setMainAxis();
                           }
                         })
                       }),
