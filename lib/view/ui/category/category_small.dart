@@ -44,9 +44,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
     final isSetData = resourceProviderModel.value.getSentence;
     if(isSetData.hasData) {
-      /*if(sentenceList.length <= 0) {
-        sentenceList = categoryProvider.sentenceList;
-      }*/
       isSetData.result.asValue.value.forEach((element) {
         randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
       });
@@ -74,12 +71,13 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       mainAxis.clear();
     }
     categoryProvider.sentenceList.forEach((element) {
-      print("main axis");
       String temp = element.content.replaceAll(" ", "");
       var num;
-      if(temp.length >= 1 && temp.length <= 2) {
+      if(temp.length == 1) {
+        num = temp.length / 1.3;
+      }else if(temp.length > 1 && temp.length <= 2) {
         num = temp.length / 2.5;
-      }else if(temp.length > 2 && temp.length < 6) {
+      }else if(temp.length > 2 && temp.length < 6){
         num = temp.length / 3;
       }else {
         num = temp.length / 3.6;
@@ -163,7 +161,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   Widget _newTagWidget(int isNew) {
     if(isNew == 1) {
-      print("new tag widget");
       return Container(
         margin: EdgeInsets.only(left: 2, bottom: 4),
         padding: EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
@@ -185,7 +182,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       );
     }else {
-      print("new tag widget null");
       return Container();
     }
   }
@@ -235,7 +231,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         secondStar = AppImages.fullStar;
         thirdStar = AppImages.fullStar;
       }
-      print("avg score widget");
       return Container(
         padding: EdgeInsets.only(left: 7, bottom: 7),
         decoration: BoxDecoration(
@@ -251,7 +246,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       );
     }else {
-      print("avg score widget null");
       return Container();
     }
   }
