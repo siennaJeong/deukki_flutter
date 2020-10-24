@@ -9,6 +9,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class MainCategory extends BaseWidget {
@@ -26,6 +27,8 @@ class _MainCategoryState extends State<MainCategory> {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 

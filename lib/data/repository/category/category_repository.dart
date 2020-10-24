@@ -12,5 +12,5 @@ abstract class CategoryRepository {
   Future<Result<List<SentenceVO>>> getSentence(String authJWT, String smallId);
   Future<Result<List<StageVO>>> getSentenceStages(String authJWT, String sentenceId);
   Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice);
-  Future<String> saveAudioFile(String dir, String url, String fileName);
+  Future<Result<String>> saveAudioFile(String dir, String url, String fileName);
 }

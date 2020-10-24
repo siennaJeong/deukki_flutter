@@ -11,6 +11,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
@@ -49,6 +50,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       });
     }
 
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 

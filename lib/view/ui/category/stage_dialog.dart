@@ -13,6 +13,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StageDialog extends StatefulWidget {
@@ -52,6 +53,7 @@ class _StageDialogState extends State<StageDialog> {
       }
     }
     categoryProvider.setSentenceTitle(_title);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 

@@ -16,6 +16,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hardware_buttons/hardware_buttons.dart';
 import 'package:provider/provider.dart';
@@ -65,8 +66,9 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -78,8 +80,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   _setRandomPath() {
-    randomPath = resourceProviderModel.audioFile[random.nextInt(resourceProviderModel.audioFile.length)];
-    print("random : " + randomPath.stageIdx.toString());
+    randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
   }
 
   Future<void> initVolume() async {
@@ -94,13 +95,13 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       if(currentVol >= maxVol) {
         currentVol = maxVol;
       }
-      Volume.setVol(currentVol, showVolumeUI: ShowVolumeUI.HIDE);
+      Volume.setVol(currentVol);
     }else {
       currentVol--;
       if(currentVol <= 0) {
         currentVol = 0;
       }
-      Volume.setVol(currentVol, showVolumeUI: ShowVolumeUI.HIDE);
+      Volume.setVol(currentVol);
     }
   }
 
@@ -160,6 +161,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   Widget _bookMarkWidget() {          //  Bookmark Button
+    print("bookmark widget");
     return Container(
       child: InkWell(
         child: Image.asset(
@@ -311,7 +313,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   Widget _dataLoadingWidget(String soundIcons, String playSpeed) {
-    if(resourceProviderModel.audioFile.length > 0) {
+    if(resourceProviderModel.audioFilePath.length > 0) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -433,6 +435,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         textColor = MainColors.grey_70;
       }
     }
+    print("list item widget");
     return GestureDetector(
       child: Card(
         elevation: 0,
@@ -547,7 +550,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       //  정답지 레이아웃 다시. path 랜덤 시키기.
       categoryProvider.setStepProgress();
       stageProvider.onSelectedAnswer(-1, "");
-      randomPath = resourceProviderModel.audioFile[random.nextInt(resourceProviderModel.audioFile.length)];
+      randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
       print("random : " + randomPath.stageIdx.toString());
 
       showDialog(
@@ -610,7 +613,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     ratioWidth = deviceWidth * 0.64;
 
     if(randomPath == null) {
-      if(resourceProviderModel.audioFile.length > 0 && categoryProvider.pronunciationList.length > 0) {
+      if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
         _setRandomPath();
       }
     }

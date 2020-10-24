@@ -37,7 +37,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   final DBHelper _dbHelper;
   PackageInfo _packageInfo;
   bool requireInstall = false;
-  List<AudioFilePathVO> audioFile = [];
+  List<AudioFilePathVO> _audioFilePath = [];
   List<AudioFilePathVO> filePathList = [];
 
   Future<void> _initData() async {
@@ -169,10 +169,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
     List<dynamic> wrongList = [];
     PronunciationVO rightPronun;
-    String fileName = "$sentenceId";
-    final dbFilePath = await _dbHelper.getFilePath(stageIdx);
-    if(dbFilePath != null) {
-      filePathList = dbFilePath.map((items) => AudioFilePathVO.fromJson(items)).toList();
+    String fileId = "$sentenceId";
+    String filePath, dbFilePath;
+    final dbFile = await _dbHelper.getFilePath(stageIdx);
+    if(dbFile != null) {
+      filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
     }
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
@@ -180,45 +181,72 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     Directory directory = await getApplicationDocumentsDirectory();
     String fileDir = directory.path;
 
-    if(this.audioFile.length > 0) {
-      this.audioFile.clear();
+    if(_audioFilePath.length > 0) {
+      _audioFilePath.clear();
     }
 
     getPronunciation.then((val) {
       final result = val.asValue.value.result;
       rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
-      if(filePathList != null && filePathList.toString().contains("$fileName-${rightPronun.pIdx.toString()}-$voice.mp3")) {
-        setAudioFile(sentenceId, rightPronun.pIdx, "$fileDir/$fileName-${rightPronun.pIdx.toString()}-$voice.mp3");
+      filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
+      dbFilePath = "$fileDir/$filePath";
+      if(filePathList != null && filePathList.toString().contains(filePath)) {
+        setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {
-        _categoryRepository.saveAudioFile(
+        saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
+        setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
+        _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
+        /*final saveAudioFile = _categoryRepository.saveAudioFile(
+            fileDir,
+            rightPronun.downloadUrl,
+            "$fileName-${rightPronun.pIdx.toString()}-$voice.mp3");
+        value.saveAudioFile.set(saveAudioFile, notifyListeners);*/
+        /*_categoryRepository.saveAudioFile(
             fileDir,
             rightPronun.downloadUrl,
             "$fileName-${rightPronun.pIdx.toString()}-$voice.mp3").then((value) {
               setAudioFile(sentenceId, rightPronun.pIdx, value);
               _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
-        });
+        });*/
       }
 
       wrongList = result['wrongPronunciationList'] as List;
       wrongList.forEach((element) {
         PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
-        if(filePathList != null && filePathList.toString().contains("$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3")) {
-          setAudioFile(sentenceId, pronunciationVO.pIdx, "$fileDir/$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3");
+        filePath = "$fileId-${pronunciationVO.pIdx.toString()}-$voice.mp3";
+        dbFilePath = "$fileDir/$filePath";
+        if(filePathList != null && filePathList.toString().contains(filePath)) {
+          setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }else {
-          _categoryRepository.saveAudioFile(
+          saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
+          setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
+          _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
+          /*final saveAudioFile = _categoryRepository.saveAudioFile(
+              fileDir,
+              pronunciationVO.downloadUrl,
+              "$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3");
+          value.saveAudioFile.set(saveAudioFile, notifyListeners);*/
+          /*_categoryRepository.saveAudioFile(
               fileDir,
               pronunciationVO.downloadUrl,
               "$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3").then((value) {
                 setAudioFile(sentenceId, pronunciationVO.pIdx, value);
                 _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
-          });
+          });*/
         }
       });
     });
   }
 
+  Future<void> saveAudioFile(String dir, String url, String fileName) async {
+    final saveAudioFile = _categoryRepository.saveAudioFile(dir, url, fileName);
+    await value.saveAudioFile.set(saveAudioFile, notifyListeners);
+  }
+
   void setAudioFile(String sentenceId, int pIdx, String path) {
-    this.audioFile.add(AudioFilePathVO(sentenceId, pIdx, path));
+    _audioFilePath.add(AudioFilePathVO(sentenceId, pIdx, path));
     notifyListeners();
   }
+
+  List<AudioFilePathVO> get audioFilePath => _audioFilePath;
 }

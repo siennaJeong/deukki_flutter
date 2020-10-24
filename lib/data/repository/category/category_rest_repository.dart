@@ -94,15 +94,15 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<String> saveAudioFile(String dir, String url, String fileName) async {
+  Future<Result<String>> saveAudioFile(String dir, String url, String fileName) async {
     File file = new File('$dir/$fileName');
     var request = await get(url);
     var bytes = request.bodyBytes;
     await file.writeAsBytes(bytes);
     if(file.path.isNotEmpty) {
-      return file.path;
+      return Result.value(file.path);
     }else {
-      return null;
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
 }
