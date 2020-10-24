@@ -13,7 +13,6 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
 class StageDialog extends StatefulWidget {
@@ -43,7 +42,7 @@ class _StageDialogState extends State<StageDialog> {
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
       if(categoryProvider.stageList[i - 1].score != null) {
