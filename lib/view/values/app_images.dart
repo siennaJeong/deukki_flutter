@@ -32,7 +32,7 @@ class AppImages {
   static String bookmarkActive = "$_basePath/icon_bookmark_active.png";
   static String playNormal = "$_basePath/icon_play.png";
   static String playFast = "$_basePath/play_fast.png";
-  static String speaker = "$_basePath/icon_speaker_less.png";
+  static String speaker = "$_basePath/icon_speaker.png";
 
   static String greenBgImage = "$_basePath/green_bg_shape.png";
   static String blueBgImage = "$_basePath/blue_bg_shape.png";

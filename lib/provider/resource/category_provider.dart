@@ -102,6 +102,11 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void initStepProgress() {
+    this.stepProgress = 0.2;
+    notifyListeners();
+  }
+
   void onSelectedSentence(SentenceVO sentenceVO) {
     this.selectedSentence = sentenceVO;
     notifyListeners();

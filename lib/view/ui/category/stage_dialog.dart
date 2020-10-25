@@ -224,6 +224,7 @@ class _StageDialogState extends State<StageDialog> {
             pronunResult['wrongPronunciationList'],
             PronunciationVO.fromJson(pronunResult['rightPronunciation'])
         );
+        categoryProvider.initStepProgress();
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
       });
     }

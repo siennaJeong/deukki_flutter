@@ -265,20 +265,20 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
     String soundIcons;
-    if(categoryProvider.stepProgress == 0.4) {
+    if(stageProvider.playRate == 1.25 ) {
       playSpeed = Strings.play_speed_15;
-    }else if(categoryProvider.stepProgress == 0.6) {
+    }else if(stageProvider.playRate == 1.5) {
       playSpeed = Strings.play_speed_20;
-    }else if(categoryProvider.stepProgress == 0.8){
+    }else if(stageProvider.playRate == 1.75){
       playSpeed = Strings.play_speed_25;
-    }else if(categoryProvider.stepProgress == 1.0) {
+    }else if(stageProvider.playRate == 2.0) {
       playSpeed = Strings.play_speed_30;
     }else {
       playSpeed = "";
     }
 
     if(!stageProvider.isPlaying) {
-      if(categoryProvider.stepProgress > 0.2) {
+      if(stageProvider.playRate > 1.0) {
         soundIcons = AppImages.playFast;
       }else {
         soundIcons = AppImages.playNormal;
@@ -335,21 +335,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(soundIcons, width: 24, height: 24),
-                  SizedBox(width: 2,),
-                  AnimatedContainer(
-                    width: 2,
-                    height: stageProvider.firstHeight,
-                    curve: Interval(0.0, 0.5),
-                    duration: Duration(milliseconds: 500),
-                  ),
-                  SizedBox(width: 2,),
-                  AnimatedContainer(
-                    width: 2,
-                    height: stageProvider.secondHeight,
-                    curve: Interval(0.5, 1.0),
-                    duration: Duration(milliseconds: 500),
-                    color: MainColors.purple_80,
-                  ),
                 ],
               )
           ),
@@ -560,6 +545,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
               stageProvider.onSelectedAnswer(-1, "");
             });
             return Stack(
+              alignment: AlignmentDirectional.center,
               children: <Widget>[
                 Positioned.fill(
                   child: BackdropFilter(
@@ -567,27 +553,24 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                     child: Container(color: Colors.black.withOpacity(0.1)),
                   ),
                 ),
-                Dialog(
-                  backgroundColor: Theme.of(context).cardColor,
-                  child: Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: <Widget>[
-                      Positioned(
-                          child: Container(
-                            width: deviceWidth * 0.35,
-                            child: Image.asset(bgImages),
-                          )
-                      ),
-                      Positioned(
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Positioned(
                         child: Container(
-                          child: Text(
-                            answerResult,
-                            style: Theme.of(context).textTheme.headline3,
-                          ),
+                          width: deviceWidth * 0.35,
+                          child: Image.asset(bgImages),
+                        )
+                    ),
+                    Positioned(
+                      child: Container(
+                        child: Text(
+                          answerResult,
+                          style: Theme.of(context).textTheme.headline3,
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ],
             );
