@@ -69,6 +69,7 @@ class CategoryProvider with ChangeNotifier {
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
     setMediumId(_categoryMediumList[0].id);
     setMediumTitle(_categoryMediumList[0].title);
+    notifyListeners();
   }
 
   Future<void> setSentence(list) async {
@@ -121,6 +122,7 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {
+    print("set pronuncation list");
     if(this._pronunciationList.length > 0) {
       this._pronunciationList.clear();
     }

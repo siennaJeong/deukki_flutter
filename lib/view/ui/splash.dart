@@ -97,7 +97,7 @@ class _SplashState extends State<Splash> {
     if(!forceUpdateResult.hasData) {
       return Container(
         alignment: AlignmentDirectional.center,
-        color: MainColors.yellow_100,
+        color: MainColors.green_80,
         child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
       );
     }

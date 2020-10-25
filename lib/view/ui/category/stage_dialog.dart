@@ -215,7 +215,7 @@ class _StageDialogState extends State<StageDialog> {
         authServiceAdapter.authJWT,
         categoryProvider.selectedSentence.id,
         _selectedStageIdx,
-        _selectedIndex == 1 ? true : false,
+        _selectedIndex == 0 ? true : false,
         "M"       //  가입시 사용자가 선택한 성별로
       ).then((value) {
         final commonResult = resourceProviderModel.value.getPronunciation;

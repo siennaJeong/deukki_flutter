@@ -217,9 +217,9 @@ class DBHelper{
     batch.commit();
   }
 
-  Future<List<Map<String, dynamic>>> getFilePath(int stageIdx) async {
+  Future<List<Map<String, dynamic>>> getFilePath(String sentenceId) async {
     final db = await database;
-    var res = await db.query(TABLE_AUDIO_PATH, where: 'stage_idx = ?', whereArgs: [stageIdx]);
+    var res = await db.query(TABLE_AUDIO_PATH, where: 'sentence_id = ?', whereArgs: [sentenceId]);
     return res.isNotEmpty ? res : null;
   }
 
