@@ -75,8 +75,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   void dispose() {
     _audioPlayer.dispose();
     _volumeButtionEvent?.cancel();
-    stageProvider.dispose();
     super.dispose();
+    stageProvider.dispose();
   }
 
   _setRandomPath() {

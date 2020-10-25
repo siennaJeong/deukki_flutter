@@ -168,6 +168,13 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> getSentenceStages(String authJWT, String sentenceId) async {
     final getSentenceStage = _categoryRepository.getSentenceStages(authJWT, sentenceId);
     await value.getSentenceStages.set(getSentenceStage, notifyListeners);
+
+    final dbFile = await _dbHelper.getFilePath(sentenceId);
+    if(dbFile != null) {
+      filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
+    }else {
+      print("db file null");
+    }
   }
 
   Future<void> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
@@ -175,10 +182,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     PronunciationVO rightPronun;
     String fileId = "$sentenceId";
     String filePath, dbFilePath;
-    final dbFile = await _dbHelper.getFilePath(sentenceId);
-    if(dbFile != null) {
-      filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
-    }
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
 
@@ -195,10 +198,10 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
       filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
       dbFilePath = "$fileDir/$filePath";
-      if(filePathList != null && filePathList.toString().contains(filePath)) {
+      if(filePathList != null && (filePathList.singleWhere((it) => it.path == dbFilePath, orElse: () => null)) != null) {
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {
-        print("get pronunciation list save file right");
+        print("file path null ? " + filePathList.toString());
         saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
         _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
@@ -209,10 +212,9 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
         filePath = "$fileId-${pronunciationVO.pIdx.toString()}-$voice.mp3";
         dbFilePath = "$fileDir/$filePath";
-        if(filePathList != null && filePathList.toString().contains(filePath)) {
+        if(filePathList != null && (filePathList.singleWhere((it) => it.path == dbFilePath, orElse: () => null)) != null) {
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }else {
-          print("get pronunciation list save file");
           saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
           _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
