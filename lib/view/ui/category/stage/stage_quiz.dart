@@ -76,7 +76,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     _audioPlayer.dispose();
     _volumeButtionEvent?.cancel();
     super.dispose();
-    stageProvider.dispose();
   }
 
   _setRandomPath() {
@@ -110,6 +109,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     _audioPlayer.setVolume((currentVol / maxVol) * 10);
     _audioPlayer.setPlaybackRate(playbackRate: speed);
     _playStateListener();
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   }
 
   _playStateListener() async {
@@ -126,7 +126,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         Positioned(left: 0, child: _backButtonWidget()),
         Positioned(
           child: Container(
-            margin: EdgeInsets.only(top: 20, bottom: 52),
+            margin: EdgeInsets.only(top: 20, bottom: 40),
             alignment: AlignmentDirectional.center,
             child: Text(
               '${categoryProvider.getSentenceTitle()}',
@@ -142,7 +142,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   Widget _backButtonWidget() {            //  Back Button
     return Container(
-      margin: EdgeInsets.only(bottom: 32),
+      margin: EdgeInsets.only(bottom: 25),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -164,7 +164,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _bookMarkWidget() {          //  Bookmark Button
     print("bookmark widget");
     return Container(
-      margin: EdgeInsets.only(bottom: 32),
+      margin: EdgeInsets.only(bottom: 25),
       child: InkWell(
         child: Image.asset(
           categoryProvider.isBookmark ? AppImages.bookmarkActive : AppImages.bookmarkNormal,
@@ -334,7 +334,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Image.asset(soundIcons, width: 24, height: 24),
+                  Image.asset(soundIcons, height: 24),
                 ],
               )
           ),

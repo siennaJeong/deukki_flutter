@@ -56,7 +56,7 @@ class CategoryProvider with ChangeNotifier {
   setRightPronun(PronunciationVO rightPronun) => _rightPronunciation = rightPronun;
 
   Future<void> fetchAndSetLargeCategory() async {
-    if(dbHelper.database != null) {
+    if(dbHelper.database != null && _categoryLargeList.length <= 0) {
       final largeList = await dbHelper.getCategories(TABLE_CATEGORY_LARGE);
       _categoryLargeList = largeList.map((items) => CategoryLargeVO.fromJson(items)).toList();
       notifyListeners();

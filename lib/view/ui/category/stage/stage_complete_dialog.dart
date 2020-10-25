@@ -23,7 +23,6 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
   }
 
@@ -31,6 +30,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   void didChangeDependencies() {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context);
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -65,8 +65,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
-      Navigator.pop(context);
-      if(categoryProvider.selectStageIndex % 3 == 0) {
+      if((categoryProvider.selectStageIndex + 1) % 3 == 0) {
         //  녹음 화면
       }else {
         Navigator.pop(context);

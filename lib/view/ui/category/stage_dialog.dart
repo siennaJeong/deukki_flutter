@@ -13,6 +13,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StageDialog extends StatefulWidget {
@@ -232,6 +233,7 @@ class _StageDialogState extends State<StageDialog> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     return Stack(
       children: <Widget>[
         Positioned.fill(

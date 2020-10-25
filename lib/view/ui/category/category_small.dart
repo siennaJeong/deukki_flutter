@@ -255,7 +255,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     return WillPopScope(
       child: Scaffold(
         backgroundColor: Colors.white,
