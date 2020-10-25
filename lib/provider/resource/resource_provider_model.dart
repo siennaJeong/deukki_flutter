@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
+import 'package:deukki/data/model/version_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
 import 'package:deukki/data/repository/category/category_rest_repository.dart';
 import 'package:deukki/data/repository/version/version_repository.dart';
@@ -16,6 +17,11 @@ import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
+  VersionRepository _versionRepository;
+  CategoryRepository _categoryRepository;
+  DBHelper _dbHelper;
+  AppVersionVO appVersionVO;
+
   ResourceProviderModel({
     @required VersionRepository versionRepository,
     @required CategoryRepository categoryRepository,
@@ -30,11 +36,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       ResourceProviderModel(
           versionRepository: VersionRestRepository(),
           categoryRepository: CategoryRestRepository(),
-          dbHelper: DBHelper()
-      );
-  final VersionRepository _versionRepository;
-  final CategoryRepository _categoryRepository;
-  final DBHelper _dbHelper;
+          dbHelper: DBHelper());
+
   PackageInfo _packageInfo;
   bool requireInstall = false;
   List<AudioFilePathVO> _audioFilePath = [];
@@ -55,9 +58,10 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> checkAllVersion() async {
     final checkAllVersion = _versionRepository.checkAllVersion();
     final dbVersion = await _dbHelper.getVersion();
+    var versionResultApp;
     checkAllVersion.then((value) {
       final versionResult = value.asValue.value.result;
-      final versionResultApp = versionResult[VersionRepository.APP_VERSION] as Map<String, dynamic>;
+      versionResultApp = versionResult[VersionRepository.APP_VERSION] as Map<String, dynamic>;
       final versionResultCategory = versionResult[VersionRepository.CATEGORY_VERSION] as Map<String, dynamic>;
       final versionResultFaq = versionResult[VersionRepository.FAQ_VERSION] as Map<String, dynamic>;
       if(dbVersion == null) {
@@ -95,7 +99,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         }
       }
     });
-    await value.checkAllVersion.set(checkAllVersion, notifyListeners);
+    await value.checkAllVersion.set(versionResultApp, notifyListeners);
   }
 
   Future<void> checkAppVersion() async {
@@ -196,18 +200,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
         _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
-        /*final saveAudioFile = _categoryRepository.saveAudioFile(
-            fileDir,
-            rightPronun.downloadUrl,
-            "$fileName-${rightPronun.pIdx.toString()}-$voice.mp3");
-        value.saveAudioFile.set(saveAudioFile, notifyListeners);*/
-        /*_categoryRepository.saveAudioFile(
-            fileDir,
-            rightPronun.downloadUrl,
-            "$fileName-${rightPronun.pIdx.toString()}-$voice.mp3").then((value) {
-              setAudioFile(sentenceId, rightPronun.pIdx, value);
-              _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
-        });*/
       }
 
       wrongList = result['wrongPronunciationList'] as List;
@@ -221,18 +213,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
           saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
           _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
-          /*final saveAudioFile = _categoryRepository.saveAudioFile(
-              fileDir,
-              pronunciationVO.downloadUrl,
-              "$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3");
-          value.saveAudioFile.set(saveAudioFile, notifyListeners);*/
-          /*_categoryRepository.saveAudioFile(
-              fileDir,
-              pronunciationVO.downloadUrl,
-              "$fileName-${pronunciationVO.pIdx.toString()}-$voice.mp3").then((value) {
-                setAudioFile(sentenceId, pronunciationVO.pIdx, value);
-                _dbHelper.insertAudioFile(sentenceId, stageIdx, value);
-          });*/
         }
       });
     });

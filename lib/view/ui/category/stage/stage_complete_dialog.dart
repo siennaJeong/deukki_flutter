@@ -7,6 +7,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StageCompleteDialog extends StatefulWidget {
@@ -19,16 +20,16 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   CategoryProvider categoryProvider;
 
   double deviceWidth, deviceHeight;
-  String firstStar, secondStar, thirdStar = "";
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context);
     super.didChangeDependencies();
   }
@@ -43,34 +44,33 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
+    String firstStar, secondStar, thirdStar;
+
     switch(categoryProvider.stageScore) {
       case 1:
         firstStar = AppImages.fullStar;
         secondStar = AppImages.emptyStar;
         thirdStar = AppImages.emptyStar;
-        print("stage first");
         break;
       case 2:
         firstStar = AppImages.fullStar;
         secondStar = AppImages.fullStar;
         thirdStar = AppImages.emptyStar;
-        print("stage second");
         break;
       case 3:
         firstStar = AppImages.fullStar;
         secondStar = AppImages.fullStar;
         thirdStar = AppImages.fullStar;
-        print("stage third");
         break;
     }
 
     void _quizDone() {
       Navigator.pop(context);
-      /*if(categoryProvider.selectStageIndex % 3 == 0) {
+      if(categoryProvider.selectStageIndex % 3 == 0) {
         //  녹음 화면
       }else {
         Navigator.pop(context);
-      }*/
+      }
     }
 
     return Scaffold(
@@ -80,7 +80,6 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
           children: <Widget>[
             Positioned(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Stack(
@@ -94,13 +93,15 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
                       ),
                       Positioned(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Image.asset(firstStar, scale: 40,),
-                                Image.asset(secondStar, scale: 40,),
-                                Image.asset(thirdStar, scale: 40,)
+                                Image.asset(firstStar, width: 40,),
+                                Image.asset(secondStar, width: 40,),
+                                Image.asset(thirdStar, width: 40,)
                               ],
                             ),
                             SizedBox(height: 6),
@@ -128,9 +129,9 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
                       )
                     ],
                   ),
-                  SizedBox(height: 25),
+                  SizedBox(height: 30),
                   Container(
-                    width: deviceWidth * 0.33,
+                    width: deviceWidth * 0.4,
                     child: CommonRaisedButton(
                       borderColor: MainColors.purple_100,
                       textColor: Colors.white,

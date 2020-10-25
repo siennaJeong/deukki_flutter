@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedHelper with ChangeNotifier{
+class SharedHelper{
   SharedHelper._();
   static final SharedHelper _sharedHelper = SharedHelper._();
   factory SharedHelper() => _sharedHelper;
@@ -17,7 +17,6 @@ class SharedHelper with ChangeNotifier{
 
   initShared() async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    notifyListeners();
     return _sharedPreferences;
   }
 

@@ -13,7 +13,6 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class StageDialog extends StatefulWidget {
@@ -31,7 +30,7 @@ class _StageDialogState extends State<StageDialog> {
   AuthServiceAdapter authServiceAdapter;
   String _title;
   int _selectedStageIdx, _selectedIndex;
-  bool _isStart;
+  bool _isStart = true;
   List<bool> _preScore = [true];
 
   @override
@@ -53,7 +52,6 @@ class _StageDialogState extends State<StageDialog> {
       }
     }
     categoryProvider.setSentenceTitle(_title);
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -202,13 +200,16 @@ class _StageDialogState extends State<StageDialog> {
   }
 
   void _onSelectedStage(int index, int stageIdx) {            //  ListView Item Click
-    _isStart = _preScore[index] ? true : false;
+    if(index > 0) {
+      _isStart = categoryProvider.stageList[index - 1].score != null ? true : false;
+    }
     _selectedIndex = index;
     _selectedStageIdx = stageIdx;
     categoryProvider.onSelectedStage(index);
   }
 
   void _stageStart() {        //  Start Click
+
     if(_isStart) {
       resourceProviderModel.getPronunciation(
         authServiceAdapter.authJWT,

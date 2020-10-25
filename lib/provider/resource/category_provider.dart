@@ -69,7 +69,6 @@ class CategoryProvider with ChangeNotifier {
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
     setMediumId(_categoryMediumList[0].id);
     setMediumTitle(_categoryMediumList[0].title);
-    notifyListeners();
   }
 
   Future<void> setSentence(list) async {
@@ -110,6 +109,15 @@ class CategoryProvider with ChangeNotifier {
   void setStageScore(int stageScore) {
     this.stageScore = stageScore;
     notifyListeners();
+  }
+
+  void updateScore(int score) {
+    if(this.selectStageIndex != null && this.stageScore > 0) {
+      final stageItem = this._stageList.firstWhere((element) => element.stage == (this.selectStageIndex + 1));
+      stageItem.score = score;
+      setStage(this._stageList);
+      notifyListeners();
+    }
   }
 
   Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {

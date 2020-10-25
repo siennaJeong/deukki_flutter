@@ -25,10 +25,8 @@ class _MainCategoryState extends State<MainCategory> {
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
+    categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -44,10 +42,9 @@ class _MainCategoryState extends State<MainCategory> {
           }
           RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
         });
-
       });
     }
-
+    print("category large list");
     return Selector<CategoryProvider, List<CategoryLargeVO>>(
       selector: (context, categoryProvider) => categoryProvider.categoryLargeList,
       builder: (context, largeList, child) {
@@ -67,7 +64,8 @@ class _MainCategoryState extends State<MainCategory> {
 
             return GestureDetector(
               child: Card(
-                color: categoryProvider.selectLargeIndex != null && categoryProvider.selectLargeIndex == index ? Colors.white : MainColors.randomColorMain[index],
+                color: categoryProvider.selectLargeIndex != null && categoryProvider.selectLargeIndex == index
+                    ? Colors.white : MainColors.randomColorMain[index],
                 margin: EdgeInsets.only(left: 8, right: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24),

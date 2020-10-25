@@ -68,7 +68,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -76,6 +75,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   void dispose() {
     _audioPlayer.dispose();
     _volumeButtionEvent?.cancel();
+    stageProvider.dispose();
     super.dispose();
   }
 
@@ -142,6 +142,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   Widget _backButtonWidget() {            //  Back Button
     return Container(
+      margin: EdgeInsets.only(bottom: 32),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -163,6 +164,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _bookMarkWidget() {          //  Bookmark Button
     print("bookmark widget");
     return Container(
+      margin: EdgeInsets.only(bottom: 32),
       child: InkWell(
         child: Image.asset(
           categoryProvider.isBookmark ? AppImages.bookmarkActive : AppImages.bookmarkNormal,
@@ -182,7 +184,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         _stepIndicatorWidget(width),
-        _playButtonWidget(width * 0.29),
+        _playButtonWidget(width * 0.32),
       ],
     );
   }
@@ -286,7 +288,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
 
     return Container(
-      width: width,
+      width: width + 2,
       margin: EdgeInsets.only(top: 32),
       child: RaisedButton(
         padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
@@ -333,21 +335,17 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(soundIcons, width: 24, height: 24),
-                  SizedBox(width: !stageProvider.isPlaying ? 0 : 2,),
+                  SizedBox(width: 2,),
                   AnimatedContainer(
-                    width: !stageProvider.isPlaying ? 0 : 2,
+                    width: 2,
                     height: stageProvider.firstHeight,
-                    onEnd: () {
-                      stageProvider.setSecondHeight(0); },
-                    curve: Curves.easeIn,
+                    curve: Interval(0.0, 0.5),
                     duration: Duration(milliseconds: 500),
                   ),
-                  SizedBox(width: !stageProvider.isPlaying ? 0 : 2,),
+                  SizedBox(width: 2,),
                   AnimatedContainer(
-                    width: !stageProvider.isPlaying ? 0 : 2,
+                    width: 2,
                     height: stageProvider.secondHeight,
-                    onEnd: () {
-                      stageProvider.setFirstHeight(0); },
                     curve: Interval(0.5, 1.0),
                     duration: Duration(milliseconds: 500),
                     color: MainColors.purple_80,
@@ -468,6 +466,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   Widget _answerWidget(int index, String pronunciation, String rightPronunciation, Color textColor) {
     if(stageProvider.selectedAnswerIndex == index) {
+      print("answer widget index dot : " + stageProvider.selectedAnswerIndex.toString());
       return DottedBorder(
         color: MainColors.yellow_100,
         dashPattern: [2, 8],
@@ -491,6 +490,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         ),
       );
     }else {
+      print("answer widget index : " + stageProvider.selectedAnswerIndex.toString());
       return Container(
         width: double.infinity,
         height: double.infinity,
@@ -549,7 +549,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       }
       //  정답지 레이아웃 다시. path 랜덤 시키기.
       categoryProvider.setStepProgress();
-      stageProvider.onSelectedAnswer(-1, "");
       randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
       print("random : " + randomPath.stageIdx.toString());
 
@@ -558,6 +557,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           builder: (BuildContext context) {
             Future.delayed(Duration(seconds: 1), () {
               Navigator.pop(context);
+              stageProvider.onSelectedAnswer(-1, "");
             });
             return Stack(
               children: <Widget>[
@@ -594,7 +594,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           });
     }else {
       //  Stage 완료 했을때. -> play speed 가 2 이상일때는 별 3개 1.25 ~ 1.5 일때 별 2개 1일때 별 1개. 별 2개부터 great!
-      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
       if(stageProvider.playRate <= 1.0) {
         categoryProvider.setStageScore(1);
       }else if(stageProvider.playRate > 1.0 && stageProvider.playRate <= 1.5) {
@@ -602,11 +601,15 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       }else {
         categoryProvider.setStageScore(3);
       }
+      categoryProvider.updateScore(categoryProvider.stageScore);
+      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
     var ratioWidth;
@@ -624,7 +627,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         child: Container(
           width: deviceWidth,
           height: deviceHeight,
-          margin: EdgeInsets.only(top: 14, bottom: 32, left: 44, right: 44),
+          margin: EdgeInsets.only(top: 14, bottom: 32, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

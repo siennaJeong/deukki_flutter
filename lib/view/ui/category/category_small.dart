@@ -4,6 +4,7 @@ import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
 import 'package:deukki/view/ui/category/stage_dialog.dart';
 import 'package:deukki/view/values/app_images.dart';
@@ -15,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:provider/provider.dart';
 
-class CategorySmall extends StatefulWidget {
+class CategorySmall extends BaseWidget {
   @override
   _CategorySmallState createState() => _CategorySmallState();
 }
@@ -49,8 +50,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
       });
     }
-
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     super.didChangeDependencies();
   }
 
@@ -90,6 +89,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   Widget _listWidget() {
     _setMainAxis();
+    print("category small list");
     return Selector<CategoryProvider, List<SentenceVO>>(
       selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
@@ -162,6 +162,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _newTagWidget(int isNew) {
+    print("new tag widget");
     if(isNew == 1) {
       return Container(
         margin: EdgeInsets.only(left: 2, bottom: 4),

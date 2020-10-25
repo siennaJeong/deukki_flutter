@@ -32,25 +32,28 @@ void main() async {
     runApp(
         MultiProvider(
             providers: [
-              ChangeNotifierProvider<DBHelper>(
+              Provider<DBHelper>(
                 create: (context) => DBHelper(),
                 lazy: true,
               ),
-              ChangeNotifierProvider<SharedHelper>(
+              Provider<SharedHelper>(
                 create: (context) => SharedHelper(),
                 lazy: true,
               ),
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
+                lazy: true,
               ),
               ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
                 create: (context) => AuthServiceAdapter("", sharedHelper: null, dbHelper: null),
                 update: (context, sharedHelper, dbHelper, previous) =>
                     AuthServiceAdapter(previous.authJWT, sharedHelper: sharedHelper, dbHelper: dbHelper),
+                lazy: true,
               ),
               ChangeNotifierProxyProvider<DBHelper, CategoryProvider>(
                 create: (context) => CategoryProvider([], dbHelper: null),
                 update: (context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
+                lazy: true,
               ),
             ],
             child: MaterialApp(
@@ -77,22 +80,28 @@ class Splash extends BaseWidget {
 }
 
 class _SplashState extends State<Splash> {
-  ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
+  Future<void> checkAppVersion;
+  Future<void> checkAllVersion;
 
   @override
   void didChangeDependencies() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
-    resourceProviderModel.checkAllVersion();
+    checkAllVersion ??= Provider.of<ResourceProviderModel>(context, listen: false).checkAllVersion();
+    checkAppVersion ??= Provider.of<ResourceProviderModel>(context).checkAppVersion();
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    if(authServiceAdapter.authJWT.isNotEmpty) {
-      resourceProviderModel.checkForceUpdate(authServiceAdapter.authJWT);
-    }
     super.didChangeDependencies();
   }
 
   Widget _widget() {
-    if(resourceProviderModel.requireInstall) {
+    final forceUpdateResult = context.select((ResourceProviderModel model) => model.value.checkAppVersion);
+    if(!forceUpdateResult.hasData) {
+      return Container(
+        alignment: AlignmentDirectional.center,
+        color: MainColors.yellow_100,
+        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
+      );
+    }
+    if(forceUpdateResult.result.asValue.value.requireInstall) {
       return Stack(
         children: <Widget>[
           Positioned.fill(

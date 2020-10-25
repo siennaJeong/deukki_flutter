@@ -34,7 +34,7 @@ class VersionRestRepository implements VersionRepository {
   Future<Result<AppVersionVO>> checkAppVersion() async {
     final checkAppVersionJson = await _httpClient.getRequest(HttpUrls.CHECK_APP_VERSION, HttpUrls.headers(""));
     if(checkAppVersionJson.isValue) {
-      return Result.value(AppVersionVO.fromJson(checkAppVersionJson.asValue.value as Map<String, dynamic>));
+      return Result.value(AppVersionVO.fromJson(checkAppVersionJson.asValue.value['result']));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
@@ -44,7 +44,7 @@ class VersionRestRepository implements VersionRepository {
   Future<Result<CategoryVersionVO>> checkCategoryVersion() async {
     final checkCategoryVersionJson = await _httpClient.getRequest(HttpUrls.CHECK_CATEGORY_VERSION, HttpUrls.headers(""));
     if(checkCategoryVersionJson.isValue) {
-      return Result.value(CategoryVersionVO.fromJson(checkCategoryVersionJson.asValue.value as Map<String, dynamic>));
+      return Result.value(CategoryVersionVO.fromJson(checkCategoryVersionJson.asValue.value['result'] as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
@@ -54,7 +54,7 @@ class VersionRestRepository implements VersionRepository {
   Future<Result<FaqVersionVO>> checkFaqVersion() async {
     final checkFaqVersionJson = await _httpClient.getRequest(HttpUrls.CHECK_FAQ_VERSION, HttpUrls.headers(""));
     if(checkFaqVersionJson.isValue) {
-      return Result.value(FaqVersionVO.fromJson(checkFaqVersionJson.asValue.value as Map<String, dynamic>));
+      return Result.value(FaqVersionVO.fromJson(checkFaqVersionJson.asValue.value['result'] as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

@@ -19,7 +19,7 @@ const String TABLE_CATEGORY_SMALL = 'category_small';
 const String TABLE_AUDIO_PATH = 'audio_path';
 const String TABLE_FAQ = 'faq';
 
-class DBHelper with ChangeNotifier{
+class DBHelper{
   DBHelper._();
   static final DBHelper _dbHelper = DBHelper._();
   factory DBHelper() => _dbHelper;
