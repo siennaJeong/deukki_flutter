@@ -39,10 +39,10 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> postRequest(String path, String authJWT, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
     try {
-      response = await post(path, headers: {HttpHeaders.authorizationHeader: authJWT}, body: body);
+      response = await post(path, headers: headers, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -99,10 +99,10 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> deleteRequest(String path, String authJWT) async {
+  Future<Result<dynamic>> deleteRequest(String path, Map<String, String> headers) async {
     Response response;
     try {
-      response = await delete(path, headers: {HttpHeaders.authorizationHeader: authJWT});
+      response = await delete(path, headers: headers);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {

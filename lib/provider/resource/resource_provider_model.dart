@@ -234,4 +234,18 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   }
 
   List<AudioFilePathVO> get audioFilePath => _audioFilePath;
+
+  Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
+    final updateBookmark = _categoryRepository.updateBookmark(authJWT, sentenceId, stageIdx);
+    await value.updateBookmark.set(updateBookmark, notifyListeners);
+  }
+
+  Future<void> getBookmark(String authJWT) async {
+    final getBookmark = _categoryRepository.getBookmark(authJWT);
+    await value.getBookmark.set(getBookmark, notifyListeners);
+  }
+
+  Future<void> deleteBookmark(String authJWT) async {
+
+  }
 }

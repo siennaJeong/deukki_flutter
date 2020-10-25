@@ -38,7 +38,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) async {
-     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, "", _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
+     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, HttpUrls.headers(""), _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
      if(signUpJson.isValue) {
        return Result.value(CommonResultVO.fromJson(signUpJson.asValue.value as Map<String, dynamic>));
      }else {
@@ -48,7 +48,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> signOut(String authJWT) async {
-    final signOutJson = await _httpClient.deleteRequest(HttpUrls.SIGN_OUT, authJWT);
+    final signOutJson = await _httpClient.deleteRequest(HttpUrls.SIGN_OUT, HttpUrls.headers(authJWT));
     if(signOutJson.isValue) {
       return Result.value(CommonResultVO.fromJson(signOutJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -58,7 +58,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> login(String authType, String authId) async {
-    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, "", _loginToJson(authType, authId));
+    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, HttpUrls.headers(""), _loginToJson(authType, authId));
     if(loginJson.isValue) {
       return Result.value(CommonResultVO.fromJson(loginJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -68,7 +68,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> logout(String authJWT) async {
-    final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, authJWT);
+    final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, HttpUrls.headers(authJWT));
     if(logoutJson.isValue) {
       return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
     }else {

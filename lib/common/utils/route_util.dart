@@ -4,6 +4,7 @@ import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/category/category_small.dart';
+import 'package:deukki/view/ui/category/stage/record.dart';
 import 'package:deukki/view/ui/category/stage/stage_complete_dialog.dart';
 import 'package:deukki/view/ui/category/stage/stage_quiz.dart';
 import 'package:deukki/view/ui/signin/login.dart';
@@ -28,6 +29,7 @@ class GetRoutesName {
   static const String ROUTE_CATEGORY_SMALL = "/categorySmall";
   static const String ROUTE_STAGE_QUIZ = "/stageQuiz";
   static const String ROUTE_STAGE_COMPLETE = "/stageComplete";
+  static const String ROUTE_RECORD = "/record";
 }
 
 final routes = <String, WidgetBuilder> {
@@ -45,6 +47,7 @@ final routes = <String, WidgetBuilder> {
     child: StageQuiz(),
   ),
   GetRoutesName.ROUTE_STAGE_COMPLETE: (context) => StageCompleteDialog(),
+  GetRoutesName.ROUTE_RECORD: (context) => Record(),
 };
 
 class RouteNavigator {
@@ -83,6 +86,9 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_STAGE_COMPLETE:
         Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_STAGE_COMPLETE);
+        break;
+      case GetRoutesName.ROUTE_RECORD:
+        Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_RECORD);
         break;
     }
   }

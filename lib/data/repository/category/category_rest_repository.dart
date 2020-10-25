@@ -6,6 +6,7 @@ import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
 import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
+import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
@@ -101,6 +102,38 @@ class CategoryRestRepository implements CategoryRepository {
     await file.writeAsBytes(bytes);
     if(file.path.isNotEmpty) {
       return Result.value(file.path);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
+    final updateBookmark = await _httpClient.postRequest("${HttpUrls.BOOKMARKS}/$sentenceId/$stageIdx", HttpUrls.headers(authJWT), null);
+    if(updateBookmark.isValue) {
+      return Result.value(updateBookmark.asValue.value);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<List<BookmarkVO>>> getBookmark(String authJWT) async {
+    final bookmarkListJson = await _httpClient.getRequest(HttpUrls.BOOKMARKS, HttpUrls.headers(authJWT));
+    if(bookmarkListJson.isValue) {
+      return Result.value((bookmarkListJson.asValue.value['result'] as List)
+          .map((json) => BookmarkVO.fromJson(json as Map<String, dynamic>))
+          .toList());
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx) async {
+    final deleteBookmark = await _httpClient.deleteRequest("${HttpUrls.BOOKMARKS}/$bookmarkIdx", HttpUrls.headers(authJWT));
+    if(deleteBookmark.isValue) {
+      return Result.value(deleteBookmark.asValue.value);
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

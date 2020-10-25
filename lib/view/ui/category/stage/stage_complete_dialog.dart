@@ -1,4 +1,5 @@
 
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
@@ -66,7 +67,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       if((categoryProvider.selectStageIndex + 1) % 3 == 0) {
-        //  녹음 화면
+        RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
       }else {
         Navigator.pop(context);
       }

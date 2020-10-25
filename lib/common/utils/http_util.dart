@@ -30,6 +30,8 @@ class HttpUrls {
 
   static const String STAGE_PRONUNCIATION = "$SERVER_URL/pronunciations";
 
+  static const String BOOKMARKS = "$SERVER_URL/bookmarks";
+
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-Type': 'application/json',
     'authorization': 'Bearer ' + authJWT

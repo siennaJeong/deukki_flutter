@@ -1,4 +1,5 @@
 
+import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
@@ -20,4 +21,7 @@ class ResourceProviderState {
   final getSentenceStages = ProviderModelResult<List<StageVO>>();
   final getPronunciation = ProviderModelResult<CommonResultVO>();
   final saveAudioFile = ProviderModelResult<String>();
+  final updateBookmark = ProviderModelResult<CommonResultVO>();
+  final getBookmark = ProviderModelResult<List<BookmarkVO>>();
+  final deleteBookmark = ProviderModelResult<CommonResultVO>();
 }
