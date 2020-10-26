@@ -31,6 +31,7 @@ class MainColors {
 
   static const Color grey_100 = const Color.fromRGBO(51,51,51,1);
   static const Color grey_90 = const Color.fromRGBO(137,137,137,1);
+  static const Color grey_80 = const Color.fromRGBO(122,122,122,1);
   static const Color grey_text = const Color.fromRGBO(182,182,182,1);
   static const Color grey_70 = const Color.fromRGBO(197,197,197,1);
   static const Color grey_border = const Color.fromRGBO(207,207,207,1);

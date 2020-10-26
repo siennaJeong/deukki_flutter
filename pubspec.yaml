@@ -41,14 +41,13 @@ dependencies:
   flutter_audio_recorder: ^0.5.5
   path_provider: ^1.6.11
   path: ^1.7.0
-  flare_splash_screen: ^3.0.1
   json_serializable: ^3.4.1
   build_runner: ^1.9.0
   dotted_border: ^1.0.6
-  #assets_audio_player: ^2.0.10
   audioplayers: ^0.16.1
   volume: ^1.0.1
   hardware_buttons: ^1.0.0
+  lottie: ^0.7.0+1
 
 
   # ======== Social Login API =========
@@ -120,6 +119,8 @@ flutter:
     - images/green_bg_shape.png
     - images/white_bg_shape.png
     - images/yellow_bg_shape.png
+    - images/icon_drop_down.png
+    - assets/lottie/sound_effect.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

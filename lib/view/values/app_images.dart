@@ -39,4 +39,8 @@ class AppImages {
   static String whiteBgImage = "$_basePath/white_bg_shape.png";
   static String yellowBgImage = "$_basePath/yellow_bg_shape.png";
 
+  static String xButton = "$_basePath/icon_clear.png";
+  static String dropDown = "$_basePath/icon_drop_down.png";
+
+  static String lottieAnimation = "assets/lottie/sound_effect.json";
 }

@@ -1,5 +1,6 @@
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
+import 'package:deukki/provider/resource/record_provider.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/provider_widget.dart';
@@ -47,7 +48,10 @@ final routes = <String, WidgetBuilder> {
     child: StageQuiz(),
   ),
   GetRoutesName.ROUTE_STAGE_COMPLETE: (context) => StageCompleteDialog(),
-  GetRoutesName.ROUTE_RECORD: (context) => Record(),
+  GetRoutesName.ROUTE_RECORD: (context) => ChangeNotifierProvider<RecordProvider>(
+    create: (context) => RecordProvider(),
+    child: Record(),
+  )
 };
 
 class RouteNavigator {
