@@ -8,6 +8,7 @@ import 'package:deukki/view/ui/category/category_small.dart';
 import 'package:deukki/view/ui/category/stage/record.dart';
 import 'package:deukki/view/ui/category/stage/stage_complete_dialog.dart';
 import 'package:deukki/view/ui/category/stage/stage_quiz.dart';
+import 'package:deukki/view/ui/mypage/my_page.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';
 import 'package:deukki/view/ui/signin/sign_up_terms.dart';
@@ -31,6 +32,7 @@ class GetRoutesName {
   static const String ROUTE_STAGE_QUIZ = "/stageQuiz";
   static const String ROUTE_STAGE_COMPLETE = "/stageComplete";
   static const String ROUTE_RECORD = "/record";
+  static const String ROUTE_MYPAGE = "/myPage";
 }
 
 final routes = <String, WidgetBuilder> {
@@ -40,18 +42,13 @@ final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_TERMS: (context) => SignUpTerms(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (context) => SignUpInputEmail(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (context) => SignUpInputName(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => ProviderWidget<UserProviderModel>(SignUpInputBirth(), (context) => UserProviderModel.build()),
+  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => SignUpInputBirth(),      //  ProviderWidget 에서 변경.
   GetRoutesName.ROUTE_WELCOME: (context) => Welcome(),
   GetRoutesName.ROUTE_CATEGORY_SMALL: (context) => CategorySmall(),
-  GetRoutesName.ROUTE_STAGE_QUIZ: (context) => ChangeNotifierProvider<StageProvider>(
-    create: (context) => StageProvider(),
-    child: StageQuiz(),
-  ),
+  GetRoutesName.ROUTE_STAGE_QUIZ: (context) => ChangeNotifierProvider<StageProvider>(create: (context) => StageProvider(), child: StageQuiz(),),
   GetRoutesName.ROUTE_STAGE_COMPLETE: (context) => StageCompleteDialog(),
-  GetRoutesName.ROUTE_RECORD: (context) => ChangeNotifierProvider<RecordProvider>(
-    create: (context) => RecordProvider(),
-    child: Record(),
-  )
+  GetRoutesName.ROUTE_RECORD: (context) => ChangeNotifierProvider<RecordProvider>(create: (context) => RecordProvider(), child: Record(),),
+  GetRoutesName.ROUTE_MYPAGE: (context) => ProviderWidget<UserProviderModel>(MyPage(), (context) => UserProviderModel.build()),
 };
 
 class RouteNavigator {
@@ -93,6 +90,9 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_RECORD:
         Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_RECORD);
+        break;
+      case GetRoutesName.ROUTE_MYPAGE:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE);
         break;
     }
   }

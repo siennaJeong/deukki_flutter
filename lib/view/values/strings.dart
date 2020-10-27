@@ -80,7 +80,7 @@ class Strings {
   static const String mypage_bookmark_nothing = '북마크한 단어/문장이 없습니다.';
 
   static const String mypage_membership = '멤버십';
-  static const String mypage_membership_status = '멤버삽 상태 : ';
+  static const String mypage_membership_status = '멤버십 상태 : ';
   static const String mypage_membership_title = '멤버십 가입시 모든 컨텐츠 이용 가능!';
   static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
   static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';

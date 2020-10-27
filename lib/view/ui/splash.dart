@@ -40,6 +40,10 @@ void main() async {
                 create: (context) => SharedHelper(),
                 lazy: true,
               ),
+              ChangeNotifierProvider<UserProviderModel>(
+                create: (context) => UserProviderModel.build(),
+                lazy: true,
+              ),
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
                 lazy: true,

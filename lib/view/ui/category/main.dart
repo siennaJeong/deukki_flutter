@@ -3,6 +3,7 @@ import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -24,8 +25,8 @@ class _MainCategoryState extends State<MainCategory> {
 
   @override
   void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
@@ -111,6 +112,11 @@ class _MainCategoryState extends State<MainCategory> {
     );
   }
 
+  void _myPage() {
+    //  북마크 가져오기, 결제 정보 가져오기,
+
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -170,7 +176,7 @@ class _MainCategoryState extends State<MainCategory> {
                           )
                         ],
                       ),
-                      onPressed: () {},   //  My Menu Button
+                      onPressed: () { _myPage(); },         //  My page Button
                     ),
                   ),
                 ],
