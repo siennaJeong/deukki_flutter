@@ -1,4 +1,5 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -12,6 +13,7 @@ import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 class CategoryRestRepository implements CategoryRepository {
@@ -134,6 +136,43 @@ class CategoryRestRepository implements CategoryRepository {
     final deleteBookmark = await _httpClient.deleteRequest("${HttpUrls.BOOKMARKS}/$bookmarkIdx", HttpUrls.headers(authJWT));
     if(deleteBookmark.isValue) {
       return Result.value(deleteBookmark.asValue.value);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> recordUploadLink(String authJWT, File file, int stage, int round, String sentenceId) async {
+    final recordUploadLink = await _httpClient.postRequest(HttpUrls.RECORD_UPLOAD, HttpUrls.headers(authJWT), _uploadToJson(stage.toString(), round.toString(), sentenceId));
+    if(recordUploadLink.isValue) {
+      final result = recordUploadLink.asValue.value['result'];
+      final idx = result['idx'];
+      final uploadUrl = result['uploadUrl'];
+      _upload(authJWT, idx, uploadUrl, file);
+      return Result.value(CommonResultVO.fromJson(recordUploadLink.asValue.value as Map<String, dynamic>));
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  Future<void> _upload(String authJWT, int idx, String url, File file) async {
+    var response = await put(url, headers: HttpUrls.uploadHeader(), body: await file.readAsBytes());
+    if(response.statusCode == 200) {
+      updateRecordResult(authJWT, idx);
+    }
+  }
+
+  Map<String, dynamic> _uploadToJson(String stage, String round, String sentenceId) => <String, dynamic> {
+    'stage': stage,
+    'round': round,
+    'sentenceId': sentenceId,
+  };
+
+  @override
+  Future<Result<CommonResultVO>> updateRecordResult(String authJWT, int idx) async {
+    final updateRecordResult = await _httpClient.patchRequest("${HttpUrls.RECORD_UPLOAD}/$idx?isUpload=true", HttpUrls.headers(authJWT), null);
+    if(updateRecordResult.isValue) {
+      return Result.value(CommonResultVO.fromJson(updateRecordResult.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

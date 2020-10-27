@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/record_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
@@ -22,6 +24,7 @@ class Record extends BaseWidget {
 }
 
 class _RecordState extends State<Record> {
+  AuthServiceAdapter authServiceAdapter;
   ResourceProviderModel resourceProviderModel;
   CategoryProvider categoryProvider;
   RecordProvider recordProvider;
@@ -30,11 +33,16 @@ class _RecordState extends State<Record> {
   Recording _recording;
   RecordingStatus _recordingStatus = RecordingStatus.Unset;
   double _avgPower = 0.0;
+  String tempPath, dirPath;
+  Directory directory;
+  File file;
+
+  var deviceWidth, deviceHeight;
 
   @override
   void initState() {
     super.initState();
-    _init();
+    _initRecorder();
   }
 
   @override
@@ -42,18 +50,20 @@ class _RecordState extends State<Record> {
     recordProvider = Provider.of<RecordProvider>(context);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+
     super.didChangeDependencies();
   }
 
-  void _init() async {
+  void _initRecorder() async {
     try{
-      if(await FlutterAudioRecorder.hasPermissions) {
-        //String pIdx = "_${categoryProvider.getRightPronun().pIdx}";
-        String tempPath = "/record_${DateTime.now().millisecond}.mp4";
-        Directory directory = await getTemporaryDirectory();
-        String dirPath = directory.path;
-        print("temporary directory : " + dirPath);
+      //String pIdx = "_${categoryProvider.getRightPronun().pIdx}";
+      tempPath = "/record_${DateTime.now().millisecond}.aac";
+      directory = await getTemporaryDirectory();
+      dirPath = directory.path;
 
+      if(await FlutterAudioRecorder.hasPermissions) {
+        print("temporary directory : " + dirPath + tempPath);
         _recorder = FlutterAudioRecorder(dirPath + tempPath);
         await _recorder.initialized;
 
@@ -107,22 +117,126 @@ class _RecordState extends State<Record> {
   void _stop() async {
     recordProvider.setIsRecord(false);
     var stop = await _recorder.stop();
+
     setState(() {
       _avgPower = 0.0;
       _recording = stop;
       _recordingStatus = _recording.status;
       print("record duration : " + _recording.duration.toString());
     });
-    _init();
   }
 
-  void _voidCallback() {
+  void _recordButtonCallback() {                //  Record Button Click
     switch(_recordingStatus) {
       case RecordingStatus.Initialized:
-        return _start();
+        _start();
+        break;
       case RecordingStatus.Recording:
-        return _stop();
+        _stop();
+
+        if(_recording.duration >= Duration(milliseconds: 20000)) {
+          Scaffold.of(context).showSnackBar(
+              SnackBar(content: Text(Strings.record_over_time)));
+        }else {
+          recordProvider.setRoundCount();
+          showDialog(             //  Record 끝난 후 Dialog
+              context: context,
+              builder: (BuildContext context) {
+                return Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                        child: Container(color: Colors.black.withOpacity(0.1)),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(height: 10),
+                        Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: <Widget>[
+                            Positioned(
+                              child: Container(
+                                width: deviceWidth * 0.35,
+                                child: Image.asset(AppImages.yellowBgImage),
+                              ),
+                            ),
+                            Positioned(
+                              child: Container(
+                                child: Text(
+                                  Strings.thank_you,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontFamily: "TmoneyRound",
+                                    fontWeight: FontWeight.w700,
+                                    color: MainColors.blue_100,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 25),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: deviceWidth * 0.2,
+                              child: CommonRaisedButton(            //  다시 발음하기 Button
+                                borderColor: MainColors.purple_100,
+                                buttonColor: Colors.white,
+                                textColor: MainColors.purple_100,
+                                buttonText: Strings.record_again,
+                                fontSize: 16,
+                                voidCallback: _recordAgainCallback,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Container(
+                              width: deviceWidth * 0.2,
+                              child: CommonRaisedButton(            //  확인 Button
+                                borderColor: MainColors.purple_100,
+                                buttonColor: MainColors.purple_100,
+                                textColor: Colors.white,
+                                buttonText: Strings.common_btn_ok,
+                                fontSize: 16,
+                                voidCallback: _recordDoneCallback,
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              }
+          );
+        }
+        break;
     }
+  }
+
+  Future<void> _recordUpload(int roundCount) async {
+    file = File(dirPath + tempPath);
+    //  stage, round, sentenceId
+    resourceProviderModel.recordUpload(authServiceAdapter.authJWT, file, 3, roundCount, "D004001001001");
+  }
+
+  void _recordAgainCallback() {
+    _recordUpload(recordProvider.roundCount);
+    _initRecorder();
+    Navigator.pop(context);
+  }
+
+  void _recordDoneCallback() {
+    _recordUpload(recordProvider.roundCount);
   }
 
   Widget _closeButtonWidget() {
@@ -151,7 +265,7 @@ class _RecordState extends State<Record> {
             height: 24
           ),
         ),
-        onTap: () => _voidCallback(),
+        onTap: () => _recordButtonCallback(),
       );
     }else {
       return CommonRaisedButton(
@@ -160,7 +274,7 @@ class _RecordState extends State<Record> {
         textColor: Colors.white,
         borderColor: MainColors.purple_100,
         fontSize: 16,
-        voidCallback: _voidCallback,
+        voidCallback: _recordButtonCallback,
       );
     }
   }
@@ -168,8 +282,9 @@ class _RecordState extends State<Record> {
 
   @override
   Widget build(BuildContext context) {
-    double deviceWidth = MediaQuery.of(context).size.width;
-    double deviceHeight = MediaQuery.of(context).size.height;
+
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       backgroundColor: Colors.white,

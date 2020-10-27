@@ -24,4 +24,5 @@ class ResourceProviderState {
   final updateBookmark = ProviderModelResult<CommonResultVO>();
   final getBookmark = ProviderModelResult<List<BookmarkVO>>();
   final deleteBookmark = ProviderModelResult<CommonResultVO>();
+  final recordUpload = ProviderModelResult<CommonResultVO>();
 }

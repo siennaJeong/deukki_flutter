@@ -245,7 +245,13 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     await value.getBookmark.set(getBookmark, notifyListeners);
   }
 
-  Future<void> deleteBookmark(String authJWT) async {
+  Future<void> deleteBookmark(String authJWT, int bookmarkIdx) async {
+    final deleteBookmark = _categoryRepository.deleteBookmark(authJWT, bookmarkIdx);
+    await value.deleteBookmark.set(deleteBookmark, notifyListeners);
+  }
 
+  Future<void> recordUpload(String authJWT, File file, int stage, int round, String sentenceId) async {
+    final recordUpload = _categoryRepository.recordUploadLink(authJWT, file, stage, round, sentenceId);
+    await value.recordUpload.set(recordUpload, notifyListeners);
   }
 }

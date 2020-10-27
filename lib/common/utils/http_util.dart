@@ -29,11 +29,15 @@ class HttpUrls {
   static const String SENTENCE_LEARN = "/learning";
 
   static const String STAGE_PRONUNCIATION = "$SERVER_URL/pronunciations";
+  static const String RECORD_UPLOAD = "$STAGE_PRONUNCIATION/speaking";
 
   static const String BOOKMARKS = "$SERVER_URL/bookmarks";
 
   static Map<String, String> headers(String authJWT) => <String, String> {
-    'content-Type': 'application/json',
     'authorization': 'Bearer ' + authJWT
+  };
+
+  static Map<String, String> uploadHeader() => <String, String> {
+    'Content-Type': 'audio/aac'
   };
 }

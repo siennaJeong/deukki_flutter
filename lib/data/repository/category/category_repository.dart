@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:async/async.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
@@ -17,4 +19,6 @@ abstract class CategoryRepository {
   Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx);
   Future<Result<List<BookmarkVO>>> getBookmark(String authJWT);
   Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx);
+  Future<Result<CommonResultVO>> recordUploadLink(String authJWT, File file, int stage, int round, String sentenceId);
+  Future<Result<CommonResultVO>> updateRecordResult(String authJWT, int idx);
 }
