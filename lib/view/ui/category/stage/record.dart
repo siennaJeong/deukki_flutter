@@ -225,8 +225,13 @@ class _RecordState extends State<Record> {
 
   Future<void> _recordUpload(int roundCount) async {
     file = File(dirPath + tempPath);
-    //  stage, round, sentenceId
-    resourceProviderModel.recordUpload(authServiceAdapter.authJWT, file, 3, roundCount, "D004001001001");
+    resourceProviderModel.recordUpload(
+        authServiceAdapter.authJWT,
+        file,
+        categoryProvider.selectStageIndex + 1,    //  stage
+        roundCount,                               //  round
+        categoryProvider.getSentenceTitle()       //  sentenceId
+    );
   }
 
   void _recordAgain() {
@@ -327,7 +332,7 @@ class _RecordState extends State<Record> {
                               height: deviceHeight * 0.22,
                               alignment: AlignmentDirectional.center,
                               child: Text(
-                                  "좋은 아침이야",
+                                  categoryProvider.getSentenceTitle(),
                                   style: TextStyle(
                                       fontSize: 16,
                                       fontFamily: "TmoneyRound",
@@ -352,7 +357,7 @@ class _RecordState extends State<Record> {
                                     height: deviceHeight * 0.22,
                                     alignment: AlignmentDirectional.center,
                                     child: Text(
-                                      "조은 아치미야",
+                                      categoryProvider.getRightPronun().pronunciation,
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontFamily: "TmoneyRound",

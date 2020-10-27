@@ -32,7 +32,7 @@ class _MainCategoryState extends State<MainCategory> {
 
   Widget _categoryLargeList() {
     void _onSelectedLarge(int index, String largeId) {
-      /*categoryProvider.onSelectedLarge(index);
+      categoryProvider.onSelectedLarge(index);
       resourceProviderModel.getCategoryMediumStar(authServiceAdapter.authJWT, largeId);
       categoryProvider.setMediumCategory(largeId).then((value) {
         resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getMediumId()).then((value) {
@@ -42,8 +42,8 @@ class _MainCategoryState extends State<MainCategory> {
           }
           RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
         });
-      });*/
-      RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
+      });
+      //RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
     }
     print("category large list");
     return Selector<CategoryProvider, List<CategoryLargeVO>>(
