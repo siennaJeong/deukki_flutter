@@ -268,8 +268,25 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 14, left: 44),
-                    child: GestureDetector(
-                      child: Image.asset(AppImages.backBtn, width: 44, height: 44,),  //  Back button
+                    child: GestureDetector(                         //  Back button
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 25),
+                        child: Ink(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: MainColors.green_100, width: 2.0),
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(100.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
+                            ),
+                            onTap: () => { Navigator.of(context).pop() },
+                          ),
+                        ),
+                      ),
                       onTap: () => { _onBackPressed() },
                     ),
                   ),
@@ -301,14 +318,16 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                             );
                           }
                       ).then((value) => {
-                        resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
-                          categoryProvider.setMediumTitle(value[0]);
-                          final sentenceResult = resourceProviderModel.value.getSentence;
-                          if(sentenceResult.hasData) {
-                            categoryProvider.setSentence(sentenceResult.result.asValue.value);
-                            _setMainAxis();
-                          }
-                        })
+                        if(value != null) {
+                          resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
+                            categoryProvider.setMediumTitle(value[0]);
+                            final sentenceResult = resourceProviderModel.value.getSentence;
+                            if(sentenceResult.hasData) {
+                              categoryProvider.setSentence(sentenceResult.result.asValue.value);
+                              _setMainAxis();
+                            }
+                          })
+                        }
                       }),
                     },
                   ),

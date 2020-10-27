@@ -21,7 +21,7 @@ class CategoryLargeVO{
 
 @JsonSerializable(explicitToJson: true)
 class CategoryMediumVO extends CategoryLargeVO {
-  @JsonKey(name: 'achiveStars')
+  @JsonKey(name: 'achieveStars')
   int archiveStars;
 
   @JsonKey(name: 'totalStars')
@@ -41,13 +41,13 @@ class MediumStarsVO {
   @JsonKey(name: 'id')
   String id;
 
-  @JsonKey(name: 'achiveStars')
-  int archiveStars;
+  @JsonKey(name: 'achieveStars')
+  int achieveStars;
 
   @JsonKey(name: 'totalStars')
   int totalStars;
 
-  MediumStarsVO(this.id, this.archiveStars, this.totalStars);
+  MediumStarsVO(this.id, this.achieveStars, this.totalStars);
 
   factory MediumStarsVO.fromJson(Map<String, dynamic> json) => _$MediumStarsVOFromJson(json);
   Map<String, dynamic> toJson() => _$MediumStarsVOToJson(this);

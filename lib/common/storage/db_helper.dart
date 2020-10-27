@@ -47,7 +47,7 @@ class DBHelper{
             "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, archive_star INTEGER, total_star INTEGER, large_id TEXT)"
+            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, achieve_star INTEGER, total_star INTEGER, large_id TEXT)"
           );
           db.execute(
             "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
@@ -164,7 +164,7 @@ class DBHelper{
     mediumStars.forEach((val) {
       MediumStarsVO mediumStarsVO = MediumStarsVO.fromJson(val);
       batch.update(TABLE_CATEGORY_MEDIUM,
-          {'archive_star': mediumStarsVO.archiveStars == null ? 0 : mediumStarsVO.archiveStars , 'total_star': mediumStarsVO.totalStars},
+          {'achieve_star': mediumStarsVO.achieveStars == null ? 0 : mediumStarsVO.achieveStars , 'total_star': mediumStarsVO.totalStars},
           where: 'id = ?',
           whereArgs: ['${mediumStarsVO.id}']
       );
@@ -189,7 +189,7 @@ class DBHelper{
       'id': mediumVO.id,
       'title': mediumVO.title,
       'sequence': mediumVO.sequence,
-      'archive_star': mediumVO.archiveStars == null ? 0 : mediumVO.archiveStars,
+      'achieve_star': mediumVO.archiveStars == null ? 0 : mediumVO.archiveStars,
       'total_star': mediumVO.totalStars == null ? 0 : mediumVO.totalStars,
       'premium': mediumVO.premium ? 1 : 0,
       'large_id': largeId
@@ -202,7 +202,7 @@ class DBHelper{
       map['id'] as String,
       map['title'] as String,
       map['sequence'] as int,
-      map['archive_star'] as int,
+      map['achieve_star'] as int,
       map['total_star'] as int,
       map['premium'] == 1 ? true : false
     );
