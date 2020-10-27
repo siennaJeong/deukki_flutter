@@ -195,7 +195,7 @@ class _RecordState extends State<Record> {
                                 textColor: MainColors.purple_100,
                                 buttonText: Strings.record_again,
                                 fontSize: 16,
-                                voidCallback: _recordAgainCallback,
+                                voidCallback: _recordAgain,
                               ),
                             ),
                             SizedBox(width: 16),
@@ -207,7 +207,7 @@ class _RecordState extends State<Record> {
                                 textColor: Colors.white,
                                 buttonText: Strings.common_btn_ok,
                                 fontSize: 16,
-                                voidCallback: _recordDoneCallback,
+                                voidCallback: _recordDone,
                               ),
                             )
                           ],
@@ -229,14 +229,16 @@ class _RecordState extends State<Record> {
     resourceProviderModel.recordUpload(authServiceAdapter.authJWT, file, 3, roundCount, "D004001001001");
   }
 
-  void _recordAgainCallback() {
+  void _recordAgain() {
     _recordUpload(recordProvider.roundCount);
     _initRecorder();
     Navigator.pop(context);
   }
 
-  void _recordDoneCallback() {
+  void _recordDone() {
+    Navigator.pop(context);
     _recordUpload(recordProvider.roundCount);
+    Navigator.pop(context);
   }
 
   Widget _closeButtonWidget() {

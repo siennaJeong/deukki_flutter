@@ -157,16 +157,11 @@ class CategoryRestRepository implements CategoryRepository {
 
   Future<void> _upload(String authJWT, int idx, String url, File file) async {
     var response = await put(url, headers: HttpUrls.uploadHeader(), body: await file.readAsBytes());
+    print("upload done : " + response.statusCode.toString());
     if(response.statusCode == 200) {
       updateRecordResult(authJWT, idx);
     }
   }
-
-  Map<String, dynamic> _uploadToJson(String stage, String round, String sentenceId) => <String, dynamic> {
-    'stage': stage,
-    'round': round,
-    'sentenceId': sentenceId,
-  };
 
   @override
   Future<Result<CommonResultVO>> updateRecordResult(String authJWT, int idx) async {
@@ -177,4 +172,10 @@ class CategoryRestRepository implements CategoryRepository {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
+
+  Map<String, dynamic> _uploadToJson(String stage, String round, String sentenceId) => <String, dynamic> {
+    'stage': stage,
+    'round': round,
+    'sentenceId': sentenceId,
+  };
 }
