@@ -5,10 +5,13 @@ import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
+import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -29,27 +32,29 @@ class StageQuiz extends StatefulWidget {
 
 class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMixin {
   CategoryProvider categoryProvider;
+  UserProviderModel userProviderModel;
+  AuthServiceAdapter authServiceAdapter;
   ResourceProviderModel resourceProviderModel;
   StageProvider stageProvider;
-  AnimationController _controller;
-  Animation _animation, _delayAnimation;
 
   final random = Random();
+
   AudioPlayer _audioPlayer;
   AudioManager _audioManager;
-  StreamSubscription _volumeButtionEvent;
+  StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
   int maxVol, currentVol;
+
   var deviceWidth;
   var deviceHeight;
 
+  List<BookmarkVO> _bookmarkList = [];
 
   @override
   void initState() {
-    _controller = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _audioPlayer = AudioPlayer();
     _audioManager = AudioManager.STREAM_MUSIC;
-    _volumeButtionEvent = volumeButtonEvents.listen((event) {
+    _volumeButtonEvent = volumeButtonEvents.listen((event) {
       switch(event) {
         case VolumeButtonEvent.VOLUME_UP:
           _setVolume(true);
@@ -67,6 +72,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
     super.didChangeDependencies();
   }
@@ -74,7 +81,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   @override
   void dispose() {
     _audioPlayer.dispose();
-    _volumeButtionEvent?.cancel();
+    _volumeButtonEvent?.cancel();
+    stageProvider.stopLearnTime();
     super.dispose();
   }
 
@@ -162,7 +170,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   Widget _bookMarkWidget() {          //  Bookmark Button
-    print("bookmark widget");
     return Container(
       margin: EdgeInsets.only(bottom: 25),
       child: InkWell(
@@ -171,8 +178,16 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           width: 50,
           height: 50,
         ),
-        onTap: () => {
-          categoryProvider.isBookmark ? categoryProvider.onBookMark(false) : categoryProvider.onBookMark(true)
+        onTap: () {
+          if(categoryProvider.isBookmark) {
+            categoryProvider.onBookMark(false);
+            BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
+            userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
+            userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
+          }else {
+            categoryProvider.onBookMark(true);
+            userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
+          }
         },
       ),
     );
@@ -418,7 +433,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         textColor = MainColors.grey_70;
       }
     }
-    print("list item widget");
     return GestureDetector(
       child: Card(
         elevation: 0,
@@ -451,7 +465,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   Widget _answerWidget(int index, String pronunciation, String rightPronunciation, Color textColor) {
     if(stageProvider.selectedAnswerIndex == index) {
-      print("answer widget index dot : " + stageProvider.selectedAnswerIndex.toString());
       return DottedBorder(
         color: MainColors.yellow_100,
         dashPattern: [2, 8],
@@ -475,7 +488,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         ),
       );
     }else {
-      print("answer widget index : " + stageProvider.selectedAnswerIndex.toString());
       return Container(
         width: double.infinity,
         height: double.infinity,
@@ -535,7 +547,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       //  정답지 레이아웃 다시. path 랜덤 시키기.
       categoryProvider.setStepProgress();
       randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-      print("random : " + randomPath.stageIdx.toString());
 
       showDialog(
           context: context,
@@ -584,7 +595,11 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       }else {
         categoryProvider.setStageScore(3);
       }
-      categoryProvider.updateScore(categoryProvider.stageScore);
+      if(!categoryProvider.isRootBookmark) {
+        categoryProvider.updateScore(categoryProvider.stageScore);
+      }else {
+
+      }
       RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
     }
   }
@@ -593,16 +608,23 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
+    final bookmarkList = userProviderModel.value.getBookmark;
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    var ratioWidth;
-    ratioWidth = deviceWidth * 0.64;
+    var ratioWidth = deviceWidth * 0.64;
 
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
         _setRandomPath();
       }
     }
+
+    if(bookmarkList.hasData) {
+      _bookmarkList = bookmarkList.result.asValue.value;
+    }
+
+    //stageProvider.startLearnTime();
 
     return Scaffold(
       backgroundColor: Colors.white,

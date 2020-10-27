@@ -22,12 +22,14 @@ class _MainCategoryState extends State<MainCategory> {
   AuthServiceAdapter authServiceAdapter;
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
+  Future<void> getAllBookmark;
 
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    getAllBookmark ??= Provider.of<UserProviderModel>(context).getBookmark(authServiceAdapter.authJWT);
     super.didChangeDependencies();
   }
 
@@ -44,9 +46,7 @@ class _MainCategoryState extends State<MainCategory> {
           RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
         });
       });
-      //RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
     }
-    print("category large list");
     return Selector<CategoryProvider, List<CategoryLargeVO>>(
       selector: (context, categoryProvider) => categoryProvider.categoryLargeList,
       builder: (context, largeList, child) {
@@ -113,8 +113,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
-    //  북마크 가져오기, 결제 정보 가져오기,
-
+    RouteNavigator().go(GetRoutesName.ROUTE_MYPAGE, context);
   }
 
   @override

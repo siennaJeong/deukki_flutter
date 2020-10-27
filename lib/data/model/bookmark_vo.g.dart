@@ -6,7 +6,9 @@ BookmarkVO _$BookmarkVOFromJson(Map<String, dynamic> json) {
     json['bookmarkIdx'] as int,
     json['content'] as String,
     json['stage'] as int,
-    json['score'] as int
+    json['score'] as int,
+    json['sentenceId'] as String,
+    json['stageIdx'] as int
   );
 }
 
@@ -15,5 +17,7 @@ Map<String, dynamic> _$BookmarkVOToJson(BookmarkVO instance) =>
       'bookmarkIdx': instance.bookmarkIdx,
       'content': instance.content,
       'stage': instance.stage,
-      'score': instance.score
+      'score': instance.score,
+      'sentenceId': instance.sentenceId,
+      'stageIdx': instance.stageIdx
     };

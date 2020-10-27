@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 class StageProvider with ChangeNotifier{
@@ -6,6 +8,9 @@ class StageProvider with ChangeNotifier{
   int playCount, answerCount, selectedAnswerIndex;
   double firstHeight, secondHeight, playRate;
   String selectedAnswer;
+
+  Timer _timer;
+  var _learnTime;
 
   StageProvider() {
     this.isPlaying = false;
@@ -15,6 +20,7 @@ class StageProvider with ChangeNotifier{
     this.secondHeight = 0;
     this.playRate = 1.0;
     this.selectedAnswerIndex = -1;
+    this._learnTime = 0;
   }
 
   void setPlaying(bool isPlaying) {
@@ -50,5 +56,15 @@ class StageProvider with ChangeNotifier{
   void setPlayRate() {
     this.playRate = this.playRate + 0.25;
     notifyListeners();
+  }
+
+  void startLearnTime() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _learnTime++;
+    });
+  }
+
+  void stopLearnTime() {
+    _timer?.cancel();
   }
 }

@@ -1,7 +1,7 @@
 
 class HttpUrls {
   static const String MESSAGE_SUCCESS = "Success";
-  static const String SERVER_URL = "http://dev-api.deukki.com";
+  static const String SERVER_URL = "https://dev-api.deukki.com";
 
   static const String CHECK_ALL_VERSION = "$SERVER_URL/versions";
   static const String CHECK_APP_VERSION = "$SERVER_URL/versions/app";
@@ -26,7 +26,7 @@ class HttpUrls {
 
   static const String SENTENCE = "$SERVER_URL/sentences";
   static const String SENTENCE_STAGE = "/stages";
-  static const String SENTENCE_LEARN = "/learning";
+  static const String LEARNING_RECORD = "/learning";
 
   static const String STAGE_PRONUNCIATION = "$SERVER_URL/pronunciations";
   static const String RECORD_UPLOAD = "$STAGE_PRONUNCIATION/speaking";

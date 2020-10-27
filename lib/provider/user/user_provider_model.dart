@@ -1,3 +1,4 @@
+import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
@@ -14,6 +15,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository());
   final UserRepository _userRepository;
+  List<BookmarkVO> currentBookmarkList = [];
+  int bookmarkScore = 0;
 
   Future<void> checkSignUp(String authType, String authId) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId);
@@ -39,4 +42,33 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     final logout = _userRepository.logout(authJWT);
     await value.logout.set(logout, notifyListeners);
   }
+
+  Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
+    final updateBookmark = _userRepository.updateBookmark(authJWT, sentenceId, stageIdx);
+    await value.updateBookmark.set(updateBookmark, notifyListeners);
+    getBookmark(authJWT);
+  }
+
+  Future<void> getBookmark(String authJWT) async {
+    final getBookmark = _userRepository.getBookmark(authJWT);
+    getBookmark.then((value) {
+      setCurrentBookmarkList(value.asValue.value);
+    });
+    await value.getBookmark.set(getBookmark, notifyListeners);
+  }
+
+  Future<void> deleteBookmark(String authJWT, int bookmarkIdx) async {
+    final deleteBookmark = _userRepository.deleteBookmark(authJWT, bookmarkIdx);
+    await value.deleteBookmark.set(deleteBookmark, notifyListeners);
+  }
+
+  void setCurrentBookmarkList(list) {
+    this.currentBookmarkList = list;
+    notifyListeners();
+  }
+
+  void setBookmarkScore(int score) {
+
+  }
+
 }

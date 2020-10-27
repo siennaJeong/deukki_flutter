@@ -110,38 +110,6 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
-    final updateBookmark = await _httpClient.postRequest("${HttpUrls.BOOKMARKS}/$sentenceId/$stageIdx", HttpUrls.headers(authJWT), null);
-    if(updateBookmark.isValue) {
-      return Result.value(updateBookmark.asValue.value);
-    }else {
-      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
-    }
-  }
-
-  @override
-  Future<Result<List<BookmarkVO>>> getBookmark(String authJWT) async {
-    final bookmarkListJson = await _httpClient.getRequest(HttpUrls.BOOKMARKS, HttpUrls.headers(authJWT));
-    if(bookmarkListJson.isValue) {
-      return Result.value((bookmarkListJson.asValue.value['result'] as List)
-          .map((json) => BookmarkVO.fromJson(json as Map<String, dynamic>))
-          .toList());
-    }else {
-      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
-    }
-  }
-
-  @override
-  Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx) async {
-    final deleteBookmark = await _httpClient.deleteRequest("${HttpUrls.BOOKMARKS}/$bookmarkIdx", HttpUrls.headers(authJWT));
-    if(deleteBookmark.isValue) {
-      return Result.value(deleteBookmark.asValue.value);
-    }else {
-      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
-    }
-  }
-
-  @override
   Future<Result<CommonResultVO>> recordUploadLink(String authJWT, File file, int stage, int round, String sentenceId) async {
     final recordUploadLink = await _httpClient.postRequest(HttpUrls.RECORD_UPLOAD, HttpUrls.headers(authJWT), _uploadToJson(stage.toString(), round.toString(), sentenceId));
     if(recordUploadLink.isValue) {

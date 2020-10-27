@@ -89,7 +89,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   Widget _listWidget() {
     _setMainAxis();
-    print("category small list");
     return Selector<CategoryProvider, List<SentenceVO>>(
       selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
@@ -162,7 +161,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _newTagWidget(int isNew) {
-    print("new tag widget");
     if(isNew == 1) {
       return Container(
         margin: EdgeInsets.only(left: 2, bottom: 4),
@@ -321,6 +319,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                         if(value != null) {
                           resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
                             categoryProvider.setMediumTitle(value[0]);
+                            categoryProvider.setMediumId(value[1]);
                             final sentenceResult = resourceProviderModel.value.getSentence;
                             if(sentenceResult.hasData) {
                               categoryProvider.setSentence(sentenceResult.result.asValue.value);

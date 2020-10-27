@@ -16,9 +16,6 @@ abstract class CategoryRepository {
   Future<Result<List<StageVO>>> getSentenceStages(String authJWT, String sentenceId);
   Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice);
   Future<Result<String>> saveAudioFile(String dir, String url, String fileName);
-  Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx);
-  Future<Result<List<BookmarkVO>>> getBookmark(String authJWT);
-  Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx);
   Future<Result<CommonResultVO>> recordUploadLink(String authJWT, File file, int stage, int round, String sentenceId);
   Future<Result<CommonResultVO>> updateRecordResult(String authJWT, int idx);
 }

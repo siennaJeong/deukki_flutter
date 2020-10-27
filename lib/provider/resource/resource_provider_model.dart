@@ -172,8 +172,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     final dbFile = await _dbHelper.getFilePath(sentenceId);
     if(dbFile != null) {
       filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
-    }else {
-      print("db file null");
     }
   }
 
@@ -198,10 +196,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
       filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
       dbFilePath = "$fileDir/$filePath";
+      print("right file path : " + dbFilePath);
       if(filePathList != null && (filePathList.singleWhere((it) => it.path == dbFilePath, orElse: () => null)) != null) {
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {
-        print("file path null ? " + filePathList.toString());
+        print("right file path null ? " + filePathList.toString());
         saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
         _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
@@ -212,9 +211,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
         filePath = "$fileId-${pronunciationVO.pIdx.toString()}-$voice.mp3";
         dbFilePath = "$fileDir/$filePath";
+        print("wrong file path : " + dbFilePath);
         if(filePathList != null && (filePathList.singleWhere((it) => it.path == dbFilePath, orElse: () => null)) != null) {
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }else {
+          print("wrong file path null ? " + filePathList.toString());
           saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
           _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
@@ -234,21 +235,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   }
 
   List<AudioFilePathVO> get audioFilePath => _audioFilePath;
-
-  Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
-    final updateBookmark = _categoryRepository.updateBookmark(authJWT, sentenceId, stageIdx);
-    await value.updateBookmark.set(updateBookmark, notifyListeners);
-  }
-
-  Future<void> getBookmark(String authJWT) async {
-    final getBookmark = _categoryRepository.getBookmark(authJWT);
-    await value.getBookmark.set(getBookmark, notifyListeners);
-  }
-
-  Future<void> deleteBookmark(String authJWT, int bookmarkIdx) async {
-    final deleteBookmark = _categoryRepository.deleteBookmark(authJWT, bookmarkIdx);
-    await value.deleteBookmark.set(deleteBookmark, notifyListeners);
-  }
 
   Future<void> recordUpload(String authJWT, File file, int stage, int round, String sentenceId) async {
     final recordUpload = _categoryRepository.recordUploadLink(authJWT, file, stage, round, sentenceId);

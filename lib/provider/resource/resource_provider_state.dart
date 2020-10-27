@@ -21,8 +21,5 @@ class ResourceProviderState {
   final getSentenceStages = ProviderModelResult<List<StageVO>>();
   final getPronunciation = ProviderModelResult<CommonResultVO>();
   final saveAudioFile = ProviderModelResult<String>();
-  final updateBookmark = ProviderModelResult<CommonResultVO>();
-  final getBookmark = ProviderModelResult<List<BookmarkVO>>();
-  final deleteBookmark = ProviderModelResult<CommonResultVO>();
   final recordUpload = ProviderModelResult<CommonResultVO>();
 }

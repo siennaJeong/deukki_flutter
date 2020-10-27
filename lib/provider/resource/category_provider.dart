@@ -10,9 +10,11 @@ import 'package:flutter/material.dart';
 class CategoryProvider with ChangeNotifier {
   final DBHelper dbHelper;
   bool isBookmark;
+  bool isRootBookmark;
   int selectLargeIndex;
   int selectStageIndex;
   int stageScore;
+  int selectStageIdx;
   double stepProgress;
   String _largeId;
   String _mediumId;
@@ -29,9 +31,11 @@ class CategoryProvider with ChangeNotifier {
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
+    this.selectStageIdx = -1;
     this.isBookmark = false;
     this.stepProgress = 0.2;
     this.stageScore = 0;
+    this.isRootBookmark = false;
     if(dbHelper != null) {
       fetchAndSetLargeCategory();
     }
@@ -87,13 +91,19 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void onSelectedStage(int index) {
+  void onSelectedStage(int index, int stageIdx) {
     this.selectStageIndex = index;
+    this.selectStageIdx = stageIdx;
     notifyListeners();
   }
 
   void onBookMark(bool isBookmark) {
     this.isBookmark = isBookmark;
+    notifyListeners();
+  }
+
+  void onRootBookmark(bool isRootBookmark) {
+    this.isRootBookmark = isRootBookmark;
     notifyListeners();
   }
 

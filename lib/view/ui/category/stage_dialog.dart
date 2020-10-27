@@ -7,6 +7,7 @@ import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -29,6 +30,7 @@ class _StageDialogState extends State<StageDialog> {
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
+  UserProviderModel userProviderModel;
   String _title;
   int _selectedStageIdx, _selectedIndex;
   bool _isStart = true;
@@ -45,6 +47,7 @@ class _StageDialogState extends State<StageDialog> {
     categoryProvider = Provider.of<CategoryProvider>(context);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
       if(categoryProvider.stageList[i - 1].score != null) {
         _preScore.add(true);
@@ -206,7 +209,8 @@ class _StageDialogState extends State<StageDialog> {
     }
     _selectedIndex = index;
     _selectedStageIdx = stageIdx;
-    categoryProvider.onSelectedStage(index);
+    categoryProvider.onSelectedStage(index, stageIdx);
+    categoryProvider.onRootBookmark(false);
   }
 
   void _stageStart() {        //  Start Click
@@ -226,6 +230,7 @@ class _StageDialogState extends State<StageDialog> {
             PronunciationVO.fromJson(pronunResult['rightPronunciation'])
         );
         categoryProvider.initStepProgress();
+        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
       });
     }
@@ -234,6 +239,7 @@ class _StageDialogState extends State<StageDialog> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
     return Stack(
       children: <Widget>[
         Positioned.fill(
