@@ -1,4 +1,5 @@
 import 'package:deukki/data/model/bookmark_vo.dart';
+import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
@@ -41,6 +42,15 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> logout(String authJWT) async {
     final logout = _userRepository.logout(authJWT);
     await value.logout.set(logout, notifyListeners);
+  }
+
+  Future<void> recordLearning(String authJWT, String sentenceId, LearningVO learningVO) async {
+    final recordLearn = _userRepository.recordLearning(authJWT, sentenceId, learningVO);
+    recordLearn.then((value) {
+      print("record learn result : " + value.asValue.value.result.toString());
+    });
+
+    await value.recordLearning.set(recordLearn, notifyListeners);
   }
 
   Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {

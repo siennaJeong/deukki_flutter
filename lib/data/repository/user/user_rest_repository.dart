@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
@@ -5,6 +7,7 @@ import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
+import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 
@@ -39,7 +42,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) async {
-     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, HttpUrls.headers(""), _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
+     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, HttpUrls.postHeaders(""), _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
      if(signUpJson.isValue) {
        return Result.value(CommonResultVO.fromJson(signUpJson.asValue.value as Map<String, dynamic>));
      }else {
@@ -104,6 +107,16 @@ class UserRestRepository implements UserRepository {
     final deleteBookmark = await _httpClient.deleteRequest("${HttpUrls.BOOKMARKS}/$bookmarkIdx", HttpUrls.headers(authJWT));
     if(deleteBookmark.isValue) {
       return Result.value(CommonResultVO.fromJson(deleteBookmark.asValue.value as Map<String, dynamic>));
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> recordLearning(String authJWT, String sentenceId, LearningVO learningVO) async {
+    final recordLearning = await _httpClient.postRequest("${HttpUrls.LEARNING_RECORD}/$sentenceId", HttpUrls.postHeaders(authJWT), learningVO.bodyJson());
+    if(recordLearning.isValue) {
+      return Result.value(CommonResultVO.fromJson(recordLearning.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

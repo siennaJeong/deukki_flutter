@@ -459,6 +459,9 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
             _answerResultDialog(pronunciationVO.pIdx);
+            stageProvider.historyInit(randomPath.stageIdx);
+            stageProvider.setRound();
+            categoryProvider.setStepProgress();
           }else {
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
@@ -542,84 +545,77 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   void _answerResultDialog(int pIdx) {
-    if(stageProvider.round <= 5) {
-      if(stageProvider.oneTimeAnswerCount <= 0) {
-        resultBgImage = AppImages.blueBgImage;
-        resultText = Strings.quiz_result_great;
-        stageProvider.setSelectPIdx(pIdx);
-        stageProvider.setCorrect(true);
-        stageProvider.setCountCorrectAnswer();
-        stageProvider.addHistory();
-        _showDialog(resultBgImage, resultText);
-        stageProvider.setLevel();
-        stageProvider.setPlayRate();
-        randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-        stageProvider.historyInit(randomPath.stageIdx);
-        stageProvider.initSelectAnswer();
-      }else {
-        stageProvider.addHistory();
-        _showDialog(resultBgImage, resultText);
-        stageProvider.historyInit(randomPath.stageIdx);
-        stageProvider.setRound();
-        categoryProvider.setStepProgress();
-        stageProvider.initSelectAnswer();
-      }
+    if(stageProvider.oneTimeAnswerCount <= 0) {
+      resultBgImage = AppImages.blueBgImage;
+      resultText = Strings.quiz_result_great;
+      stageProvider.setSelectPIdx(pIdx);
+      stageProvider.setCorrect(true);
+      stageProvider.setCountCorrectAnswer();
+      stageProvider.addHistory();
+      _showDialog(resultBgImage, resultText);
+      stageProvider.setLevel();
+      stageProvider.setPlayRate();
+      randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+      stageProvider.historyInit(randomPath.stageIdx);
+      stageProvider.initSelectAnswer();
     }else {
-      if(stageProvider.playRate <= 1.0) {
-        categoryProvider.setStageScore(1);
-      }else if(stageProvider.playRate > 1.0 && stageProvider.playRate <= 1.5) {
-        categoryProvider.setStageScore(2);
-      }else {
-        categoryProvider.setStageScore(3);
-      }
-      if(!categoryProvider.isRootBookmark) {
-        categoryProvider.updateScore(categoryProvider.stageScore);
-      }else {
-
-      }
-      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+      stageProvider.addHistory();
+      _showDialog(resultBgImage, resultText);
+      stageProvider.historyInit(randomPath.stageIdx);
+      stageProvider.initSelectAnswer();
     }
   }
 
   _showDialog(String bgImages, String answerResult) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          Future.delayed(Duration(seconds: 1), () {
-            Navigator.pop(context);
-            stageProvider.onSelectedAnswer(-1, "");
-          });
-          return Stack(
-            alignment: AlignmentDirectional.center,
-            children: <Widget>[
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-                  child: Container(color: Colors.black.withOpacity(0.1)),
-                ),
-              ),
-              Stack(
-                alignment: AlignmentDirectional.center,
-                children: <Widget>[
-                  Positioned(
-                      child: Container(
-                        width: deviceWidth * 0.35,
-                        child: Image.asset(bgImages),
-                      )
+    if(stageProvider.round < 5) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.pop(context);
+              stageProvider.onSelectedAnswer(-1, "");
+            });
+            return Stack(
+              alignment: AlignmentDirectional.center,
+              children: <Widget>[
+                Positioned.fill(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                    child: Container(color: Colors.black.withOpacity(0.1)),
                   ),
-                  Positioned(
-                    child: Container(
-                      child: Text(
-                        answerResult,
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
+                ),
+                Stack(
+                  alignment: AlignmentDirectional.center,
+                  children: <Widget>[
+                    Positioned(
+                        child: Container(
+                          width: deviceWidth * 0.35,
+                          child: Image.asset(bgImages),
+                        )
                     ),
-                  )
-                ],
-              ),
-            ],
-          );
-        });
+                    Positioned(
+                      child: Container(
+                        child: Text(
+                          answerResult,
+                          style: Theme.of(context).textTheme.headline3,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            );
+          });
+    }else {
+      stageProvider.stopLearnTime();
+      userProviderModel.recordLearning(
+          authServiceAdapter.authJWT,
+          categoryProvider.selectedSentence.id,
+          stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
+      ).then((value) {
+        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+      });
+    }
   }
 
   @override
@@ -628,7 +624,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
     final bookmarkList = userProviderModel.value.getBookmark;
 
-    //stageProvider.startLearnTime();
+    stageProvider.startLearnTime();
 
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;

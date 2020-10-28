@@ -8,6 +8,7 @@ class UserProviderState {
   final signOut = ProviderModelResult<CommonResultVO>();
   final login = ProviderModelResult<CommonResultVO>();
   final logout = ProviderModelResult<CommonResultVO>();
+  final recordLearning = ProviderModelResult<CommonResultVO>();
   final updateBookmark = ProviderModelResult<CommonResultVO>();
   final getBookmark = ProviderModelResult<List<BookmarkVO>>();
   final deleteBookmark = ProviderModelResult<CommonResultVO>();

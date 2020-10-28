@@ -12,7 +12,7 @@ class StageProvider with ChangeNotifier{
   double playRate;
 
   Timer _timer;
-  var _learnTime;
+  int _learnTime;
   int stageIdx;
   int countCorrectAnswer;
 
@@ -25,7 +25,7 @@ class StageProvider with ChangeNotifier{
 
   int oneTimeAnswerCount;
 
-  List<HistoryVO> historyList;
+  List<Map> historyList;
 
   StageProvider() {
     this.isPlaying = false;
@@ -116,7 +116,7 @@ class StageProvider with ChangeNotifier{
   }
 
   void setLevel() {
-    this.level++;   //  속
+    this.level++;
     notifyListeners();
   }
 
@@ -135,9 +135,15 @@ class StageProvider with ChangeNotifier{
   }
 
   void addHistory() {
-    HistoryVO historyVO = HistoryVO(this.level, this.round, this.correct, this.soundRepeat, this.playPIdx, this.selectPIdx);
+    var historyVO = HistoryVO(this.level.toString(), this.round.toString(), this.correct ? 'true' : 'false', this.soundRepeat.toString(), this.playPIdx.toString(), this.selectPIdx.toString());
     print("add history : " + historyVO.toString());
-    historyList.add(historyVO);
+    historyList.add(historyVO.bodyJson());
+  }
+
+  LearningVO generateLearningRecord(int idx) {
+    LearningVO learningVO = LearningVO(this._learnTime.toString(), this.countCorrectAnswer.toString(), idx.toString(), historyList);
+    print("learning vo : " + learningVO.toString());
+    return learningVO;
   }
 
 }

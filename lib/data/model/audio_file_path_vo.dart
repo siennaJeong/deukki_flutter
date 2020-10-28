@@ -17,7 +17,7 @@ class AudioFilePathVO {
   AudioFilePathVO(this.sentenceId, this.stageIdx, this.path);
 
   factory AudioFilePathVO.fromJson(Map<String, dynamic> json) => _$AudioFilePathVOFromJson(json);
-  Map<String, dynamic> toJson() => _$AudioFilePathToJson(this);
+  Map<String, dynamic> toJson() => _$AudioFilePathVOToJson(this);
 
   @override
   String toString() {

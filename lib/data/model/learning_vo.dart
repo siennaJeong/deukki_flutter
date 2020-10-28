@@ -1,49 +1,79 @@
 
+import 'dart:convert';
+
+import 'package:deukki/view/values/app_images.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:path/path.dart';
 
 part 'learning_vo.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class LearningVO {
   @JsonKey(name: 'time')
-  int time;
+  String time;
 
   @JsonKey(name: 'countCorrectAnswer')
-  int countCorrectAnswer;
+  String countCorrectAnswer;
 
   @JsonKey(name: 'stageIdx')
-  int stageIdx;
+  String stageIdx;
 
   @JsonKey(name: 'history')
-  List<HistoryVO> history;
+  List<Map> history;
 
   LearningVO(this.time, this.countCorrectAnswer, this.stageIdx, this.history);
 
   factory LearningVO.fromJson(Map<String, dynamic> json) => _$LearningVOFromJson(json);
   Map<String, dynamic> toJson() => _$LearningVOToJson(this);
+
+  Map<String, String> bodyJson() =>
+      <String, String> {
+        'time': time,
+        'countCorrectAnswer': countCorrectAnswer,
+        'stageIdx': stageIdx,
+        'history': jsonEncode(history)
+      };
+
+  @override
+  String toString() {
+    return 'LearningVO{time: $time, countCorrectAnswer: $countCorrectAnswer, stageIdx: $stageIdx, history: $history}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
 class HistoryVO {
   @JsonKey(name: 'level')
-  int level;
+  String level;
 
   @JsonKey(name: 'round')
-  int round;
+  String round;
 
   @JsonKey(name: 'correct')
-  bool correct;
+  String correct;
 
   @JsonKey(name: 'soundRepeat')
-  int soundRepeat;
+  String soundRepeat;
 
   @JsonKey(name: 'playPIdx')
-  int playPIdx;
+  String playPIdx;
 
   @JsonKey(name: 'selectPIdx')
-  int selectPIdx;
+  String selectPIdx;
 
   HistoryVO(this.level, this.round, this.correct, this.soundRepeat, this.playPIdx, this.selectPIdx);
+
+  factory HistoryVO.fromJson(Map<String, dynamic> json) => _$HistoryVOFromJson(json);
+  Map<String, String> toJson() => _$HistoryVOToJson(this);
+
+  Map<String, String> bodyJson() =>
+      <String, String> {
+        'level': this.level,
+        'round': this.round,
+        'correct': this.correct,
+        'soundRepeat': this.soundRepeat,
+        'playPIdx': this.playPIdx,
+        'selectPIdx':this.selectPIdx
+      };
 
   @override
   String toString() {

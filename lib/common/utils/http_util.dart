@@ -26,7 +26,7 @@ class HttpUrls {
 
   static const String SENTENCE = "$SERVER_URL/sentences";
   static const String SENTENCE_STAGE = "/stages";
-  static const String LEARNING_RECORD = "/learning";
+  static const String LEARNING_RECORD = "$SERVER_URL/learning";
 
   static const String STAGE_PRONUNCIATION = "$SERVER_URL/pronunciations";
   static const String RECORD_UPLOAD = "$STAGE_PRONUNCIATION/speaking";
@@ -34,6 +34,12 @@ class HttpUrls {
   static const String BOOKMARKS = "$SERVER_URL/bookmarks";
 
   static Map<String, String> headers(String authJWT) => <String, String> {
+    'content-type': 'application/json',
+    'authorization': 'Bearer ' + authJWT
+  };
+
+  static Map<String, String> postHeaders(String authJWT) => <String, String> {
+    'Content-Type': 'application/x-www-form-urlencoded',
     'authorization': 'Bearer ' + authJWT
   };
 

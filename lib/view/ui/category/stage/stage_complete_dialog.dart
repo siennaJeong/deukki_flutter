@@ -1,7 +1,7 @@
 
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
-import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -17,8 +17,8 @@ class StageCompleteDialog extends StatefulWidget {
 }
 
 class _StageCompleteDialogState extends State<StageCompleteDialog> {
-  ResourceProviderModel resourceProviderModel;
   CategoryProvider categoryProvider;
+  UserProviderModel userProviderModel;
 
   double deviceWidth, deviceHeight;
 
@@ -29,9 +29,8 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   void didChangeDependencies() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context);
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -42,12 +41,29 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+    var acquiredStars, stageScore;
+
+    final result = userProviderModel.value.recordLearning;
+    if(!result.hasData) {
+      CupertinoActivityIndicator();
+    }else {
+      final recordResult = result.result.asValue.value.result;
+      acquiredStars = recordResult['acquiredStars'];
+      stageScore = recordResult['stageScore'];
+
+      if(acquiredStars > stageScore) {
+        categoryProvider.updateScore(acquiredStars);
+      }else {
+        categoryProvider.updateScore(stageScore);
+      }
+    }
 
     String firstStar, secondStar, thirdStar;
 
-    switch(categoryProvider.stageScore) {
+    switch(acquiredStars) {
       case 1:
         firstStar = AppImages.fullStar;
         secondStar = AppImages.emptyStar;
@@ -66,7 +82,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
-      if((categoryProvider.selectStageIndex + 1) % 3 == 0) {
+      if(categoryProvider.selectStageIndex != -1 && (categoryProvider.selectStageIndex + 1) % 3 == 0) {
         RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
       }else {
         Navigator.pop(context);
@@ -106,22 +122,22 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
                             ),
                             SizedBox(height: 6),
                             Text(
-                              categoryProvider.stageScore <= 1 ? Strings.quiz_result_good : Strings.quiz_result_great,
+                              acquiredStars <= 1 ? Strings.quiz_result_good : Strings.quiz_result_great,
                               style: TextStyle(
                                 fontSize: 40,
                                 fontFamily: "TmoneyRound",
                                 fontWeight: FontWeight.w700,
-                                color: categoryProvider.stageScore <= 1 ? MainColors.green_100 : MainColors.blue_100
+                                color: acquiredStars <= 1 ? MainColors.green_100 : MainColors.blue_100
                               ),
                             ),
                             SizedBox(height: 6),
                             Text(
-                              Strings.star + "${categoryProvider.stageScore.toString()}" + Strings.earn_star,
+                              Strings.star + "${acquiredStars.toString()}" + Strings.earn_star,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontFamily: "NotoSansKR",
                                 fontWeight: FontWeight.w400,
-                                color: categoryProvider.stageScore <= 1 ? MainColors.green_100 : MainColors.blue_100
+                                color: acquiredStars <= 1 ? MainColors.green_100 : MainColors.blue_100
                               ),
                             )
                           ],

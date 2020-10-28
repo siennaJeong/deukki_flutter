@@ -39,10 +39,10 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
+  Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, String> body) async {
     Response response;
     try {
-      response = await post(path, headers: headers, body: body);
+      response = await post(Uri.encodeFull(path), headers: headers, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {

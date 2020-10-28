@@ -1,5 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'bookmark_vo.dart';
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
 
 BookmarkVO _$BookmarkVOFromJson(Map<String, dynamic> json) {
   return BookmarkVO(
@@ -8,7 +13,7 @@ BookmarkVO _$BookmarkVOFromJson(Map<String, dynamic> json) {
     json['stage'] as int,
     json['score'] as int,
     json['sentenceId'] as String,
-    json['stageIdx'] as int
+    json['stageIdx'] as int,
   );
 }
 
@@ -19,5 +24,5 @@ Map<String, dynamic> _$BookmarkVOToJson(BookmarkVO instance) =>
       'stage': instance.stage,
       'score': instance.score,
       'sentenceId': instance.sentenceId,
-      'stageIdx': instance.stageIdx
+      'stageIdx': instance.stageIdx,
     };

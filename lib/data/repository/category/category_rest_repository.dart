@@ -111,7 +111,7 @@ class CategoryRestRepository implements CategoryRepository {
 
   @override
   Future<Result<CommonResultVO>> recordUploadLink(String authJWT, File file, int stage, int round, String sentenceId) async {
-    final recordUploadLink = await _httpClient.postRequest(HttpUrls.RECORD_UPLOAD, HttpUrls.headers(authJWT), _uploadToJson(stage.toString(), round.toString(), sentenceId));
+    final recordUploadLink = await _httpClient.postRequest(HttpUrls.RECORD_UPLOAD, HttpUrls.postHeaders(authJWT), _uploadToJson(stage.toString(), round.toString(), sentenceId));
     if(recordUploadLink.isValue) {
       final result = recordUploadLink.asValue.value['result'];
       final idx = result['idx'];

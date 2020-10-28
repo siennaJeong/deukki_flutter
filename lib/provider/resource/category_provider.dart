@@ -128,7 +128,7 @@ class CategoryProvider with ChangeNotifier {
   }
 
   void updateScore(int score) {
-    if(this.selectStageIndex != null && this.stageScore > 0) {
+    if(this.selectStageIndex != null) {
       final stageItem = this._stageList.firstWhere((element) => element.stage == (this.selectStageIndex + 1));
       stageItem.score = score;
       setStage(this._stageList);
@@ -137,7 +137,6 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {
-    print("set pronuncation list");
     if(this._pronunciationList.length > 0) {
       this._pronunciationList.clear();
     }
