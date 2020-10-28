@@ -16,6 +16,7 @@ import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
@@ -102,7 +103,7 @@ class _SplashState extends State<Splash> {
       return Container(
         alignment: AlignmentDirectional.center,
         color: MainColors.green_80,
-        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white)),
+        child: CupertinoActivityIndicator(radius: 35)
       );
     }
     if(forceUpdateResult.result.asValue.value.requireInstall) {

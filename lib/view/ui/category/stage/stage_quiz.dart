@@ -366,7 +366,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       return Container(
         width: 24,
         height: 24,
-        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white), strokeWidth: 1.0,),
+        child: CupertinoActivityIndicator(radius: 14),
       );
     }
   }
