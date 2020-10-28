@@ -41,3 +41,35 @@ class UserVO{
     return 'UserVO{idx: $idx, email: $email, name: $name, birthDate: $birthDate, gender: $gender, defaultVoice: $defaultVoice, enable: $enable, premium: $premium}';
   }
 }
+
+@JsonSerializable(explicitToJson: true)
+class UserVOForHttp extends UserVO {
+  @JsonKey(name: 'loginMethod')
+  int loginMethod;
+
+  @JsonKey(name: 'noticeAgree')
+  bool noticeAgree;
+
+  @JsonKey(name: 'premiumType')
+  int premiumType;
+
+  @JsonKey(name: 'premiumEndAt')
+  String premiumEndAt;
+
+  UserVOForHttp(
+      int idx,
+      String email,
+      String name,
+      String birthDate,
+      String gender,
+      String defaultVoice,
+      bool enable,
+      bool premium,
+      this.loginMethod,
+      this.noticeAgree,
+      this.premiumType,
+      this.premiumEndAt)
+      : super(idx, email, name, birthDate, gender, defaultVoice, enable, premium);
+
+
+}

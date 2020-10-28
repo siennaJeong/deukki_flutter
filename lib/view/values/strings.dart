@@ -73,7 +73,7 @@ class Strings {
   static const String mypage_report_script_2 = '의 좋은 발음 듣기/말하기의 습관을 만들어주세요!';
   static const String mypage_report_listening_score = '듣기 점수 : ';
   static const String mypage_report_listening_average = '같은 레벨의 평균 점수 : ';
-  static const String mypage_report_accuracy = '발음 정확도';
+  static const String mypage_report_accuracy = '발음 정확도 : ';
   static const String mypage_report_show = '리포트 보러가기';
   static const String mypage_report_wait_update = '추후 업데이트 예정입니다.';
 

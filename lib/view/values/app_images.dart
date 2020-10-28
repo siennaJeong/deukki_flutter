@@ -43,4 +43,8 @@ class AppImages {
   static String dropDown = "$_basePath/icon_drop_down.png";
 
   static String lottieAnimation = "assets/lottie/sound_effect.json";
+
+  static String hearingIcon = "$_basePath/icon_hearing.png";
+  static String micIcon = "$_basePath/icon_keyboard_voice.png";
+
 }
