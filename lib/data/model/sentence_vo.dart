@@ -26,4 +26,9 @@ class SentenceVO {
 
   factory SentenceVO.fromJson(Map<String, dynamic> json) => _$SentenceVOFromJson(json);
   Map<String, dynamic> toJson() => _$SentenceVOToJson(this);
+
+  @override
+  String toString() {
+    return 'SentenceVO{id: $id, content: $content, sequence: $sequence, avgScore: $avgScore, premium: $premium, isNew: $isNew}';
+  }
 }

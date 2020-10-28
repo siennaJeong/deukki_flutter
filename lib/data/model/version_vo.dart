@@ -18,6 +18,11 @@ class AppVersionVO {
 
   factory AppVersionVO.fromJson(Map<String, dynamic> json) => _$AppVersionVOFromJson(json);
   Map<String, dynamic> toJson() => _$AppVersionVOToJson(this);
+
+  @override
+  String toString() {
+    return 'AppVersionVO{idx: $idx, appVersion: $appVersion, requireInstall: $requireInstall}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -39,6 +44,10 @@ class CategoryVersionVO {
   factory CategoryVersionVO.fromJson(Map<String, dynamic> json) => _$CategoryVersionVOFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryVersionVOToJson(this);
 
+  @override
+  String toString() {
+    return 'CategoryVersionVO{idx: $idx, largeVersion: $largeVersion, mediumVersion: $mediumVersion, smallVersion: $smallVersion}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -50,6 +59,11 @@ class FaqVersionVO {
 
   factory FaqVersionVO.fromJson(Map<String, dynamic> json) => _$FaqVersionVOFromJson(json);
   Map<String, dynamic> toJson() => _$FaqVersionVOToJson(this);
+
+  @override
+  String toString() {
+    return 'FaqVersionVO{version: $version}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -67,4 +81,9 @@ class VersionVOwithDB {
 
   factory VersionVOwithDB.fromJson(Map<String, dynamic> json) => _$VersionVOwithDBFromJson(json);
   Map<String, dynamic> toJson() => _$VersionVOwithDBToJson(this);
+
+  @override
+  String toString() {
+    return 'VersionVOwithDB{idx: $idx, versionName: $versionName, version: $version}';
+  }
 }

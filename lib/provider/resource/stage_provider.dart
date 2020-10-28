@@ -1,26 +1,39 @@
 
 import 'dart:async';
 
+import 'package:deukki/data/model/learning_vo.dart';
 import 'package:flutter/material.dart';
 
 class StageProvider with ChangeNotifier{
   bool isPlaying;
-  int playCount, answerCount, selectedAnswerIndex;
-  double firstHeight, secondHeight, playRate;
+  int playCount, selectedAnswerIndex;
+  double playRate;
   String selectedAnswer;
 
   Timer _timer;
   var _learnTime;
+  int stageIdx;
+  int countCorrectAnswer;
+
+  int level;
+  int round;
+  bool correct;
+  int soundRepeat;
+  int playPIdx;
+  int selectPIdx;
+
+  List<HistoryVO> historyList;
 
   StageProvider() {
     this.isPlaying = false;
     this.playCount = 0;
-    this.answerCount = 0;
-    this.firstHeight = 0;
-    this.secondHeight = 0;
     this.playRate = 1.0;
     this.selectedAnswerIndex = -1;
     this._learnTime = 0;
+    this.stageIdx = 0;
+    this.historyList = [];
+    this.level = 0;
+    this.round = 0;
   }
 
   void setPlaying(bool isPlaying) {
@@ -34,28 +47,53 @@ class StageProvider with ChangeNotifier{
     notifyListeners();
   }
 
-  void setAnswerCount() {
-    this.answerCount++;
-  }
-
   void setPlayCount() {
     this.playCount ++;
-    notifyListeners();
-  }
-
-  void setFirstHeight(double firstHeight) {
-    this.firstHeight = firstHeight;
-    notifyListeners();
-  }
-
-  void setSecondHeight(double secondHeight) {
-    this.secondHeight = secondHeight;
     notifyListeners();
   }
 
   void setPlayRate() {
     this.playRate = this.playRate + 0.25;
     notifyListeners();
+  }
+
+  void historyInit(int playPIdx) {
+    this.correct = false;
+    this.selectPIdx = 0;
+    this.playPIdx = playPIdx;
+    this.soundRepeat = 0;
+  }
+
+  void setCorrect(bool correct, int selectPIdx) {
+    this.correct = correct;
+    this.selectPIdx = selectPIdx;
+    notifyListeners();
+  }
+
+  void setSoundRepeat() {
+    this.soundRepeat++;
+  }
+
+  void setPlayPIdx(int pIdx) {
+    this.playPIdx = pIdx;
+  }
+
+  void setCountCorrectAnswer() {
+    this.countCorrectAnswer++;
+  }
+
+  void setRound() {
+    this.round++;
+    notifyListeners();
+  }
+
+  void setLevel() {
+    this.level++;   //  속
+    notifyListeners();
+  }
+
+  void setStageIdx(int stageIdx) {
+    this.stageIdx = stageIdx;
   }
 
   void startLearnTime() {
@@ -67,4 +105,11 @@ class StageProvider with ChangeNotifier{
   void stopLearnTime() {
     _timer?.cancel();
   }
+
+  void addHistory() {
+    HistoryVO historyVO = HistoryVO(this.level, this.round, this.correct, this.soundRepeat, this.playPIdx, this.selectPIdx);
+    print("add history : " + historyVO.toString());
+    historyList.add(historyVO);
+  }
+
 }

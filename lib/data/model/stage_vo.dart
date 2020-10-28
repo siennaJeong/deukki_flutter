@@ -17,4 +17,9 @@ class StageVO {
 
   factory StageVO.fromJson(Map<String, dynamic> json) => _$StageVOFromJson(json);
   Map<String, dynamic> toJson() => _$StageVOToJson(this);
+
+  @override
+  String toString() {
+    return 'StageVO{stageIdx: $stageIdx, stage: $stage, score: $score}';
+  }
 }

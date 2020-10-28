@@ -17,6 +17,8 @@ class CommonResultVO {
 
   factory CommonResultVO.fromJson(Map<String, dynamic> json) => _$CommonResultVOFromJson(json);
 
-
-
+  @override
+  String toString() {
+    return 'CommonResultVO{status: $status, message: $message, result: $result}';
+  }
 }

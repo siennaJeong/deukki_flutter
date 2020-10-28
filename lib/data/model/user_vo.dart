@@ -35,4 +35,9 @@ class UserVO{
   factory UserVO.fromJson(Map<String, dynamic> json) => _$UserVOFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserVOToJson(this);
+
+  @override
+  String toString() {
+    return 'UserVO{idx: $idx, email: $email, name: $name, birthDate: $birthDate, gender: $gender, defaultVoice: $defaultVoice, enable: $enable, premium: $premium}';
+  }
 }

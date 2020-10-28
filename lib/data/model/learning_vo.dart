@@ -44,4 +44,9 @@ class HistoryVO {
   int selectPIdx;
 
   HistoryVO(this.level, this.round, this.correct, this.soundRepeat, this.playPIdx, this.selectPIdx);
+
+  @override
+  String toString() {
+    return 'HistoryVO{level: $level, round: $round, correct: $correct, soundRepeat: $soundRepeat, playPIdx: $playPIdx, selectPIdx: $selectPIdx}';
+  }
 }

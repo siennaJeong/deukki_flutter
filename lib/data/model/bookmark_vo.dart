@@ -31,4 +31,9 @@ class BookmarkVO {
 
   factory BookmarkVO.fromJson(Map<String, dynamic> json) => _$BookmarkVOFromJson(json);
   Map<String, dynamic> toJson() => _$BookmarkVOToJson(this);
+
+  @override
+  String toString() {
+    return 'BookmarkVO{bookmarkIdx: $bookmarkIdx, content: $content, stage: $stage, score: $score, sentenceId: $sentenceId, stageIdx: $stageIdx}';
+  }
 }

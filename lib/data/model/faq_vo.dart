@@ -21,4 +21,9 @@ class FaqVO {
 
   factory FaqVO.fromJson(Map<String, dynamic> json) => _$FaqVOFromJson(json);
   Map<String, dynamic> toJson() => _$FaqVOToJson(this);
+
+  @override
+  String toString() {
+    return 'FaqVO{idx: $idx, question: $question, answer: $answer, sequence: $sequence}';
+  }
 }

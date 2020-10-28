@@ -18,4 +18,9 @@ class PronunciationVO {
 
   factory PronunciationVO.fromJson(Map<String, dynamic> json) => _$PronunciationVOFromJson(json);
   Map<String, dynamic> toJson() => _$PronunciationVOToJson(this);
+
+  @override
+  String toString() {
+    return 'PronunciationVO{pIdx: $pIdx, pronunciation: $pronunciation, downloadUrl: $downloadUrl}';
+  }
 }

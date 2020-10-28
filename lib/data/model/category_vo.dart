@@ -17,6 +17,11 @@ class CategoryLargeVO{
 
   factory CategoryLargeVO.fromJson(Map<String, dynamic> json) => _$CategoryLargeVOFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryLargeVOToJson(this);
+
+  @override
+  String toString() {
+    return 'CategoryLargeVO{id: $id, title: $title, sequence: $sequence}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -34,6 +39,11 @@ class CategoryMediumVO extends CategoryLargeVO {
 
   factory CategoryMediumVO.fromJson(Map<String, dynamic> json) => _$CategoryMediumVOFromJson(json);
   Map<String, dynamic> toJson() => _$CategoryMediumVOToJson(this);
+
+  @override
+  String toString() {
+    return 'CategoryMediumVO{archiveStars: $archiveStars, totalStars: $totalStars, premium: $premium}';
+  }
 }
 
 @JsonSerializable(explicitToJson: true)
@@ -51,4 +61,9 @@ class MediumStarsVO {
 
   factory MediumStarsVO.fromJson(Map<String, dynamic> json) => _$MediumStarsVOFromJson(json);
   Map<String, dynamic> toJson() => _$MediumStarsVOToJson(this);
+
+  @override
+  String toString() {
+    return 'MediumStarsVO{id: $id, achieveStars: $achieveStars, totalStars: $totalStars}';
+  }
 }

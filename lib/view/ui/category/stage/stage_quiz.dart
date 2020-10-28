@@ -86,10 +86,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     super.dispose();
   }
 
-  _setRandomPath() {
-    randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-  }
-
   Future<void> initVolume() async {
     await Volume.controlVolume(AudioManager.STREAM_MUSIC);
     currentVol = await Volume.getVol;
@@ -321,8 +317,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           if(!stageProvider.isPlaying) {
             _playLocal(randomPath.path, stageProvider.playRate);
             stageProvider.setPlaying(true);
-            stageProvider.setFirstHeight(14);
-            stageProvider.setSecondHeight(18);
+            stageProvider.setSoundRepeat();
           }
         },
       ),
@@ -453,11 +448,21 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           ],
         ),
       ),
-      onTap: () => {                   // List Item Click (Quiz answer click)
+      onTap: () {                   // List Item Click (Quiz answer click)
         if(!stageProvider.isPlaying && stageProvider.playCount > 0) {
-          stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation),
-          stageProvider.setAnswerCount(),
-          _answerResultDialog(pronunciationVO.pIdx),
+          stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
+          //stageProvider.setAnswerCount();
+          //  정답일때 -> history init, correct answer count++, correct true, level ++, round ++, -> list add
+          //  정답 아닐때 -> history init, correct false, round ++, -> list add
+          if(pronunciationVO.pIdx == randomPath.stageIdx) {     //  정답일때
+            _answerResultDialog(pronunciationVO.pIdx);
+            stageProvider.setCorrect(true, pronunciationVO.pIdx);
+            stageProvider.setRound();
+          }else {                                                // 정답 아닐때
+            stageProvider.setCountCorrectAnswer();
+            stageProvider.setCorrect(false, pronunciationVO.pIdx);
+            stageProvider.setRound();
+          }
         }
       },
     );
@@ -535,57 +540,24 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   void _answerResultDialog(int pIdx) {
     String bgImages, answerResult;
-    if(stageProvider.answerCount < 5) {
-      if(pIdx == randomPath.stageIdx) {
+
+    if(stageProvider.round <= 5) {
+      if(stageProvider.correct) {
         bgImages = AppImages.blueBgImage;
         answerResult = Strings.quiz_result_great;
         stageProvider.setPlayRate();
+        stageProvider.setLevel();
+
       }else {
         bgImages = AppImages.greenBgImage;
         answerResult = Strings.quiz_result_good;
       }
+      stageProvider.addHistory();
       //  정답지 레이아웃 다시. path 랜덤 시키기.
       categoryProvider.setStepProgress();
       randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+      stageProvider.historyInit(randomPath.stageIdx);
 
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            Future.delayed(Duration(seconds: 1), () {
-              Navigator.pop(context);
-              stageProvider.onSelectedAnswer(-1, "");
-            });
-            return Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-                    child: Container(color: Colors.black.withOpacity(0.1)),
-                  ),
-                ),
-                Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: <Widget>[
-                    Positioned(
-                        child: Container(
-                          width: deviceWidth * 0.35,
-                          child: Image.asset(bgImages),
-                        )
-                    ),
-                    Positioned(
-                      child: Container(
-                        child: Text(
-                          answerResult,
-                          style: Theme.of(context).textTheme.headline3,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            );
-          });
     }else {
       //  Stage 완료 했을때. -> play speed 가 2 이상일때는 별 3개 1.25 ~ 1.5 일때 별 2개 1일때 별 1개. 별 2개부터 great!
       if(stageProvider.playRate <= 1.0) {
@@ -604,11 +576,54 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
   }
 
+  _showDialog(String bgImages, String answerResult) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          Future.delayed(Duration(seconds: 1), () {
+            Navigator.pop(context);
+            stageProvider.onSelectedAnswer(-1, "");
+          });
+          return Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                  child: Container(color: Colors.black.withOpacity(0.1)),
+                ),
+              ),
+              Stack(
+                alignment: AlignmentDirectional.center,
+                children: <Widget>[
+                  Positioned(
+                      child: Container(
+                        width: deviceWidth * 0.35,
+                        child: Image.asset(bgImages),
+                      )
+                  ),
+                  Positioned(
+                    child: Container(
+                      child: Text(
+                        answerResult,
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
     final bookmarkList = userProviderModel.value.getBookmark;
+
+    //stageProvider.startLearnTime();
 
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
@@ -616,15 +631,14 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
-        _setRandomPath();
+        randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+        stageProvider.historyInit(randomPath.stageIdx);
       }
     }
 
     if(bookmarkList.hasData) {
       _bookmarkList = bookmarkList.result.asValue.value;
     }
-
-    //stageProvider.startLearnTime();
 
     return Scaffold(
       backgroundColor: Colors.white,
