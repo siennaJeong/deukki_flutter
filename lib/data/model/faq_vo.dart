@@ -27,3 +27,18 @@ class FaqVO {
     return 'FaqVO{idx: $idx, question: $question, answer: $answer, sequence: $sequence}';
   }
 }
+
+class ExpandableFaq {
+  String question;
+  List<String> answers = [];
+
+  void addAnswer(String answer) {
+    answers.add(answer);
+  }
+  ExpandableFaq({this.question});
+
+  @override
+  String toString() {
+    return 'ExpandableFaq{question: $question, answers: $answers}';
+  }
+}

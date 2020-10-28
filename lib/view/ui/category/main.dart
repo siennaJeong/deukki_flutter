@@ -118,6 +118,7 @@ class _MainCategoryState extends State<MainCategory> {
 
   @override
   Widget build(BuildContext context) {
+    resourceProviderModel.getFaq();
 
     return Scaffold(
       backgroundColor: MainColors.yellow_20,

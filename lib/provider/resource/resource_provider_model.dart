@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
+import 'package:deukki/data/model/faq_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/version_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
@@ -40,6 +41,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
 
   PackageInfo _packageInfo;
   bool requireInstall = false;
+  List<FaqVO> faqs = [];
   List<AudioFilePathVO> _audioFilePath = [];
   List<AudioFilePathVO> filePathList = [];
 
@@ -239,5 +241,10 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> recordUpload(String authJWT, File file, int stage, int round, String sentenceId) async {
     final recordUpload = _categoryRepository.recordUploadLink(authJWT, file, stage, round, sentenceId);
     await value.recordUpload.set(recordUpload, notifyListeners);
+  }
+
+  Future<void> getFaq() async {
+    final faqList = await _dbHelper.getFaqs();
+    faqs = faqList;
   }
 }

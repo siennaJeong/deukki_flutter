@@ -30,6 +30,7 @@ class MainColors {
   static const Color purple_20 = const Color.fromRGBO(255,223,249,1);
 
   static const Color grey_100 = const Color.fromRGBO(51,51,51,1);
+  static const Color grey_answer = const Color.fromRGBO(104,104,104,1);
   static const Color grey_90 = const Color.fromRGBO(137,137,137,1);
   static const Color grey_80 = const Color.fromRGBO(122,122,122,1);
   static const Color grey_text = const Color.fromRGBO(182,182,182,1);
@@ -37,6 +38,7 @@ class MainColors {
   static const Color grey_border = const Color.fromRGBO(207,207,207,1);
   static const Color grey_50 = const Color.fromRGBO(236,236,236,1);
   static const Color grey_40 = const Color.fromRGBO(229,229,229,1);
+  static const Color grey_30 = const Color.fromRGBO(250,250,250,1);
   static const Color grey_google = const Color.fromRGBO(240,240,240,1);
   
   static const Color black_50 = const Color.fromRGBO(0, 0, 0, 0.5);

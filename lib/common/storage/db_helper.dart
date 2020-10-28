@@ -239,7 +239,8 @@ class DBHelper{
   getFaqs() async {
     final db = await database;
     var res = await db.query(TABLE_FAQ);
-    return res.isNotEmpty ? res : null;
+    List<FaqVO> list = res.isNotEmpty ? res.map((e) => FaqVO.fromJson(e)).toList() : [];
+    return list;
   }
 
 
