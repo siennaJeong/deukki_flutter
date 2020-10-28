@@ -2,7 +2,7 @@ import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/mypage/bookmark.dart';
-import 'package:deukki/view/ui/mypage/help.dart';
+import 'package:deukki/view/ui/mypage/qna.dart';
 import 'package:deukki/view/ui/mypage/membership.dart';
 import 'package:deukki/view/ui/mypage/report.dart';
 import 'package:deukki/view/ui/mypage/settings.dart';
@@ -156,7 +156,7 @@ class _MyPageState extends State<MyPage> {
             BookMark(bookmarkList: bookmarks,),
             MemberShip(),
             Settings(),
-            Help()
+            QnA()
           ],
         ),
       ),

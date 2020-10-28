@@ -14,7 +14,7 @@ import 'package:deukki/data/repository/user/user_repository.dart';
 class UserRestRepository implements UserRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, dynamic> _loginToJson(String authType, String authId) => <String, dynamic> {
+  Map<String, String> _loginToJson(String authType, String authId) => <String, String> {
     'socialMethod': authType,
     'socialId': authId
   };
@@ -62,7 +62,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> login(String authType, String authId) async {
-    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, HttpUrls.headers(""), _loginToJson(authType, authId));
+    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, HttpUrls.postHeaders(""), _loginToJson(authType, authId));
     if(loginJson.isValue) {
       return Result.value(CommonResultVO.fromJson(loginJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -114,7 +114,7 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<CommonResultVO>> recordLearning(String authJWT, String sentenceId, LearningVO learningVO) async {
-    final recordLearning = await _httpClient.postRequest("${HttpUrls.LEARNING_RECORD}/$sentenceId", HttpUrls.postHeaders(authJWT), learningVO.bodyJson());
+    final recordLearning = await _httpClient.recordRequest("${HttpUrls.LEARNING_RECORD}/$sentenceId", HttpUrls.postHeaders(authJWT), learningVO.bodyJson());
     if(recordLearning.isValue) {
       return Result.value(CommonResultVO.fromJson(recordLearning.asValue.value as Map<String, dynamic>));
     }else {

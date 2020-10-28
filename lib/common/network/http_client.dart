@@ -39,7 +39,37 @@ class HttpClient {
     }
   }
 
-  Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, String> body) async {
+  Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
+    Response response;
+    try {
+      response = await post(path, headers: headers, body: body);
+      final statusCode = response.statusCode;
+      if(statusCode >= 200 && statusCode < 299) {
+        if(response.body.isEmpty) {
+          return Result.value(null);
+        }else {
+          return Result.value(jsonDecode(response.body));
+        }
+
+      }else if(statusCode >= 400 && statusCode < 500) {
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ClientErrorException());
+      }else if(statusCode >= 500 && statusCode < 600) {
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(ServerErrorException());
+      }else {
+        print("error code : " + statusCode.toString());
+        print("body : " + response.body.toString());
+        throw Result.error(UnknownException());
+      }
+    }on SocketException {
+      throw Result.error(ConnectionException());
+    }
+  }
+
+  Future<Result<dynamic>> recordRequest(String path, Map<String, String> headers, Map<String, String> body) async {
     Response response;
     try {
       response = await post(Uri.encodeFull(path), headers: headers, body: body);
