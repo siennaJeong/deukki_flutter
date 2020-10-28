@@ -209,10 +209,10 @@ class DBHelper{
   }
 
   /* ============================ Audio File Path ============================ */
-  Future<void> insertAudioFile(String sentenceId, int stageIdx, String path) async {
+  Future<void> insertAudioFile(String sentenceId, int pIdx, String path) async {
     final db = await database;
     Batch batch = db.batch();
-    AudioFilePathVO audioFileVO = AudioFilePathVO(sentenceId, stageIdx, path);
+    AudioFilePathVO audioFileVO = AudioFilePathVO(sentenceId, pIdx, path);
     batch.insert(TABLE_AUDIO_PATH, audioFileVO.toJson());
     batch.commit();
   }

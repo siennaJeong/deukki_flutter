@@ -8,7 +8,7 @@ class AudioFilePathVO {
   @JsonKey(name: 'sentence_id')
   String sentenceId;
 
-  @JsonKey(name: 'stage_idx')
+  @JsonKey(name: 'p_idx')
   int stageIdx;
 
   @JsonKey(name: 'path')

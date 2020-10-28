@@ -4,7 +4,7 @@ part of 'audio_file_path_vo.dart';
 AudioFilePathVO _$AudioFilePathVOFromJson(Map<String, dynamic> json) {
   return AudioFilePathVO(
     json['sentence_id'] as String,
-    json['stage_idx'] as int,
+    json['p_idx'] as int,
     json['path'] as String,
   );
 }
@@ -12,6 +12,6 @@ AudioFilePathVO _$AudioFilePathVOFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$AudioFilePathToJson(AudioFilePathVO instance) =>
     <String, dynamic>{
       'sentence_id': instance.sentenceId,
-      'stage_idx': instance.stageIdx,
+      'p_idx': instance.stageIdx,
       'path': instance.path,
     };

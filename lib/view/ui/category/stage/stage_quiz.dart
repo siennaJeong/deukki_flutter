@@ -47,6 +47,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   var deviceWidth;
   var deviceHeight;
+  String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
 
@@ -412,11 +413,16 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _listItemWidget(PronunciationVO pronunciationVO, String rightPronunciation, int index) {
     Color cardColor, textColor;
     if(stageProvider.isPlaying) {
-      cardColor = MainColors.yellow_opacity50;
-      textColor = MainColors.grey_70;
+      if(stageProvider.selectAnswerIndex.contains(index)) {
+        cardColor = Colors.white;
+        textColor = Colors.white;
+      }else {
+        cardColor = MainColors.yellow_opacity50;
+        textColor = MainColors.grey_70;
+      }
     }else {
       if(stageProvider.playCount > 0) {
-        if(stageProvider.selectedAnswerIndex == index) {
+        if(stageProvider.selectAnswerIndex.contains(index)) {
           cardColor = Colors.white;
           textColor = Colors.white;
         }else {
@@ -441,7 +447,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
             Positioned(
               left: 0,
               top: 0,
-              child: stageProvider.selectedAnswerIndex == index
+              child: (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) != null
                   ? Container(color: Colors.white,)
                   : _rightPronunciationTagWidget(pronunciationVO.pronunciation, rightPronunciation)
             ),
@@ -451,18 +457,14 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       onTap: () {                   // List Item Click (Quiz answer click)
         if(!stageProvider.isPlaying && stageProvider.playCount > 0) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
-          //stageProvider.setAnswerCount();
-          //  정답일때 -> history init, correct answer count++, correct true, level ++, round ++, -> list add
-          //  정답 아닐때 -> history init, correct false, round ++, -> list add
-          if(pronunciationVO.pIdx == randomPath.stageIdx) {     //  정답일때
-            _answerResultDialog(pronunciationVO.pIdx, AppImages.blueBgImage, Strings.quiz_result_great);
-            stageProvider.setCorrect(true, pronunciationVO.pIdx);
-            stageProvider.setRound();
-          }else {                                                // 정답 아닐때
-            _answerResultDialog(pronunciationVO.pIdx, AppImages.greenBgImage, Strings.quiz_result_good);
-            stageProvider.setCountCorrectAnswer();
-            stageProvider.setCorrect(false, pronunciationVO.pIdx);
-            stageProvider.setRound();
+          if(pronunciationVO.pIdx == randomPath.stageIdx) {
+            _answerResultDialog(pronunciationVO.pIdx);
+          }else {
+            stageProvider.setSelectPIdx(pronunciationVO.pIdx);
+            stageProvider.setCorrect(false);
+            stageProvider.setOneTimeAnswerCount();
+            resultBgImage = AppImages.greenBgImage;
+            resultText = Strings.quiz_result_good;
           }
         }
       },
@@ -470,7 +472,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   }
 
   Widget _answerWidget(int index, String pronunciation, String rightPronunciation, Color textColor) {
-    if(stageProvider.selectedAnswerIndex == index) {
+    if((stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) != null) {
       return DottedBorder(
         color: MainColors.yellow_100,
         dashPattern: [2, 8],
@@ -539,18 +541,29 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
   }
 
-  void _answerResultDialog(int pIdx, String bgImages, String answerResult) {
+  void _answerResultDialog(int pIdx) {
     if(stageProvider.round <= 5) {
-      if(stageProvider.correct) {
-        stageProvider.setPlayRate();
+      if(stageProvider.oneTimeAnswerCount <= 0) {
+        resultBgImage = AppImages.blueBgImage;
+        resultText = Strings.quiz_result_great;
+        stageProvider.setSelectPIdx(pIdx);
+        stageProvider.setCorrect(true);
+        stageProvider.setCountCorrectAnswer();
+        stageProvider.addHistory();
+        _showDialog(resultBgImage, resultText);
         stageProvider.setLevel();
-        _showDialog(bgImages, answerResult);
+        stageProvider.setPlayRate();
+        randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+        stageProvider.historyInit(randomPath.stageIdx);
+        stageProvider.initSelectAnswer();
+      }else {
+        stageProvider.addHistory();
+        _showDialog(resultBgImage, resultText);
+        stageProvider.historyInit(randomPath.stageIdx);
+        stageProvider.setRound();
+        categoryProvider.setStepProgress();
+        stageProvider.initSelectAnswer();
       }
-      stageProvider.addHistory();
-      categoryProvider.setStepProgress();
-      randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-      stageProvider.historyInit(randomPath.stageIdx);
-
     }else {
       if(stageProvider.playRate <= 1.0) {
         categoryProvider.setStageScore(1);
@@ -624,7 +637,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
         randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-        stageProvider.historyInit(randomPath.stageIdx);
+        stageProvider.setPlayPIdx(randomPath.stageIdx);
       }
     }
 

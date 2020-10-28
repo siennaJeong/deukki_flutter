@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 
 class StageProvider with ChangeNotifier{
   bool isPlaying;
-  int playCount, selectedAnswerIndex;
+  int playCount;
+  List<int> selectAnswerIndex;
+  List<String> selectedAnswer;
   double playRate;
-  String selectedAnswer;
 
   Timer _timer;
   var _learnTime;
@@ -22,19 +23,27 @@ class StageProvider with ChangeNotifier{
   int playPIdx;
   int selectPIdx;
 
+  int oneTimeAnswerCount;
+
   List<HistoryVO> historyList;
 
   StageProvider() {
     this.isPlaying = false;
     this.playCount = 0;
     this.playRate = 1.0;
-    this.selectedAnswerIndex = -1;
+    this.selectAnswerIndex = [];
+    this.selectedAnswer = [];
     this._learnTime = 0;
     this.stageIdx = 0;
     this.countCorrectAnswer = 0;
     this.historyList = [];
     this.level = 1;
     this.round = 1;
+    this.correct = false;
+    this.selectPIdx = 0;
+    this.playPIdx = 0;
+    this.soundRepeat = 0;
+    this.oneTimeAnswerCount = 0;
   }
 
   void setPlaying(bool isPlaying) {
@@ -43,8 +52,8 @@ class StageProvider with ChangeNotifier{
   }
 
   void onSelectedAnswer(int index, String selectedAnswer) {
-    this.selectedAnswerIndex = index;
-    this.selectedAnswer = selectedAnswer;
+    this.selectAnswerIndex.add(index);
+    this.selectedAnswer.add(selectedAnswer);
     notifyListeners();
   }
 
@@ -63,16 +72,34 @@ class StageProvider with ChangeNotifier{
     this.selectPIdx = 0;
     this.playPIdx = playPIdx;
     this.soundRepeat = 0;
+    this.oneTimeAnswerCount = 0;
+    notifyListeners();
   }
 
-  void setCorrect(bool correct, int selectPIdx) {
+  void initSelectAnswer() {
+    this.selectAnswerIndex = [];
+    this.selectedAnswer = [];
+    notifyListeners();
+  }
+
+  void setOneTimeAnswerCount() {
+    this.oneTimeAnswerCount++;
+    notifyListeners();
+  }
+
+  void setCorrect(bool correct) {
     this.correct = correct;
+    notifyListeners();
+  }
+
+  void setSelectPIdx(int selectPIdx) {
     this.selectPIdx = selectPIdx;
     notifyListeners();
   }
 
   void setSoundRepeat() {
     this.soundRepeat++;
+    notifyListeners();
   }
 
   void setPlayPIdx(int pIdx) {
