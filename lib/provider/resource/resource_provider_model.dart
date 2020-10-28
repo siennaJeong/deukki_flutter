@@ -203,7 +203,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         print("right file path null ? " + filePathList.toString());
         saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
-        _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
+        _dbHelper.insertAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }
 
       wrongList = result['wrongPronunciationList'] as List;
@@ -218,7 +218,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
           print("wrong file path null ? " + filePathList.toString());
           saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
-          _dbHelper.insertAudioFile(sentenceId, stageIdx, dbFilePath);
+          _dbHelper.insertAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }
       });
     });

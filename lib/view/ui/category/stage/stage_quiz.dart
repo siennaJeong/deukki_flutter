@@ -455,10 +455,11 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           //  정답일때 -> history init, correct answer count++, correct true, level ++, round ++, -> list add
           //  정답 아닐때 -> history init, correct false, round ++, -> list add
           if(pronunciationVO.pIdx == randomPath.stageIdx) {     //  정답일때
-            _answerResultDialog(pronunciationVO.pIdx);
+            _answerResultDialog(pronunciationVO.pIdx, AppImages.blueBgImage, Strings.quiz_result_great);
             stageProvider.setCorrect(true, pronunciationVO.pIdx);
             stageProvider.setRound();
           }else {                                                // 정답 아닐때
+            _answerResultDialog(pronunciationVO.pIdx, AppImages.greenBgImage, Strings.quiz_result_good);
             stageProvider.setCountCorrectAnswer();
             stageProvider.setCorrect(false, pronunciationVO.pIdx);
             stageProvider.setRound();
@@ -538,28 +539,19 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
   }
 
-  void _answerResultDialog(int pIdx) {
-    String bgImages, answerResult;
-
+  void _answerResultDialog(int pIdx, String bgImages, String answerResult) {
     if(stageProvider.round <= 5) {
       if(stageProvider.correct) {
-        bgImages = AppImages.blueBgImage;
-        answerResult = Strings.quiz_result_great;
         stageProvider.setPlayRate();
         stageProvider.setLevel();
-
-      }else {
-        bgImages = AppImages.greenBgImage;
-        answerResult = Strings.quiz_result_good;
+        _showDialog(bgImages, answerResult);
       }
       stageProvider.addHistory();
-      //  정답지 레이아웃 다시. path 랜덤 시키기.
       categoryProvider.setStepProgress();
       randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
       stageProvider.historyInit(randomPath.stageIdx);
 
     }else {
-      //  Stage 완료 했을때. -> play speed 가 2 이상일때는 별 3개 1.25 ~ 1.5 일때 별 2개 1일때 별 1개. 별 2개부터 great!
       if(stageProvider.playRate <= 1.0) {
         categoryProvider.setStageScore(1);
       }else if(stageProvider.playRate > 1.0 && stageProvider.playRate <= 1.5) {

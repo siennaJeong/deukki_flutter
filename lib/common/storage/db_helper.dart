@@ -53,7 +53,7 @@ class DBHelper{
             "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
           );
           db.execute(
-            "CREATE TABLE $TABLE_AUDIO_PATH(sentence_id TEXT, stage_idx INTEGER, path TEXT)"
+            "CREATE TABLE $TABLE_AUDIO_PATH(sentence_id TEXT, p_idx INTEGER, path TEXT)"
           );
         }
     );

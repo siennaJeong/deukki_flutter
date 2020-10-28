@@ -31,9 +31,10 @@ class StageProvider with ChangeNotifier{
     this.selectedAnswerIndex = -1;
     this._learnTime = 0;
     this.stageIdx = 0;
+    this.countCorrectAnswer = 0;
     this.historyList = [];
-    this.level = 0;
-    this.round = 0;
+    this.level = 1;
+    this.round = 1;
   }
 
   void setPlaying(bool isPlaying) {
