@@ -44,6 +44,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
         padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
         child: ListView.builder(
           shrinkWrap: true,
+          physics: BouncingScrollPhysics(),
           itemCount: list.length,
           itemBuilder: (BuildContext context, index) {
             return _listItemWidget(

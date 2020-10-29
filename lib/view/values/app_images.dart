@@ -46,5 +46,6 @@ class AppImages {
 
   static String hearingIcon = "$_basePath/icon_hearing.png";
   static String micIcon = "$_basePath/icon_keyboard_voice.png";
+  static String kakaoYellowLogo = "$_basePath/kakao_logo_yellow.png";
 
 }

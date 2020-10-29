@@ -3,6 +3,7 @@ import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,59 +54,59 @@ class _QnAState extends State<QnA> {
 
   @override
   Widget build(BuildContext context) {
-    return Scrollable(
-      viewportBuilder: (context, child) {
-        return Container(
-          margin: EdgeInsets.only(top: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  Strings.mypage_help_script,
-                  style: TextStyle(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 16, right: 16),
+              child: Text(
+                Strings.mypage_help_script,
+                style: TextStyle(
                     color: MainColors.grey_100,
                     fontSize: 16,
                     fontFamily: "NotoSansKR",
                     fontWeight: FontWeight.w400
-                  ),
                 ),
               ),
-              SizedBox(height: 24),
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  Strings.mypage_help_title,
-                  style: TextStyle(
+            ),
+            SizedBox(height: 24),
+            Container(
+              margin: EdgeInsets.only(left: 16, right: 16),
+              child: Text(
+                Strings.mypage_help_title,
+                style: TextStyle(
                     color: MainColors.grey_100,
                     fontSize: 24,
                     fontFamily: "TmoneyRound",
                     fontWeight: FontWeight.w700
-                  ),
                 ),
               ),
-              SizedBox(height: 8),
-              Expanded(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: expandableFaqs.length,
-                  itemBuilder: (context, index) {
-                    return ExpansionTile(
-                      title: _listTitleWidget(expandableFaqs[index].question),
-                      children: <Widget>[
-                        Column(
-                          children: _buildExpandableContent(expandableFaqs[index]),
-                        )
-                      ],
-                    );
-                  },
-                ),
-              )
-            ],
-          ),
-        );
-      },
+            ),
+            SizedBox(height: 8),
+            SizedBox(
+              child: ListView.builder(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: expandableFaqs.length,
+                itemBuilder: (context, index) {
+                  return ExpansionTile(
+                    title: _listTitleWidget(expandableFaqs[index].question),
+                    children: <Widget>[
+                      Column(
+                        children: _buildExpandableContent(expandableFaqs[index]),
+                      )
+                    ],
+                  );
+                },
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 
