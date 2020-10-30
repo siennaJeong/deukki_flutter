@@ -11,7 +11,7 @@ class KakaoAuthService {
   var kakaoUserToken;
   var kakaoAuthCode;
   bool isKakaoInstalled;
-  String _email;
+  String _email = "";
 
   KakaoAuthService() { _isInstalled(); }
 

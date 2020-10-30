@@ -87,7 +87,7 @@ PODS:
     - GTMSessionFetcher/Core (= 1.5.0)
   - hardware_buttons (0.0.1):
     - Flutter
-  - kakao_flutter_sdk (0.4.2):
+  - kakao_flutter_sdk (0.5.2):
     - Flutter
   - nanopb (1.30906.0):
     - nanopb/decode (= 1.30906.0)
@@ -198,7 +198,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   hardware_buttons: 014f502132c734dc391a47e2b708728b1dd8bf32
-  kakao_flutter_sdk: d9f909ec8b12a263ce2c1c7a7eb6f8de02e7c253
+  kakao_flutter_sdk: c314c15347e033a31279acaa3c5efb5cad1426eb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c

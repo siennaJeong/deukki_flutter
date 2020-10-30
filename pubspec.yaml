@@ -51,7 +51,7 @@ dependencies:
 
 
   # ======== Social Login API =========
-  kakao_flutter_sdk: ^0.4.2
+  kakao_flutter_sdk: ^0.5.2
   flutter_facebook_auth: ^0.3.0
   google_sign_in: ^4.5.3
 

@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
 
   @override
   void didChangeDependencies() {
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
     signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
