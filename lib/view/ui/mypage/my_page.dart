@@ -109,9 +109,9 @@ class _MyPageState extends State<MyPage> {
 
   Widget _backButtonWidget() {
     return Container(
-      margin: EdgeInsets.only(left: 44),
       child: GestureDetector(                         //  Back button
         child: Container(
+          margin: EdgeInsets.only(left: deviceWidth > 700 ? 0 : 40),
           child: Ink(
             decoration: BoxDecoration(
               border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -144,7 +144,6 @@ class _MyPageState extends State<MyPage> {
   Widget _pageViewItemWidget() {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(left: 44, right: 44),
         child: PageView(
           scrollDirection: Axis.horizontal,
           controller: _pageController,
@@ -170,18 +169,20 @@ class _MyPageState extends State<MyPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            _tabWidget(),
-            _pageViewWidget()
-          ],
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              _tabWidget(),
+              _pageViewWidget()
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 }

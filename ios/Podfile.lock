@@ -103,9 +103,9 @@ PODS:
   - PromisesObjC (1.2.11)
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.1):
+  - sqflite (0.0.2):
     - Flutter
-    - FMDB (~> 2.7.2)
+    - FMDB (>= 2.7.5)
   - system_shortcuts (0.0.1):
     - Flutter
 
@@ -205,7 +205,7 @@ SPEC CHECKSUMS:
   permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
+  sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   system_shortcuts: fa91743cc51eed3811f5ea5461e23f972b9de780
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c

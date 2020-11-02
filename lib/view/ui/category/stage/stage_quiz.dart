@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
@@ -17,6 +19,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +27,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hardware_buttons/hardware_buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
+
+void audiPlayerHandler(AudioPlayerState value) => print("state => $value");
 
 class StageQuiz extends StatefulWidget {
   @override
@@ -39,7 +44,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   final random = Random();
 
-  AudioPlayer _audioPlayer;
+  static AudioPlayer _audioPlayer = AudioPlayer();
+  static AudioCache _audioCache = AudioCache();
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -53,8 +59,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    _audioPlayer = AudioPlayer();
     _audioManager = AudioManager.STREAM_MUSIC;
+
     _volumeButtonEvent = volumeButtonEvents.listen((event) {
       switch(event) {
         case VolumeButtonEvent.VOLUME_UP:
@@ -65,7 +71,14 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
           break;
       }
     });
-    initVolume();
+
+    if(!Platform.isIOS) {
+      initVolume();
+    }
+
+    if(!kIsWeb && Platform.isIOS) {
+      _audioPlayer.monitorNotificationStateChanges(audiPlayerHandler);
+    }
     super.initState();
   }
 
@@ -81,10 +94,10 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
+    super.dispose();
+    audioDispose();
     _volumeButtonEvent?.cancel();
     stageProvider.stopLearnTime();
-    super.dispose();
   }
 
   Future<void> initVolume() async {
@@ -109,19 +122,27 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     }
   }
 
-  _playLocal(String filePath, double speed) async {
-    await _audioPlayer.play(filePath, isLocal: true);
-    _audioPlayer.setVolume((currentVol / maxVol) * 10);
+  void _playLocal(String filePath, double speed) async {
+    await _audioPlayer.play(filePath);
+    if(!Platform.isIOS) {
+      _audioPlayer.setVolume((currentVol / maxVol) * 10);
+    }
     _audioPlayer.setPlaybackRate(playbackRate: speed);
     _playStateListener();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   }
 
-  _playStateListener() async {
+  void _playStateListener() async {
     _audioPlayer.onPlayerCompletion.listen((event) {
+      print("play completed");
       stageProvider.setPlaying(false);
       stageProvider.setPlayCount();
     });
+  }
+
+  Future<void> audioDispose() async {
+    await _audioPlayer.pause();
+    await _audioPlayer.dispose();
   }
 
   Widget _header() {
@@ -277,13 +298,13 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
     String soundIcons;
-    if(stageProvider.playRate == 1.25 ) {
+    if(stageProvider.playRate == 1.15 ) {
       playSpeed = Strings.play_speed_15;
-    }else if(stageProvider.playRate == 1.5) {
+    }else if(stageProvider.playRate == 1.3) {
       playSpeed = Strings.play_speed_20;
-    }else if(stageProvider.playRate == 1.75){
+    }else if(stageProvider.playRate == 1.45){
       playSpeed = Strings.play_speed_25;
-    }else if(stageProvider.playRate == 2.0) {
+    }else if(stageProvider.playRate == 1.6) {
       playSpeed = Strings.play_speed_30;
     }else {
       playSpeed = "";

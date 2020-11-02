@@ -76,7 +76,6 @@ class _BookMarkState extends State<BookMark> {
     return GestureDetector(
       child: Card(
         color: Colors.white,
-        margin: EdgeInsets.only(left: 8, right: 8),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: BorderSide(
@@ -177,7 +176,7 @@ class _BookMarkState extends State<BookMark> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: EdgeInsets.only(top: 8),
+      margin: EdgeInsets.only(top: 8, right: deviceWidth > 700 ? 0 : 40, left: deviceWidth > 700 ? 0 : 40),
       child: _listWidget(deviceWidth, deviceHeight),
     );
   }

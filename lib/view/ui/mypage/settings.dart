@@ -349,7 +349,7 @@ class _SettingsState extends State<Settings> {
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
-          margin: EdgeInsets.only(top: 16),
+          margin: EdgeInsets.only(top: 16, right: deviceWidth > 700 ? 0 : 40, left: deviceWidth > 700 ? 0 : 40),
           child: Column(
             children: <Widget>[
               _emailWidget(),

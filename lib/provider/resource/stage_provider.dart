@@ -30,7 +30,7 @@ class StageProvider with ChangeNotifier{
   StageProvider() {
     this.isPlaying = false;
     this.playCount = 0;
-    this.playRate = 1.0;
+    this.playRate = 0.8;
     this.selectAnswerIndex = [];
     this.selectedAnswer = [];
     this._learnTime = 0;
@@ -63,7 +63,7 @@ class StageProvider with ChangeNotifier{
   }
 
   void setPlayRate() {
-    this.playRate = this.playRate + 0.25;
+    this.playRate = this.playRate + 0.15;
     notifyListeners();
   }
 

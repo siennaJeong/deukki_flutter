@@ -18,8 +18,8 @@ class AppImages {
   static String categoryLargeBusiness = "$_basePath/img_business.png";
   static String categoryLargeBusinessGreen = "$_basePath/img_business_green.png";
 
-  static List<String> randomImage = [categoryLargeBasic, categoryLargePractice, categoryLargeBusiness, categoryLargeWord];
-  static List<String> randomImageColor = [categoryLargeBasicPurple, categoryLargePracticeBlue, categoryLargeBusinessGreen, categoryLargeWordYellow];
+  static List<String> randomImage = [categoryLargeWord, categoryLargeBasic, categoryLargePractice, categoryLargeBusiness];
+  static List<String> randomImageColor = [categoryLargeWordYellow, categoryLargeBasicPurple, categoryLargePracticeBlue, categoryLargeBusinessGreen];
 
   static String backBtn = "$_basePath/back_btn.png";
   static String expandMore = "$_basePath/expand_more.png";

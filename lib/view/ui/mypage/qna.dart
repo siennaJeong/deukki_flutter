@@ -88,20 +88,23 @@ class _QnAState extends State<QnA> {
             ),
             SizedBox(height: 8),
             SizedBox(
-              child: ListView.builder(
-                shrinkWrap: true,
-                primary: false,
-                itemCount: expandableFaqs.length,
-                itemBuilder: (context, index) {
-                  return ExpansionTile(
-                    title: _listTitleWidget(expandableFaqs[index].question),
-                    children: <Widget>[
-                      Column(
-                        children: _buildExpandableContent(expandableFaqs[index]),
-                      )
-                    ],
-                  );
-                },
+              child: Container(
+                alignment: AlignmentDirectional.centerStart,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  primary: false,
+                  itemCount: expandableFaqs.length,
+                  itemBuilder: (context, index) {
+                    return ExpansionTile(
+                      title: _listTitleWidget(expandableFaqs[index].question),
+                      children: <Widget>[
+                        Column(
+                          children: _buildExpandableContent(expandableFaqs[index]),
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
             )
           ],

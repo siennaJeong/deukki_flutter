@@ -13,14 +13,14 @@ class Report extends StatefulWidget {
 class _ReportState extends State<Report> {
   double deviceWidth, deviceHeight;
 
-  Widget _recordCardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
+  Widget _cardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
     return Card(
-      color: bgColor,
+      color: isAccuracy ? MainColors.grey_google : bgColor,
       margin: EdgeInsets.only(top: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: MainColors.yellow_40,
+          color: isAccuracy ? MainColors.grey_google : MainColors.yellow_40,
           width: 2,
         ),
       ),
@@ -41,11 +41,12 @@ class _ReportState extends State<Report> {
             Container(
               margin: EdgeInsets.only(top: 24, left: 24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    isAccuracy ? "$title 0%" : "${title}0.0 / 10",
+                    isAccuracy ? "$title -" : "${title}0.0 / 100",
                     style: TextStyle(
-                      color: MainColors.grey_100,
+                      color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
                       fontSize: 24,
                       fontFamily: "TmoneyRound",
                       fontWeight: FontWeight.w700
@@ -53,9 +54,9 @@ class _ReportState extends State<Report> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    script == null ? "" : "${script}0.0 / 10",
+                    isAccuracy ? "준비중" : "${script}0.0 / 100",
                     style: TextStyle(
-                      color: MainColors.grey_100,
+                      color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
                       fontSize: 16,
                       fontFamily: "NotoSansKR",
                       fontWeight: FontWeight.w400
@@ -83,7 +84,7 @@ class _ReportState extends State<Report> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: 10),
+                margin: EdgeInsets.only(left: deviceWidth > 700 ? 10 : 40),
                 child: Text(
                   "이름${Strings.mypage_report_title}",
                   style: TextStyle(
@@ -95,7 +96,7 @@ class _ReportState extends State<Report> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 3, left: 10),
+                margin: EdgeInsets.only(top: 3, left: deviceWidth > 700 ? 10 : 40),
                 child: Text(
                   "${Strings.mypage_report_script} 이름${Strings.mypage_report_script_2}",
                   style: TextStyle(
@@ -110,9 +111,9 @@ class _ReportState extends State<Report> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _recordCardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
+                  _cardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
                   SizedBox(width: 16),
-                  _recordCardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
+                  _cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
                 ],
               ),
             ],

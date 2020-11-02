@@ -29,18 +29,12 @@
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb639456823354844</string>
-			</array>
-		</dict>
-		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb639456823354844</string>
-				<string>com.googleusercontent.apps.890185520334-vf09fs0qpdpto870kf3erq6hlsrgbun4</string>
+				<string>com.googleusercontent.apps.890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum</string>
 			</array>
 		</dict>
 	</array>
@@ -58,9 +52,17 @@
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
+		<string>33194ae01d0ccade0fffcd22f39f300a</string>
+        <string>kakaokompassauth</string>
+        <string>kakaotalk-4.5.0</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Can We Use Your Microphone Please</string>
 	<key>UILaunchStoryboardName</key>
@@ -79,9 +81,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key><true/>
-    </dict>
 </dict>
 </plist>

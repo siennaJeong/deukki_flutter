@@ -11,4 +11,11 @@ import Flutter
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    signal(SIGPIPE, SIG_IGN);
+  }
+        
+  override func applicationWillEnterForeground(_ application: UIApplication) {
+    signal(SIGPIPE, SIG_IGN);
+  }
 }

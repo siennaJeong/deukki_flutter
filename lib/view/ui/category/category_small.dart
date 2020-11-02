@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:deukki/data/model/sentence_vo.dart';
@@ -26,6 +27,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
   AnimationController _animationController;
+
+  double deviceWidth, deviceHeight;
+
   final random = Random();
   final List<Color> randomColor = [];
   List<num> mainAxis = [];
@@ -94,7 +98,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       builder: (context, sentences, child) {
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(left: 40, bottom: 25),
+            margin: EdgeInsets.only(left: deviceWidth > 700 ? 0 : 40, bottom: 25),
             child: StaggeredGridView.countBuilder(
                 shrinkWrap: true,
                 crossAxisCount: 2,
@@ -254,12 +258,17 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
     return WillPopScope(
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Container(
+          width: double.infinity,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Stack(
