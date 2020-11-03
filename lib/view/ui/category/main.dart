@@ -23,6 +23,8 @@ class _MainCategoryState extends State<MainCategory> {
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   Future<void> getAllBookmark;
+  Future<void> getUserInfo;
+  Future<void> getProductList;
 
   @override
   void didChangeDependencies() {
@@ -30,6 +32,8 @@ class _MainCategoryState extends State<MainCategory> {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     getAllBookmark ??= Provider.of<UserProviderModel>(context).getBookmark(authServiceAdapter.authJWT);
+    getUserInfo ??= Provider.of<UserProviderModel>(context).getUserInfo(authServiceAdapter.authJWT);
+    getProductList ??= Provider.of<UserProviderModel>(context).getProductList(authServiceAdapter.authJWT);
     super.didChangeDependencies();
   }
 

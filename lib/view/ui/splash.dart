@@ -86,7 +86,6 @@ class Splash extends BaseWidget {
 
 class _SplashState extends State<Splash> {
   AuthServiceAdapter authServiceAdapter;
-  UserProviderModel userProviderModel;
   Future<void> checkAppVersion;
   Future<void> checkAllVersion;
 
@@ -95,7 +94,6 @@ class _SplashState extends State<Splash> {
     checkAllVersion ??= Provider.of<ResourceProviderModel>(context, listen: false).checkAllVersion();
     checkAppVersion ??= Provider.of<ResourceProviderModel>(context).checkAppVersion();
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -126,7 +124,6 @@ class _SplashState extends State<Splash> {
       );
     }else {
       if(authServiceAdapter.authJWT.isNotEmpty) {
-        userProviderModel.getUserInfo(authServiceAdapter.authJWT);
         return MainCategory();
       }else {
         return Login();

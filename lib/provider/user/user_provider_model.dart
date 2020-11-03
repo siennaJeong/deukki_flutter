@@ -1,5 +1,6 @@
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
+import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
@@ -17,7 +18,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository());
   final UserRepository _userRepository;
   List<BookmarkVO> currentBookmarkList = [];
-  UserVOForHttp userVOForHttp = UserVOForHttp(0, "", "", "", "", "", 0, 0, 0, 0, 0, "");
+  List<ProductionVO> productList = [];
+  UserVOForHttp userVOForHttp;
   int bookmarkScore = 0;
 
   Future<void> checkSignUp(String authType, String authId) async {
@@ -37,6 +39,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> login(String authType, String authId) async {
     final login = _userRepository.login(authType, authId);
+    print("login");
     await value.login.set(login, notifyListeners);
   }
 
@@ -62,6 +65,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getBookmark(String authJWT) async {
     final getBookmark = _userRepository.getBookmark(authJWT);
+    print("get book mark");
     getBookmark.then((value) {
       setCurrentBookmarkList(value.asValue.value);
     });
@@ -84,10 +88,20 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getUserInfo(String authJWT) async {
     final getUserInfo = _userRepository.getUserInfo(authJWT);
+    print("get user info");
     getUserInfo.then((value) {
-      userVOForHttp = value.asValue.value;
+      userVOForHttp ??= value.asValue.value;
     });
     await value.getUserInfo.set(getUserInfo, notifyListeners);
+  }
+
+  Future<void> getProductList(String authJWT) async {
+    final getProductList = _userRepository.getProductList(authJWT);
+    print("get product list");
+    getProductList.then((value) {
+      productList = value.asValue.value;
+    });
+    await value.getProductList.set(getProductList, notifyListeners);
   }
 
 }

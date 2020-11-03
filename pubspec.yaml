@@ -54,6 +54,7 @@ dependencies:
   kakao_flutter_sdk: ^0.5.2
   flutter_facebook_auth: ^0.3.0
   google_sign_in: ^4.5.3
+  sign_in_with_apple: ^2.5.4
 
   # ======== Kakao SDK dependencies =========
   dio: ^3.0.10

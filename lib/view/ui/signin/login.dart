@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
@@ -18,6 +20,7 @@ class Login extends BaseWidget {
 }
 
 class _LoginState extends State<Login> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel signInProviderModel;
   AuthServiceAdapter authServiceAdapter;
   String authId;
@@ -30,6 +33,14 @@ class _LoginState extends State<Login> {
   }
 
   void _checkSignUp(String authType, AuthServiceType authServiceType) {
+    if(!Platform.isIOS) {
+      if(authServiceType == AuthServiceType.Apple) {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.apple_sign_in_only_ios)));
+        return;
+      }
+    }
+
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
       signInProviderModel.checkSignUp(authType, value).then((val) {
         final isSignUp = signInProviderModel.value.checkSignUp;
@@ -70,6 +81,7 @@ class _LoginState extends State<Login> {
     KakaoContext.javascriptClientId = KAKAO_JS_KEY;
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: Center(
         child: SafeArea(

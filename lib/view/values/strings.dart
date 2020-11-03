@@ -1,4 +1,6 @@
 class Strings {
+  static const String firebase_apple_url = 'https://deukki-flutter.firebaseapp.com/__/auth/handler';
+  static const String ios_bundle_name = 'io.com.diction.deukki';
   static const String service_name = "바름드끼";
 
   static const String connection_error = '인터넷에 연결되어 있지 않습니다.';
@@ -19,6 +21,8 @@ class Strings {
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
   static const String dialog_btn_update_cancel = '앱 종료';
+
+  static const String apple_sign_in_only_ios = 'Apple 로그인은 Apple 기기에서만 가능합니다.';
 
   static const String login_sns_other_type = '또는';
   static const String sign_up_terms_title = '바름드끼 시작하기';
@@ -89,6 +93,11 @@ class Strings {
   static const String mypage_membership_terms_script_4 = '· 6개월 / 12개월 멤버십 이용권은 기한이 끝나도 자동 갱신되지 않습니다.';
   static const String mypage_membership_terms_script_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
   static const String mypage_membership_terms_script_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
+  static const String mypage_membership_status_noMember = '미가입';
+  static const String mypage_membership_status_yesMember = '가입';
+  static const String mypage_membership_discount_rate = '% 할인';
+  static const String mypage_membership_won = '원';
+  static const String mypage_membership_join = '가입하기';
 
   static const String logout = '로그아웃';
   static const String mypage_setting = '설정';

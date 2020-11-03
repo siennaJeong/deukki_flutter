@@ -33,6 +33,8 @@ class HttpUrls {
 
   static const String BOOKMARKS = "$SERVER_URL/bookmarks";
 
+  static const String GET_PRODUCT = "$SERVER_URL/productions";
+
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-type': 'application/json',
     'authorization': 'Bearer ' + authJWT

@@ -8,6 +8,7 @@ import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
+import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 
@@ -128,6 +129,18 @@ class UserRestRepository implements UserRepository {
     if(getUserInfo.isValue) {
       final value = getUserInfo.asValue.value['result'];
       return Result.value(UserVOForHttp.fromJson(value.first as Map<String, dynamic>));
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<List<ProductionVO>>> getProductList(String authJWT) async {
+    final getProductList = await _httpClient.getRequest("${HttpUrls.GET_PRODUCT}?iap=${true}", HttpUrls.headers(authJWT));
+    if(getProductList.isValue) {
+      return Result.value((getProductList.asValue.value['result'] as List)
+          .map((json) => ProductionVO.fromJson(json as Map<String, dynamic>))
+          .toList());
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

@@ -75,7 +75,12 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         return socialId;
         break;
       case AuthServiceType.Apple:
-
+        await _snsAuthService.signInWithApple().then((value) {
+          socialMethod = AuthService.AUTH_TYPE_APPLE;
+          socialId = value;
+          userVO.email = _snsAuthService.email;
+        });
+        return socialId;
         break;
       case AuthServiceType.Kakao:
         await _kakaoAuthService.signInWithKakao().then((value) {

@@ -1,15 +1,17 @@
 
+import 'dart:io';
+import 'dart:math';
+
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
+import 'package:deukki/view/values/strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SNSAuthService {
-  //final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   String _email;
-
-  Future<bool> firebaseAuthState() async {
-
-  }
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
@@ -48,7 +50,67 @@ class SNSAuthService {
   }
 
   Future<String> signInWithApple() async {
+    final oauthCred = await _createAppleOAuthCred();
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCred);
+    print("user id ${userCredential.user.email}");
+    if(userCredential.user.email.isNotEmpty) {
+      _email = userCredential.user.email;
+    }else {
+      _email = "";
+    }
+    return userCredential.credential.providerId;
+  }
 
+  String _createNonce(int length) {
+    final random = Random();
+    final charCodes = List<int>.generate(length, (_) {
+      int codeUnit;
+      switch(random.nextInt(3)) {
+        case 0:
+          codeUnit = random.nextInt(10) + 48;
+          break;
+        case 1:
+          codeUnit = random.nextInt(26) + 65;
+          break;
+        case 2:
+          codeUnit = random.nextInt(26) + 97;
+          break;
+      }
+
+      return codeUnit;
+    });
+    return String.fromCharCodes(charCodes);
+  }
+
+  Future<OAuthCredential> _createAppleOAuthCred() async {
+    final nonce = _createNonce(32);
+    final nativeAppleCred = Platform.isIOS
+        ? await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: sha256.convert(utf8.encode(nonce)).toString(),
+    )
+        : await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      webAuthenticationOptions: WebAuthenticationOptions(
+        redirectUri: Uri.parse(Strings.firebase_apple_url),
+        clientId: Strings.ios_bundle_name,
+      ),
+      nonce: sha256.convert(utf8.encode(nonce)).toString(),
+    );
+
+    return new OAuthCredential(
+      providerId: "apple.com",
+      signInMethod: "oauth",
+      accessToken: nativeAppleCred.identityToken, // propagate Apple ID token to BOTH accessToken and idToken parameters
+      idToken: nativeAppleCred.identityToken,
+      rawNonce: nonce,
+    );
   }
 
   String get email => _email;
