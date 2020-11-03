@@ -5,13 +5,23 @@ import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/data/service/signin/sns_auth_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 
 enum AuthServiceType { Kakao, Google, Facebook, Apple }
+
+class LoginMethod {
+  static const int facebook = 3401;
+  static const int google = 3402;
+  static const int apple = 3403;
+  static const int kakao = 3404;
+  static const int unknown = 3400;
+}
 
 class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   final SharedHelper sharedHelper;
@@ -80,10 +90,10 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   }
 
   @override
-  Future<void> signOut() async {
+  Future<void> logout() async {
     // *** 참고 : Firebase 탈퇴 - await FirebaseAuth.instance.currentUser.delete();
 
-    /*switch (sharedValue) {
+    switch (await sharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, "") as String) {
       case AuthService.AUTH_TYPE_KAKAO:
         var logout = await UserApi.instance.logout();
         await AccessTokenStore.instance.clear();
@@ -93,20 +103,19 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await FirebaseAuth.instance.signOut();
         break;
       case AuthService.AUTH_TYPE_Google:
+        await FirebaseAuth.instance.signOut();
         break;
       case AuthService.AUTH_TYPE_APPLE:
         break;
-    }*/
-    //_sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    //Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_LOGIN);
-
+    }
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
     return true;
   }
 
-  signInDone(String authJWT) async {
+  signInDone(String authJWT, String authType) async {
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, authType);
     _authJWT = authJWT;
   }
 

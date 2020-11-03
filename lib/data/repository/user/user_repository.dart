@@ -14,4 +14,5 @@ abstract class UserRepository {
   Future<Result<List<BookmarkVO>>> getBookmark(String authJWT);
   Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx);
   Future<Result<CommonResultVO>> recordLearning(String authJWT, String sentenceId, LearningVO learningVO);
+  Future<Result<UserVOForHttp>> getUserInfo(String authJWT);
 }

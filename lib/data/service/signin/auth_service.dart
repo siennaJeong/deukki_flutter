@@ -12,7 +12,7 @@ abstract class AuthService{
   static const String AUTH_TYPE_KAKAO = "kakao";
 
   Future<String> signInWithSNS(AuthServiceType authServiceType);
-  Future<void> signOut();
+  Future<void> logout();
   Future<void> userAuthState();
   void dispose();
 }

@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
       }
       if(loginResult.result.isValue) {
         if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
-          authServiceAdapter.signInDone(loginResult.result.asValue.value.result);
+          authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
         }
       }

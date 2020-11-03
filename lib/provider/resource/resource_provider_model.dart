@@ -105,6 +105,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   }
 
   Future<void> checkAppVersion() async {
+    print("check app version");
     final checkAppVersion = _versionRepository.checkAppVersion();
     await value.checkAppVersion.set(checkAppVersion, notifyListeners);
   }

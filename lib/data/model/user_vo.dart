@@ -24,10 +24,10 @@ class UserVO{
   String defaultVoice;
 
   @JsonKey(name: 'enable')
-  bool enable;
+  int enable;
 
   @JsonKey(name: 'premium')
-  bool premium;
+  int premium;
 
 
   UserVO(this.idx, this.email, this.name, this.birthDate, this.gender, this.defaultVoice, this.enable, this.premium);
@@ -48,7 +48,7 @@ class UserVOForHttp extends UserVO {
   int loginMethod;
 
   @JsonKey(name: 'noticeAgree')
-  bool noticeAgree;
+  int noticeAgree;
 
   @JsonKey(name: 'premiumType')
   int premiumType;
@@ -63,13 +63,19 @@ class UserVOForHttp extends UserVO {
       String birthDate,
       String gender,
       String defaultVoice,
-      bool enable,
-      bool premium,
+      int enable,
+      int premium,
       this.loginMethod,
       this.noticeAgree,
       this.premiumType,
       this.premiumEndAt)
       : super(idx, email, name, birthDate, gender, defaultVoice, enable, premium);
 
+  factory UserVOForHttp.fromJson(Map<String, dynamic> json) => _$UserVOForHttpFromJson(json);
+  Map<String, dynamic> toJson() => _$UserVOForHttpToJson(this);
 
+  @override
+  String toString() {
+    return 'UserVOForHttp{loginMethod: $loginMethod, noticeAgree: $noticeAgree, premiumType: $premiumType, premiumEndAt: $premiumEndAt}';
+  }
 }

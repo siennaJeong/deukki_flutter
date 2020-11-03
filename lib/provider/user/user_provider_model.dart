@@ -17,6 +17,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository());
   final UserRepository _userRepository;
   List<BookmarkVO> currentBookmarkList = [];
+  UserVOForHttp userVOForHttp = UserVOForHttp(0, "", "", "", "", "", 0, 0, 0, 0, 0, "");
   int bookmarkScore = 0;
 
   Future<void> checkSignUp(String authType, String authId) async {
@@ -79,6 +80,14 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   void setBookmarkScore(int score) {
 
+  }
+
+  Future<void> getUserInfo(String authJWT) async {
+    final getUserInfo = _userRepository.getUserInfo(authJWT);
+    getUserInfo.then((value) {
+      userVOForHttp = value.asValue.value;
+    });
+    await value.getUserInfo.set(getUserInfo, notifyListeners);
   }
 
 }

@@ -122,4 +122,15 @@ class UserRestRepository implements UserRepository {
     }
   }
 
+  @override
+  Future<Result<UserVOForHttp>> getUserInfo(String authJWT) async {
+    final getUserInfo = await _httpClient.getRequest(HttpUrls.GET_USER_INFO, HttpUrls.headers(authJWT));
+    if(getUserInfo.isValue) {
+      final value = getUserInfo.asValue.value['result'];
+      return Result.value(UserVOForHttp.fromJson(value.first as Map<String, dynamic>));
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
 }

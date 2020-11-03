@@ -1,9 +1,14 @@
+import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
 
 class Settings extends StatefulWidget {
@@ -12,6 +17,9 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  AuthServiceAdapter _authServiceAdapter;
+  UserProviderModel _userProviderModel;
+
   AudioManager _audioManager;
   int maxVoiceVol, currentVoiceVol;
   int maxEffectVol, currentEffectVol;
@@ -20,8 +28,18 @@ class _SettingsState extends State<Settings> {
   double deviceWidth, deviceHeight;
   bool _kakaoNotification = false;
 
+  PackageInfo _packageInfo;
+
+  @override
+  void didChangeDependencies() {
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    super.didChangeDependencies();
+  }
+
   @override
   void initState() {
+    getPackageInfo();
     _audioManager = AudioManager.STREAM_SYSTEM;
     initVoiceState(AudioManager.STREAM_MUSIC);
     updateVoiceVolume();
@@ -33,6 +51,10 @@ class _SettingsState extends State<Settings> {
 
   Future<void> initVoiceState(AudioManager am) async {
     await Volume.controlVolume(am);
+  }
+
+  Future<void> getPackageInfo() async {
+    _packageInfo = await PackageInfo.fromPlatform();
   }
 
 
@@ -67,9 +89,9 @@ class _SettingsState extends State<Settings> {
             Expanded(
               flex: 2,
               child: Container(
-                alignment: AlignmentDirectional.centerStart,
+                alignment: AlignmentDirectional.center,
                 margin: EdgeInsets.only(right: 8, left: 16),
-                child: Image.asset(AppImages.kakaoYellowLogo, width: 24, height: 24),
+                child: _snsLogo(_userProviderModel.userVOForHttp.loginMethod),
               )
             ),
             Expanded(
@@ -77,7 +99,7 @@ class _SettingsState extends State<Settings> {
               child: Container(
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Text(
-                  "aefawergtdfgaaa@gmail.com",
+                 _userProviderModel.userVOForHttp.email,
                   style: TextStyle(
                       color: MainColors.grey_100,
                       fontFamily: "NotoSansKR",
@@ -92,6 +114,45 @@ class _SettingsState extends State<Settings> {
               child: _logoutButton(),
             )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _snsLogo(int loginMethod) {
+    String img;
+    Color color;
+    switch(loginMethod) {
+      case LoginMethod.facebook:
+        img = AppImages.facebookLogo;
+        color = MainColors.blue_facebook;
+        break;
+      case LoginMethod.google:
+        img = AppImages.googleLogo;
+        color = MainColors.grey_google;
+        break;
+      case LoginMethod.apple:
+        img = AppImages.appleLogo;
+        color = Colors.black;
+        break;
+      case LoginMethod.kakao:
+        img = AppImages.kakaoYellowLogo;
+        color = MainColors.grey_30;
+        break;
+      case LoginMethod.unknown:
+        break;
+    }
+    return SizedBox(
+      width: 24,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          shape: BoxShape.circle,
+        ),
+        child: Image.asset(
+          img,
+          width: loginMethod == LoginMethod.kakao ? 24 : 14,
+          height: loginMethod == LoginMethod.kakao ? 24 : 14,
         ),
       ),
     );
@@ -112,7 +173,11 @@ class _SettingsState extends State<Settings> {
           ),
         ),
       ),
-      onTap: () { },    //  로그아웃
+      onTap: () {
+        _authServiceAdapter.logout();                             //  Firebase 로그아웃
+        _userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
+        RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+      },
     );
   }
 
@@ -210,7 +275,7 @@ class _SettingsState extends State<Settings> {
                 Expanded(
                   child: Container(
                     child: Text(
-                      "1.0.0",
+                      _packageInfo != null ? _packageInfo.version : "",
                       style: TextStyle(
                         color: MainColors.grey_100,
                         fontFamily: "NotoSansKR",

@@ -14,8 +14,8 @@ UserVO _$UserVOFromJson(Map<String, dynamic> json) {
     json['birthDate'] as String,
     json['gender'] as String,
     json['defaultVoice'] as String,
-    json['enable'] as bool,
-    json['premium'] as bool,
+    json['enable'] as int,
+    json['premium'] as int,
   );
 }
 
@@ -38,10 +38,10 @@ UserVOForHttp _$UserVOForHttpFromJson(Map<String, dynamic> json) {
     json['birthDate'] as String,
     json['gender'] as String,
     json['defaultVoice'] as String,
-    json['enable'] as bool,
-    json['premium'] as bool,
+    json['enable'] as int,
+    json['premium'] as int,
     json['loginMethod'] as int,
-    json['noticeAgree'] as bool,
+    json['noticeAgree'] as int,
     json['premiumType'] as int,
     json['premiumEndAt'] as String,
   );

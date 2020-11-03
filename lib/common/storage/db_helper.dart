@@ -100,7 +100,7 @@ class DBHelper{
   getUser() async {
     final db = await database;
     var res = await db.query(TABLE_USER, where: 'idx = 0');
-    return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', '', false, false);
+    return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', '', 0, 0);
   }
 
   updateUser(UserVO userVO) async {
@@ -116,8 +116,8 @@ class DBHelper{
       'birth_date': userVO.birthDate,
       'gender': userVO.gender,
       'voice': userVO.defaultVoice,
-      'enable': userVO.enable ? 1 : 0,
-      'premium': userVO.premium ? 1 : 0
+      'enable': userVO.enable,
+      'premium': userVO.premium
     };
     return userMap;
   }
@@ -130,8 +130,8 @@ class DBHelper{
       map['birth_date'] as String,
       map['gender'] as String,
       map['voice'] as String,
-      map['enable'] == 1 ? true : false,
-      map['premium'] == 1 ? true : false
+      map['enable'] as int,
+      map['premium'] as int
     );
   }
 
