@@ -115,6 +115,12 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+            child: Container(color: Colors.black.withOpacity(0.1)),
+          ),
+        ),
         Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(24.0),
@@ -142,12 +148,6 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             ),
           ),
         ),
-        /*Positioned.fill(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-            child: Container(color: Colors.black.withOpacity(0.1)),
-          ),
-        ),*/
       ],
     );
   }

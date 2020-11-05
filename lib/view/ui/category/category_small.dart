@@ -155,6 +155,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           }
           showDialog(
               context: context,
+              useSafeArea: false,
               builder: (BuildContext context) {
                 return StageDialog(title: sentenceVO.content,);
               }
@@ -318,6 +319,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                       showDialog(
                           context: context,
                           barrierDismissible: true,
+                          useSafeArea: false,
                           builder: (BuildContext context) {
                             return MediumCategoryListDialog(
                               title: categoryProvider.getMediumTitle(),

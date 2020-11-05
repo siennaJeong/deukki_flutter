@@ -31,6 +31,7 @@ class _StageDialogState extends State<StageDialog> {
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
+  double deviceWidth, deviceHeight;
   String _title;
   int _selectedStageIdx, _selectedIndex;
   bool _isStart = true;
@@ -65,7 +66,7 @@ class _StageDialogState extends State<StageDialog> {
       builder: (context, stages, child) {
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(top: 8, bottom: 30, left: 36),
+            margin: EdgeInsets.only(top: 8, bottom: 30, left: deviceWidth > 700 ? 0 : 36),
             alignment: AlignmentDirectional.bottomCenter,
             child: ListView.separated(
               shrinkWrap: true,
@@ -239,6 +240,8 @@ class _StageDialogState extends State<StageDialog> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
 
     return Stack(
       children: <Widget>[
