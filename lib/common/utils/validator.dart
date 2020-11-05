@@ -1,28 +1,42 @@
+import 'package:deukki/view/values/strings.dart';
 import 'package:intl/intl.dart';
 
 class Validator {
-  bool emailValidation(String value) {
-    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value);
-  }
-
-  bool nameValidation(String value) {
-    return value.length > 1 ? true : false;
-  }
-
-  bool yearValidation(int value) {
-    int year = int.parse(DateFormat('yyyy').format(DateTime.now()));
-    if(value < 1900 || value > year) {
-      return false;
+  String emailValidation(String value) {
+    if(RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+      return null;
     }else {
-      return true;
+      return Strings.sign_up_email_invalid;
     }
   }
 
-  bool monthValidation(int value) {
-    if(value > 12 || value < 1) {
-      return false;
+  String nameValidation(String value) {
+    final valid = RegExp(r'^[a-zA-Z0-9 ]+$');
+    if(value.length > 1) {
+      if(!valid.hasMatch(value)) {
+        return null;
+      }else {
+        return Strings.sign_up_name_invalid;
+      }
     }else {
-      return true;
+      return Strings.sign_up_name_invalid;
+    }
+  }
+
+  String yearValidation(String value) {
+    int year = int.parse(DateFormat('yyyy').format(DateTime.now()));
+    if(int.parse(value) < 1900 || int.parse(value) > year) {
+      return Strings.sign_up_year_invalid;
+    }else {
+      return null;
+    }
+  }
+
+  String monthValidation(String value) {
+    if(int.parse(value) > 12 || int.parse(value) < 1) {
+      return Strings.sign_up_year_invalid;
+    }else {
+      return null;
     }
   }
 }

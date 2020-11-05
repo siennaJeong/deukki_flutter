@@ -11,7 +11,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart';
-import 'package:provider/provider.dart';
 
 enum AuthServiceType { Kakao, Google, Facebook, Apple }
 
@@ -111,6 +110,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await FirebaseAuth.instance.signOut();
         break;
       case AuthService.AUTH_TYPE_APPLE:
+        await FirebaseAuth.instance.signOut();
         break;
     }
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
@@ -131,22 +131,6 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   }
 
   UserVO get userVO => _userVO;
-
-  bool canUseEmail(String value) {
-    return Validator().emailValidation(value);
-  }
-
-  bool canUseName(String value) {
-    return Validator().nameValidation(value);
-  }
-
-  bool canUseYear(int value) {
-    return Validator().yearValidation(value);
-  }
-
-  bool canUseMonth(int value) {
-    return Validator().monthValidation(value);
-  }
 
   @override
   void dispose() {

@@ -83,6 +83,8 @@ class _LoginState extends State<Login> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
       body: Center(
         child: SafeArea(
           child: Column(

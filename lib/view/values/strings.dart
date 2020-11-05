@@ -41,6 +41,9 @@ class Strings {
   static const String sign_up_gender = '성별';
   static const String sign_up_gender_male = '남자';
   static const String sign_up_gender_female = '여자';
+  static const String sign_up_email_invalid = '이메일 형식이 잘못되었습니다.';
+  static const String sign_up_name_invalid = '1글자 이상, 특수기호를 제외하고 입력해주세요.';
+  static const String sign_up_year_invalid = '잘못되었습니다.';
 
   static const String welcome_title = '환영합니다!';
   static const String welcome_script = '듣기부터 시작하는 발음 완성을 바름이 돕겠습니다.\n응원합니다 :)';
