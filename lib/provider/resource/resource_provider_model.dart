@@ -187,12 +187,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
 
-    if(Platform.isIOS) {
-      directory ??= await getLibraryDirectory();
-    }else {
-      directory ??= await getApplicationDocumentsDirectory();
-    }
-
+    directory ??= await getApplicationDocumentsDirectory();
     String fileDir = directory.path;
 
     if(_audioFilePath.length > 0) {

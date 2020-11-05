@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
@@ -45,7 +44,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   final random = Random();
 
   static AudioPlayer _audioPlayer = AudioPlayer();
-  static AudioCache _audioCache = AudioCache();
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -89,6 +87,8 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
+
+    _playStateListener();
     super.didChangeDependencies();
   }
 
@@ -96,7 +96,9 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   void dispose() {
     super.dispose();
     audioDispose();
-    _volumeButtonEvent?.cancel();
+    if(!Platform.isIOS) {
+      _volumeButtonEvent?.cancel();
+    }
     stageProvider.stopLearnTime();
   }
 
@@ -128,7 +130,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       _audioPlayer.setVolume((currentVol / maxVol) * 10);
     }
     _audioPlayer.setPlaybackRate(playbackRate: speed);
-    _playStateListener();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   }
 
