@@ -44,6 +44,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   List<FaqVO> faqs = [];
   List<AudioFilePathVO> _audioFilePath = [];
   List<AudioFilePathVO> filePathList = [];
+  Directory directory;
 
   Future<void> _initData() async {
     final initData = _versionRepository.initData();
@@ -186,7 +187,12 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
     await value.getPronunciation.set(getPronunciation, notifyListeners);
 
-    Directory directory = await getApplicationDocumentsDirectory();
+    if(Platform.isIOS) {
+      directory ??= await getLibraryDirectory();
+    }else {
+      directory ??= await getApplicationDocumentsDirectory();
+    }
+
     String fileDir = directory.path;
 
     if(_audioFilePath.length > 0) {

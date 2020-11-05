@@ -83,7 +83,6 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> setStage(list) async {
     this._stageList = list;
-    notifyListeners();
   }
 
   void onSelectedLarge(int index) {

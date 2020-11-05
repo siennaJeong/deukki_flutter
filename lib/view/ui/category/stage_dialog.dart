@@ -35,7 +35,6 @@ class _StageDialogState extends State<StageDialog> {
   String _title;
   int _selectedStageIdx, _selectedIndex;
   bool _isStart = true;
-  List<bool> _preScore = [true];
 
   @override
   void initState() {
@@ -49,13 +48,6 @@ class _StageDialogState extends State<StageDialog> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
-      if(categoryProvider.stageList[i - 1].score != null) {
-        _preScore.add(true);
-      }else {
-        _preScore.add(false);
-      }
-    }
     categoryProvider.setSentenceTitle(_title);
     super.didChangeDependencies();
   }
@@ -140,17 +132,8 @@ class _StageDialogState extends State<StageDialog> {
 
   Widget _stageWidget(StageVO stageVO, int index) {
     Color bgColor, borderColor, textColor;
-    if(stageVO.score != null) {
-      borderColor = MainColors.blue_100;
-      if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
-        bgColor = MainColors.blue_100;
-        textColor = Colors.white;
-      }else {
-        bgColor = Colors.white;
-        textColor = MainColors.blue_100;
-      }
-    }else {
-      if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
+    if(stageVO.score == null) {
+      if(categoryProvider.selectStageIndex == index) {
         bgColor = MainColors.blue_100;
         textColor = Colors.white;
         borderColor = MainColors.blue_100;
@@ -158,6 +141,16 @@ class _StageDialogState extends State<StageDialog> {
         bgColor = MainColors.grey_google;
         textColor = MainColors.grey_40;
         borderColor = MainColors.grey_google;
+      }
+    }else {
+      if(categoryProvider.selectStageIndex == index) {
+        bgColor = MainColors.blue_100;
+        textColor = Colors.white;
+        borderColor = MainColors.blue_100;
+      }else {
+        bgColor = Colors.white;
+        textColor = MainColors.blue_100;
+        borderColor = MainColors.blue_100;
       }
     }
     return GestureDetector(
@@ -215,7 +208,6 @@ class _StageDialogState extends State<StageDialog> {
   }
 
   void _stageStart() {        //  Start Click
-
     if(_isStart) {
       resourceProviderModel.getPronunciation(
         authServiceAdapter.authJWT,

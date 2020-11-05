@@ -5,6 +5,7 @@ import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
 import 'package:deukki/view/ui/category/stage_dialog.dart';
@@ -26,6 +27,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
+  UserProviderModel userProviderModel;
   AnimationController _animationController;
 
   double deviceWidth, deviceHeight;
@@ -45,6 +47,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
@@ -146,21 +149,23 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       ),
       onTap: () => {                //  ListView Item Click
-        resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
-          categoryProvider.selectStageIndex = null;
-          categoryProvider.onSelectedSentence(sentenceVO);
-          final stageResult = resourceProviderModel.value.getSentenceStages;
-          if(stageResult.hasData) {
-            categoryProvider.setStage(stageResult.result.asValue.value);
-          }
-          showDialog(
-              context: context,
-              useSafeArea: false,
-              builder: (BuildContext context) {
-                return StageDialog(title: sentenceVO.content,);
-              }
-          );
-        }),
+        if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
+          resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+            categoryProvider.selectStageIndex = null;
+            categoryProvider.onSelectedSentence(sentenceVO);
+            final stageResult = resourceProviderModel.value.getSentenceStages;
+            if(stageResult.hasData) {
+              categoryProvider.setStage(stageResult.result.asValue.value);
+            }
+            showDialog(
+                context: context,
+                useSafeArea: false,
+                builder: (BuildContext context) {
+                  return StageDialog(title: sentenceVO.content,);
+                }
+            );
+          })
+        },
       },
     );
   }
@@ -193,7 +198,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _premiumTagWidget(int premium) {
-    if(premium == 1) {
+    if(userProviderModel.userVOForHttp.premium != premium) {
       return Container(
           width: double.infinity,
           height: double.infinity,
