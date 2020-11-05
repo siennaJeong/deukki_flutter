@@ -144,7 +144,9 @@ class _SettingsState extends State<Settings> {
     }
     return SizedBox(
       width: 24,
+      height: 24,
       child: Container(
+        padding: EdgeInsets.all(loginMethod == LoginMethod.kakao ? 0 : 4),
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
