@@ -192,7 +192,10 @@ class _StageDialogState extends State<StageDialog> {
             padding: EdgeInsets.all(14),
             child: Icon(Icons.arrow_back, color: MainColors.purple_100, size: 30),
           ),
-          onTap: () => { Navigator.of(context).pop() },
+          onTap: () {
+            resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id);
+            Navigator.of(context).pop();
+          },
         ),
       ),
     );

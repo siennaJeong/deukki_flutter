@@ -104,6 +104,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
             margin: EdgeInsets.only(left: deviceWidth > 700 ? 0 : 40, bottom: 25),
             child: StaggeredGridView.countBuilder(
                 shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,

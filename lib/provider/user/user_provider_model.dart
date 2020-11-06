@@ -58,6 +58,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   }
 
   Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
+    print("update book mark");
     final updateBookmark = _userRepository.updateBookmark(authJWT, sentenceId, stageIdx);
     await value.updateBookmark.set(updateBookmark, notifyListeners);
     getBookmark(authJWT);
@@ -65,7 +66,6 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getBookmark(String authJWT) async {
     final getBookmark = _userRepository.getBookmark(authJWT);
-    print("get book mark");
     getBookmark.then((value) {
       setCurrentBookmarkList(value.asValue.value);
     });
@@ -78,6 +78,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   }
 
   void setCurrentBookmarkList(list) {
+    print("set book mark list : ${list.toString()}");
     this.currentBookmarkList = list;
     notifyListeners();
   }
@@ -88,7 +89,6 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getUserInfo(String authJWT) async {
     final getUserInfo = _userRepository.getUserInfo(authJWT);
-    print("get user info");
     getUserInfo.then((value) {
       userVOForHttp ??= value.asValue.value;
     });
@@ -97,7 +97,6 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getProductList(String authJWT) async {
     final getProductList = _userRepository.getProductList(authJWT);
-    print("get product list");
     getProductList.then((value) {
       productList = value.asValue.value;
     });

@@ -196,6 +196,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
       dbFilePath = "$fileDir/$filePath";
       print("right file path : " + dbFilePath);
+      print("file path list : ${filePathList.toString()}");
       if(filePathList != null && (filePathList.singleWhere((it) => it.path == filePath, orElse: () => null)) != null) {
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {

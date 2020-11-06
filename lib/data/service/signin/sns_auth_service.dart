@@ -26,7 +26,7 @@ class SNSAuthService {
     }else {
       _email = "";
     }
-    return googleUser.id;
+    return userCredential.user.uid;
   }
 
   Future<String> signInWithFacebook() async {
@@ -40,7 +40,7 @@ class SNSAuthService {
         }else {
           _email = "";
         }
-        return facebookAuthCredential.providerId;
+        return userCredential.user.uid;
       case FacebookAuthLoginResponse.cancelled:
         print("login cancelled");
         break;
@@ -58,7 +58,8 @@ class SNSAuthService {
     }else {
       _email = "";
     }
-    return userCredential.credential.providerId;
+    print("firebase apple user : " + jsonEncode(userCredential.user.toString()));
+    return userCredential.user.uid;
   }
 
   String _createNonce(int length) {
