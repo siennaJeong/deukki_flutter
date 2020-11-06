@@ -42,6 +42,7 @@ class _BookMarkState extends State<BookMark> {
     }else {
       return GridView.count(
         shrinkWrap: true,
+        physics: BouncingScrollPhysics(),
         crossAxisCount: 2,
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
