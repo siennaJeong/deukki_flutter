@@ -134,15 +134,10 @@ class _StageDialogState extends State<StageDialog> {
   Widget _stageWidget(StageVO stageVO, int index) {
     Color bgColor, borderColor, textColor;
     if(stageVO.score == null) {
-      if(categoryProvider.selectStageIndex == index) {
-        bgColor = MainColors.blue_100;
-        textColor = Colors.white;
-        borderColor = MainColors.blue_100;
-      }else {
-        bgColor = MainColors.grey_google;
-        textColor = MainColors.grey_40;
-        borderColor = MainColors.grey_google;
-      }
+
+      bgColor = MainColors.grey_google;
+      textColor = MainColors.grey_40;
+      borderColor = MainColors.grey_google;
     }else {
       if(categoryProvider.selectStageIndex == index) {
         bgColor = MainColors.blue_100;

@@ -118,7 +118,12 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-            child: Container(color: Colors.black.withOpacity(0.1)),
+            child: GestureDetector(
+              child: Container(color: Colors.black.withOpacity(0.1)),
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         ),
         Dialog(
