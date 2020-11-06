@@ -53,12 +53,6 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
       final recordResult = result.result.asValue.value.result;
       acquiredStars = recordResult['acquiredStars'];
       stageScore = recordResult['stageScore'];
-
-      if(acquiredStars > stageScore) {
-        categoryProvider.updateScore(acquiredStars);
-      }else {
-        categoryProvider.updateScore(stageScore);
-      }
     }
 
     String firstStar, secondStar, thirdStar;
@@ -82,6 +76,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
+      categoryProvider.updateScore(acquiredStars);
       if(categoryProvider.selectStageIndex != -1 && (categoryProvider.selectStageIndex + 1) % 3 == 0) {
         RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
       }else {

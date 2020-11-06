@@ -57,10 +57,10 @@ class Strings {
 
   static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
 
-  static const String play_speed_15 = 'x0.8';
-  static const String play_speed_20 = 'x1.0';
-  static const String play_speed_25 = 'x1.2';
-  static const String play_speed_30 = 'x1.4';
+  static const String play_speed_15 = 'x1.2';
+  static const String play_speed_20 = 'x1.4';
+  static const String play_speed_25 = 'x1.6';
+  static const String play_speed_30 = 'x1.8';
   static const String right_pronunciation = '올바른 발음';
   static const String quiz_result_good = 'GOOD!';
   static const String quiz_result_great = 'GREAT!!';

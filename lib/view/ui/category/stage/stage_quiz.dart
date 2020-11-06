@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
@@ -34,7 +35,7 @@ class StageQuiz extends StatefulWidget {
   _StageQuizState createState() => _StageQuizState();
 }
 
-class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMixin {
+class _StageQuizState extends State<StageQuiz> {
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -43,7 +44,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   final random = Random();
 
-  static AudioPlayer _audioPlayer = AudioPlayer();
+  AudioPlayer _audioPlayer = new AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -88,18 +89,17 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
 
-    _playStateListener();
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    super.dispose();
-    audioDispose();
     if(!Platform.isIOS) {
       _volumeButtonEvent?.cancel();
     }
+    audioDispose();
     stageProvider.stopLearnTime();
+    super.dispose();
   }
 
   Future<void> initVolume() async {
@@ -126,23 +126,22 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   void _playLocal(String filePath, double speed) async {
     await _audioPlayer.play(filePath);
+    _audioPlayer.setPlaybackRate(playbackRate: speed);
     if(!Platform.isIOS) {
       _audioPlayer.setVolume((currentVol / maxVol) * 10);
     }
-    _audioPlayer.setPlaybackRate(playbackRate: speed);
+    _playStateListener();
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   }
 
   void _playStateListener() async {
     _audioPlayer.onPlayerCompletion.listen((event) {
-      print("play completed");
       stageProvider.setPlaying(false);
       stageProvider.setPlayCount();
     });
   }
 
   Future<void> audioDispose() async {
-    await _audioPlayer.pause();
     await _audioPlayer.dispose();
   }
 
@@ -169,7 +168,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
   Widget _backButtonWidget() {            //  Back Button
     return Container(
-      margin: EdgeInsets.only(bottom: 25),
+      margin: EdgeInsets.only(bottom: 25, left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -182,7 +181,10 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
             padding: EdgeInsets.all(8),
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
-          onTap: () => { Navigator.of(context).pop() },
+          onTap: () => {
+            //resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id),
+            Navigator.of(context).pop()
+          },
         ),
       ),
     );
@@ -230,6 +232,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       children: [
         Container(
           width: width + 24,
+          margin: EdgeInsets.only(left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -285,6 +288,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         ),
         Container(
           width: width,
+          margin: EdgeInsets.only(left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
           child: LinearProgressIndicator(
             value: categoryProvider.stepProgress,
             valueColor: AlwaysStoppedAnimation<Color>(MainColors.purple_80),
@@ -299,13 +303,13 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
   Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
     String soundIcons;
-    if(stageProvider.playRate == 1.15 ) {
+    if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
       playSpeed = Strings.play_speed_15;
-    }else if(stageProvider.playRate == 1.3) {
+    }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
       playSpeed = Strings.play_speed_20;
-    }else if(stageProvider.playRate == 1.45){
+    }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
       playSpeed = Strings.play_speed_25;
-    }else if(stageProvider.playRate == 1.6) {
+    }else if(stageProvider.playRate >= 1.4) {
       playSpeed = Strings.play_speed_30;
     }else {
       playSpeed = "";
@@ -323,7 +327,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
     return Container(
       width: width + 2,
-      margin: EdgeInsets.only(top: 32),
+      margin: EdgeInsets.only(top: 32, right: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
       child: RaisedButton(
         padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
         color: !stageProvider.isPlaying ? MainColors.purple_80 : Colors.white,
@@ -577,7 +581,6 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       _showDialog(resultBgImage, resultText);
       stageProvider.setLevel();
       stageProvider.setPlayRate();
-      randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }else {
@@ -586,12 +589,14 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }
+    randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
   }
 
   _showDialog(String bgImages, String answerResult) {
     if(stageProvider.round < 5) {
       showDialog(
           context: context,
+          useSafeArea: false,
           builder: (BuildContext context) {
             Future.delayed(Duration(seconds: 1), () {
               Navigator.pop(context);
@@ -650,11 +655,12 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
 
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    var ratioWidth = deviceWidth * 0.64;
+    var ratioWidth = deviceWidth * 0.6;
 
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
         randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+        print("random path : ${randomPath.toString()}");
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }
     }
@@ -669,7 +675,7 @@ class _StageQuizState extends State<StageQuiz> with SingleTickerProviderStateMix
         child: Container(
           width: deviceWidth,
           height: deviceHeight,
-          margin: EdgeInsets.only(top: 14, bottom: 32, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
+          margin: EdgeInsets.only(top: 14, bottom: 32, left: deviceWidth > 700 ? 0 : deviceWidth * 0.05, right: deviceWidth * 0.05),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

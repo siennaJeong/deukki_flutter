@@ -140,12 +140,11 @@ class CategoryProvider with ChangeNotifier {
       this._pronunciationList.clear();
     }
     setRightPronun(rightPronunciation);
+    this._pronunciationList.add(rightPronunciation);
     pronunList.forEach((element) {
       PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
       this._pronunciationList.add(pronunciationVO);
     });
-    this._pronunciationList.add(rightPronunciation);
-    this._pronunciationList.shuffle();
     notifyListeners();
   }
 
