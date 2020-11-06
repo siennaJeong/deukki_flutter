@@ -63,6 +63,7 @@ class _StageDialogState extends State<StageDialog> {
             child: ListView.separated(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
+              physics: BouncingScrollPhysics(),
               itemCount: stages.length,
               itemBuilder: (BuildContext context, index) {
                 return _listItemWidget(stages[index], index);

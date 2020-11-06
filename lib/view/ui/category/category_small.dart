@@ -33,7 +33,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   double deviceWidth, deviceHeight;
 
   final random = Random();
-  final List<Color> randomColor = [];
+  final List<Color> cellColor = [];
   List<num> mainAxis = [];
   List<SentenceVO> sentenceList = [];
 
@@ -53,9 +53,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
     final isSetData = resourceProviderModel.value.getSentence;
     if(isSetData.hasData) {
-      isSetData.result.asValue.value.forEach((element) {
-        randomColor.add(MainColors.randomColorSmall[random.nextInt(MainColors.randomColorSmall.length)]);
-      });
+      for(int i = 0 ; i < isSetData.result.asValue.value.length ; i++) {
+        cellColor.add(MainColors.randomColorSmall[i % 4]);
+      }
     }
     super.didChangeDependencies();
   }
@@ -110,7 +110,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 scrollDirection: Axis.horizontal,
                 itemCount: sentences.length,
                 itemBuilder: (BuildContext context, index) {
-                  return _listItemWidget(randomColor[index], sentences[index]);
+                  return _listItemWidget(cellColor[index], sentences[index]);
                 },
                 staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
             ),
