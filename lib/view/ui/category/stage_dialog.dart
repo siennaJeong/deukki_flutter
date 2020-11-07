@@ -134,12 +134,10 @@ class _StageDialogState extends State<StageDialog> {
   Widget _stageWidget(StageVO stageVO, int index) {
     Color bgColor, borderColor, textColor;
     if(stageVO.score == null) {
-      if(_preScore[index]) {
+      if(categoryProvider.selectStageIndex == index) {
         bgColor = MainColors.blue_100;
         textColor = Colors.white;
         borderColor = MainColors.blue_100;
-        _selectedIndex = index;
-        _selectedStageIdx = stageVO.stageIdx;
       }else {
         bgColor = MainColors.grey_google;
         textColor = MainColors.grey_40;
@@ -202,6 +200,8 @@ class _StageDialogState extends State<StageDialog> {
           ),
           onTap: () {
             resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id);
+            categoryProvider.selectStageIndex = -1;
+            categoryProvider.selectStageIdx = -1;
             Navigator.of(context).pop();
           },
         ),
@@ -215,9 +215,6 @@ class _StageDialogState extends State<StageDialog> {
   }
 
   void _stageStart() {        //  Start Click
-    if(categoryProvider.selectStageIndex == -1) {
-      _onSelectedStage();
-    }
     resourceProviderModel.getPronunciation(
         authServiceAdapter.authJWT,
         categoryProvider.selectedSentence.id,

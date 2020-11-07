@@ -643,6 +643,7 @@ class _StageQuizState extends State<StageQuiz> {
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
       });
     }
+    stageProvider.playCount = 0;
   }
 
   @override

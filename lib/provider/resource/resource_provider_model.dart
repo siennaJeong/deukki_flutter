@@ -249,7 +249,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> getFilePathFromDB(String sentenceId) async {
     final dbFile = await _dbHelper.getFilePath(sentenceId);
     if(dbFile != null) {
-      print("get sentence stage");
       filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
     }
   }

@@ -27,6 +27,7 @@ class CategoryProvider with ChangeNotifier {
   List<SentenceVO> _sentenceList = [];
   List<StageVO> _stageList = [];
   List<PronunciationVO> _pronunciationList = [];
+  List<bool> _preScore = [];
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectLargeIndex = -1;
@@ -46,6 +47,7 @@ class CategoryProvider with ChangeNotifier {
   List<SentenceVO> get sentenceList => [..._sentenceList];
   List<StageVO> get stageList => [..._stageList];
   List<PronunciationVO> get pronunciationList => [..._pronunciationList];
+  List<bool> get preScore => [..._preScore];
 
   getLargeId() => _largeId;
   getMediumId() => _mediumId;
@@ -83,6 +85,14 @@ class CategoryProvider with ChangeNotifier {
 
   Future<void> setStage(list) async {
     this._stageList = list;
+    for(int i = 0 ; i < this._stageList.length ; i++) {
+      if(i + 1 < this._stageList.length &&
+      this._stageList[i].score == null && this._stageList[i + 1].score == null) {
+        this.selectStageIndex = i;
+        this.selectStageIdx = this._stageList[i].stageIdx;
+        break;
+      }
+    }
   }
 
   void onSelectedLarge(int index) {
@@ -148,4 +158,9 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setPreScore() {
+    if(this.stageList.length > 0) {
+
+    }
+  }
 }
