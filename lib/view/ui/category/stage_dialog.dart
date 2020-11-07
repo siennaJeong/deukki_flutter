@@ -34,7 +34,7 @@ class _StageDialogState extends State<StageDialog> {
   double deviceWidth, deviceHeight;
   String _title;
   int _selectedStageIdx, _selectedIndex;
-  bool _isStart = true;
+  List<bool> _preScore = [true];
 
   @override
   void initState() {
@@ -134,10 +134,17 @@ class _StageDialogState extends State<StageDialog> {
   Widget _stageWidget(StageVO stageVO, int index) {
     Color bgColor, borderColor, textColor;
     if(stageVO.score == null) {
-
-      bgColor = MainColors.grey_google;
-      textColor = MainColors.grey_40;
-      borderColor = MainColors.grey_google;
+      if(_preScore[index]) {
+        bgColor = MainColors.blue_100;
+        textColor = Colors.white;
+        borderColor = MainColors.blue_100;
+        _selectedIndex = index;
+        _selectedStageIdx = stageVO.stageIdx;
+      }else {
+        bgColor = MainColors.grey_google;
+        textColor = MainColors.grey_40;
+        borderColor = MainColors.grey_google;
+      }
     }else {
       if(categoryProvider.selectStageIndex == index) {
         bgColor = MainColors.blue_100;
@@ -169,7 +176,13 @@ class _StageDialogState extends State<StageDialog> {
           ),
         ),
       ),
-      onTap: () => { _onSelectedStage(index, stageVO.stageIdx) },
+      onTap: () {
+        if(_preScore[index]) {
+          _selectedIndex = index;
+          _selectedStageIdx = stageVO.stageIdx;
+          _onSelectedStage();
+        }
+      },
     );
   }
 
@@ -196,36 +209,32 @@ class _StageDialogState extends State<StageDialog> {
     );
   }
 
-  void _onSelectedStage(int index, int stageIdx) {            //  ListView Item Click
-    if(index > 0) {
-      _isStart = categoryProvider.stageList[index - 1].score != null ? true : false;
-    }
-    _selectedIndex = index;
-    _selectedStageIdx = stageIdx;
-    categoryProvider.onSelectedStage(index, stageIdx);
+  void _onSelectedStage() {            //  ListView Item Click
+    categoryProvider.onSelectedStage(_selectedIndex, _selectedStageIdx);
     categoryProvider.onRootBookmark(false);
   }
 
   void _stageStart() {        //  Start Click
-    if(_isStart) {
-      resourceProviderModel.getPronunciation(
+    if(categoryProvider.selectStageIndex == -1) {
+      _onSelectedStage();
+    }
+    resourceProviderModel.getPronunciation(
         authServiceAdapter.authJWT,
         categoryProvider.selectedSentence.id,
         _selectedStageIdx,
         _selectedIndex == 0 ? true : false,
         "M"       //  가입시 사용자가 선택한 성별로
-      ).then((value) {
-        final commonResult = resourceProviderModel.value.getPronunciation;
-        final pronunResult = commonResult.result.asValue.value.result;
-        categoryProvider.setPronunciationList(
-            pronunResult['wrongPronunciationList'],
-            PronunciationVO.fromJson(pronunResult['rightPronunciation'])
-        );
-        categoryProvider.initStepProgress();
-        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
-        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
-      });
-    }
+    ).then((value) {
+      final commonResult = resourceProviderModel.value.getPronunciation;
+      final pronunResult = commonResult.result.asValue.value.result;
+      categoryProvider.setPronunciationList(
+          pronunResult['wrongPronunciationList'],
+          PronunciationVO.fromJson(pronunResult['rightPronunciation'])
+      );
+      categoryProvider.initStepProgress();
+      categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
+      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+    });
   }
 
   @override
@@ -233,6 +242,14 @@ class _StageDialogState extends State<StageDialog> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+    for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
+      if(categoryProvider.stageList[i - 1].score != null) {
+        _preScore.add(true);
+      }else {
+        _preScore.add(false);
+      }
+    }
 
     return Stack(
       children: <Widget>[
