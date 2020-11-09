@@ -109,7 +109,7 @@ class _MyPageState extends State<MyPage> {
 
   Widget _backButtonWidget() {
     return Container(
-      //margin: EdgeInsets.only(left: 40),
+      margin: EdgeInsets.only(left: 40),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -165,6 +165,8 @@ class _MyPageState extends State<MyPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
+        left: false,
+        right: false,
         child: Container(
           width: double.infinity,
           height: double.infinity,

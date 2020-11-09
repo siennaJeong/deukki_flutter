@@ -84,9 +84,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       if(temp.length == 1) {
         num = temp.length / 1.3;
       }else if(temp.length > 1 && temp.length <= 2) {
-        num = temp.length / 2.5;
+        num = temp.length / 2.4;
       }else if(temp.length > 2 && temp.length < 6){
-        num = temp.length / 3;
+        num = temp.length / 2.9;
       }else {
         num = temp.length / 3.6;
       }
@@ -101,9 +101,11 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       builder: (context, sentences, child) {
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(left: deviceWidth > 700 ? 0 : 40, bottom: 25),
+            alignment: AlignmentDirectional.topStart,
+            margin: EdgeInsets.only(bottom: 25, left: 40),
             child: StaggeredGridView.countBuilder(
-                shrinkWrap: true,
+                shrinkWrap: false,
+                padding: EdgeInsets.only(left: 0),
                 physics: BouncingScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 8.0,
@@ -126,7 +128,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       child: Card(
         elevation: 0,
         color: colors,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Center(
           child: Stack(
             children: [
@@ -135,7 +137,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   width: double.infinity,
                   height: double.infinity,
                   alignment: AlignmentDirectional.center,
-                  padding: EdgeInsets.only(top: 40, bottom: 40, left: 20, right: 20),
                   child: Text(
                     sentenceVO.content,
                     style: Theme.of(context).textTheme.subtitle1,
@@ -152,7 +153,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       onTap: () => {                //  ListView Item Click
         if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
           resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
-            //categoryProvider.selectStageIndex = -1;
+            categoryProvider.selectStageIndex = -1;
             categoryProvider.onSelectedSentence(sentenceVO);
             final stageResult = resourceProviderModel.value.getSentenceStages;
             if(stageResult.hasData) {
@@ -272,83 +273,87 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     return WillPopScope(
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Stack(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(top: 14, left: 44, bottom: 25),
-                    child: Ink(                                               //  Back Button
-                      decoration: BoxDecoration(
-                        border: Border.all(color: MainColors.green_100, width: 2.0),
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(100.0),
-                        child: Padding(
-                          padding: EdgeInsets.all(8),
-                          child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
+        body: SafeArea(
+          left: false,
+          bottom: false,
+          child: Container(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 14, left: 44),
+                      child: Ink(                                               //  Back Button
+                        decoration: BoxDecoration(
+                          border: Border.all(color: MainColors.green_100, width: 2.0),
+                          color: Colors.white,
+                          shape: BoxShape.circle,
                         ),
-                        onTap: () {
-                          categoryProvider.onSelectedLarge(-1);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(top: 19, bottom: 20),
-                          child: Text('${categoryProvider.getMediumTitle()}', style: Theme.of(context).textTheme.subtitle1,),
-                        ),
-                        SizedBox(width: 8),
-                        Container(
-                          child: FadeTransition(
-                            opacity: _animationController,
-                            child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(100.0),
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
                           ),
+                          onTap: () {
+                            categoryProvider.onSelectedLarge(-1);
+                            Navigator.of(context).pop();
+                          },
                         ),
-                      ],
+                      ),
                     ),
-                    onTap: () => {                      //  More List Button
-                      showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          useSafeArea: false,
-                          builder: (BuildContext context) {
-                            return MediumCategoryListDialog(
-                              title: categoryProvider.getMediumTitle(),
-                              list: categoryProvider.categoryMediumList,
-                            );
-                          }
-                      ).then((value) => {
-                        if(value != null) {
-                          resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
-                            categoryProvider.setMediumTitle(value[0]);
-                            categoryProvider.setMediumId(value[1]);
-                            final sentenceResult = resourceProviderModel.value.getSentence;
-                            if(sentenceResult.hasData) {
-                              categoryProvider.setSentence(sentenceResult.result.asValue.value);
-                              _setMainAxis();
+                    GestureDetector(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(top: 19, bottom: 20),
+                            child: Text('${categoryProvider.getMediumTitle()}', style: Theme.of(context).textTheme.subtitle1,),
+                          ),
+                          SizedBox(width: 8),
+                          Container(
+                            child: FadeTransition(
+                              opacity: _animationController,
+                              child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onTap: () => {                      //  More List Button
+                        showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            useSafeArea: false,
+                            builder: (BuildContext context) {
+                              return MediumCategoryListDialog(
+                                title: categoryProvider.getMediumTitle(),
+                                list: categoryProvider.categoryMediumList,
+                              );
                             }
-                          })
-                        }
-                      }),
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              _listWidget(),
-            ],
+                        ).then((value) => {
+                          if(value != null) {
+                            resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
+                              categoryProvider.setMediumTitle(value[0]);
+                              categoryProvider.setMediumId(value[1]);
+                              final sentenceResult = resourceProviderModel.value.getSentence;
+                              if(sentenceResult.hasData) {
+                                categoryProvider.setSentence(sentenceResult.result.asValue.value);
+                                _setMainAxis();
+                              }
+                            })
+                          }
+                        }),
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                _listWidget(),
+              ],
+            ),
           ),
         ),
       ),

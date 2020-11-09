@@ -206,7 +206,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 Transform.scale(
-                  scale: 0.9,
+                  scale: 0.8,
                   child: CupertinoSwitch(
                     activeColor: MainColors.purple_100,
                     value: _kakaoNotification,
@@ -260,9 +260,51 @@ class _SettingsState extends State<Settings> {
                 _updateButton()
               ],
             ),
-            SizedBox(height: 16),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _showTerms() {
+    return Container(
+      margin: EdgeInsets.only(top: 16, left: 20),
+      child: Row(
+        children: <Widget>[
+          Container(
+            child: InkWell(
+              child: Text(
+                Strings.mypage_setting_show_terms,
+                style: TextStyle(
+                    color: MainColors.grey_80,
+                    fontSize: 16,
+                    fontFamily: "NotoSansKR",
+                    fontWeight: FontWeight.w400
+                ),
+              ),
+              onTap: () {
+                //  이용약관 보기.
+              },
+            ),
+          ),
+          SizedBox(width: 40),
+          Container(
+            child: InkWell(
+              child: Text(
+                Strings.mypage_setting_show_info,
+                style: TextStyle(
+                    color: MainColors.grey_80,
+                    fontSize: 16,
+                    fontFamily: "NotoSansKR",
+                    fontWeight: FontWeight.w400
+                ),
+              ),
+              onTap: () {
+                //  개인정보 수집 및 이용 보기
+              },
+            ),
+          )
+        ],
       ),
     );
   }
@@ -277,11 +319,12 @@ class _SettingsState extends State<Settings> {
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Container(
-          margin: EdgeInsets.only(top: 16, right: deviceWidth > 700 ? 0 : 40, left: deviceWidth > 700 ? 0 : 40),
+          margin: EdgeInsets.only(top: 16, right: 40, left: 40),
           child: Column(
             children: <Widget>[
               _emailWidget(),
               _otherSettingWidget(),
+              _showTerms(),
             ],
           ),
         ),

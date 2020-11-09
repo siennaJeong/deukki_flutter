@@ -94,7 +94,7 @@ class _ReportState extends State<Report> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: deviceWidth > 700 ? 10 : 40),
+                margin: EdgeInsets.only(left: 60),
                 child: Text(
                   "${userProviderModel.userVOForHttp.name}${Strings.mypage_report_title}",
                   style: TextStyle(
@@ -106,7 +106,7 @@ class _ReportState extends State<Report> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 3, left: deviceWidth > 700 ? 10 : 40),
+                margin: EdgeInsets.only(top: 3, left: 60),
                 child: Text(
                   "${Strings.mypage_report_script} ${userProviderModel.userVOForHttp.name}${Strings.mypage_report_script_2}",
                   style: TextStyle(

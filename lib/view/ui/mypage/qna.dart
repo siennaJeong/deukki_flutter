@@ -33,7 +33,6 @@ class _QnAState extends State<QnA> {
 
   Widget _listTitleWidget(String title) {
     return Container(
-      margin: EdgeInsets.only(left: 16, right: 16),
       child: Stack(
         children: <Widget>[
           Positioned(
@@ -62,7 +61,7 @@ class _QnAState extends State<QnA> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(left: 16, right: 16),
+              margin: EdgeInsets.only(left: 60, right: 60),
               child: Text(
                 Strings.mypage_help_script,
                 style: TextStyle(
@@ -75,7 +74,7 @@ class _QnAState extends State<QnA> {
             ),
             SizedBox(height: 24),
             Container(
-              margin: EdgeInsets.only(left: 16, right: 16),
+              margin: EdgeInsets.only(left: 60, right: 60),
               child: Text(
                 Strings.mypage_help_title,
                 style: TextStyle(
@@ -90,9 +89,11 @@ class _QnAState extends State<QnA> {
             SizedBox(
               child: Container(
                 alignment: AlignmentDirectional.centerStart,
+                margin: EdgeInsets.only(left: 60, right: 60),
                 child: ListView.builder(
                   shrinkWrap: true,
                   primary: false,
+                  padding: EdgeInsets.only(left: 0),
                   itemCount: expandableFaqs.length,
                   itemBuilder: (context, index) {
                     return ExpansionTile(

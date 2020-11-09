@@ -177,7 +177,7 @@ class _BookMarkState extends State<BookMark> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     return Container(
-      margin: EdgeInsets.only(top: 8, right: deviceWidth > 700 ? 0 : 40, left: deviceWidth > 700 ? 0 : 40),
+      margin: EdgeInsets.only(top: 8, right: 40, left: 40),
       child: _listWidget(deviceWidth, deviceHeight),
     );
   }
