@@ -281,27 +281,24 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
               Stack(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 14, left: 44),
-                    child: GestureDetector(                         //  Back button
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 25),
-                        child: Ink(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: MainColors.green_100, width: 2.0),
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(100.0),
-                            child: Padding(
-                              padding: EdgeInsets.all(8),
-                              child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
-                            ),
-                            onTap: () => { Navigator.of(context).pop() },
-                          ),
-                        ),
+                    margin: EdgeInsets.only(top: 14, left: 44, bottom: 25),
+                    child: Ink(                                               //  Back Button
+                      decoration: BoxDecoration(
+                        border: Border.all(color: MainColors.green_100, width: 2.0),
+                        color: Colors.white,
+                        shape: BoxShape.circle,
                       ),
-                      onTap: () => { _onBackPressed() },
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(100.0),
+                        child: Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
+                        ),
+                        onTap: () {
+                          categoryProvider.onSelectedLarge(-1);
+                          Navigator.of(context).pop();
+                        },
+                      ),
                     ),
                   ),
                   GestureDetector(

@@ -1,9 +1,11 @@
 
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Report extends StatefulWidget {
   @override
@@ -11,7 +13,15 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
+  UserProviderModel userProviderModel;
+
   double deviceWidth, deviceHeight;
+
+  @override
+  void didChangeDependencies() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    super.didChangeDependencies();
+  }
 
   Widget _cardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
     return Card(
@@ -86,7 +96,7 @@ class _ReportState extends State<Report> {
               Container(
                 margin: EdgeInsets.only(left: deviceWidth > 700 ? 10 : 40),
                 child: Text(
-                  "이름${Strings.mypage_report_title}",
+                  "${userProviderModel.userVOForHttp.name}${Strings.mypage_report_title}",
                   style: TextStyle(
                     color: MainColors.grey_100,
                     fontSize: 16,
@@ -98,7 +108,7 @@ class _ReportState extends State<Report> {
               Container(
                 margin: EdgeInsets.only(top: 3, left: deviceWidth > 700 ? 10 : 40),
                 child: Text(
-                  "${Strings.mypage_report_script} 이름${Strings.mypage_report_script_2}",
+                  "${Strings.mypage_report_script} ${userProviderModel.userVOForHttp.name}${Strings.mypage_report_script_2}",
                   style: TextStyle(
                       color: MainColors.grey_100,
                       fontSize: 16,
@@ -118,7 +128,8 @@ class _ReportState extends State<Report> {
               ),
             ],
           ),
-          Positioned(
+          //  리포트 보러가기 숨김처리.
+          /*Positioned(
             bottom: 0,
             right: 0,
             child: GestureDetector(
@@ -142,7 +153,7 @@ class _ReportState extends State<Report> {
                 ),
               ),
             ),
-          )
+          )*/
         ],
       )
 

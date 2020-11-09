@@ -109,26 +109,21 @@ class _MyPageState extends State<MyPage> {
 
   Widget _backButtonWidget() {
     return Container(
-      child: GestureDetector(                         //  Back button
-        child: Container(
-          margin: EdgeInsets.only(left: deviceWidth > 700 ? 0 : 40),
-          child: Ink(
-            decoration: BoxDecoration(
-              border: Border.all(color: MainColors.green_100, width: 2.0),
-              color: Colors.white,
-              shape: BoxShape.circle,
-            ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(100.0),
-              child: Padding(
-                padding: EdgeInsets.all(8),
-                child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
-              ),
-              onTap: () => { Navigator.of(context).pop() },
-            ),
-          ),
+      //margin: EdgeInsets.only(left: 40),
+      child: Ink(
+        decoration: BoxDecoration(
+          border: Border.all(color: MainColors.green_100, width: 2.0),
+          color: Colors.white,
+          shape: BoxShape.circle,
         ),
-        onTap: () => { _onBackPressed() },
+        child: InkWell(
+          borderRadius: BorderRadius.circular(100.0),
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
+          ),
+          onTap: () => { Navigator.of(context).pop() },
+        ),
       ),
     );
   }
@@ -174,7 +169,7 @@ class _MyPageState extends State<MyPage> {
           width: double.infinity,
           height: double.infinity,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               _tabWidget(),

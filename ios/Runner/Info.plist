@@ -39,7 +39,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>FacebookAppID</key>
 	<string>639456823354844</string>
 	<key>FacebookDisplayName</key>
@@ -53,22 +53,45 @@
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
 		<string>33194ae01d0ccade0fffcd22f39f300a</string>
-        <string>kakaokompassauth</string>
-        <string>kakaotalk-4.5.0</string>
+		<string>kakaokompassauth</string>
+		<string>kakaotalk-4.5.0</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>$(PRODUCT_NAME) Music use.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>$(PRODUCT_NAME) Calendar use.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>$(PRODUCT_NAME) Contact use.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>$(PRODUCT_NAME) Location use.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Can We Use Your Microphone Please</string>
+	<key>NSMotionUsageDescription</key>
+	<string>$(PRODUCT_NAME) Motion use.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>$(PRODUCT_NAME) Speech Recognition use.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
@@ -81,9 +104,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-    <key>UIFileSharingEnabled</key>
-    <true/>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

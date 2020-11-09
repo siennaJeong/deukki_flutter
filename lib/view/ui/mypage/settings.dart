@@ -40,42 +40,12 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     getPackageInfo();
-    _audioManager = AudioManager.STREAM_SYSTEM;
-    initVoiceState(AudioManager.STREAM_MUSIC);
-    updateVoiceVolume();
-
-    initVoiceState(AudioManager.STREAM_RING);
-    updateEffectVolume();
     super.initState();
-  }
-
-  Future<void> initVoiceState(AudioManager am) async {
-    await Volume.controlVolume(am);
   }
 
   Future<void> getPackageInfo() async {
     _packageInfo = await PackageInfo.fromPlatform();
   }
-
-
-  updateVoiceVolume() async {
-    print("audio manager index : " + _audioManager.index.toString());
-    maxVoiceVol = await Volume.getMaxVol;
-    currentVoiceVol = await Volume.getVol;
-    setState(() {});
-  }
-
-  updateEffectVolume() async {
-    print("audio manager index : " + _audioManager.index.toString());
-    maxEffectVol = await Volume.getMaxVol;
-    currentEffectVol = await Volume.getVol;
-    setState(() {});
-  }
-
-  setVol(int i) async {
-    await Volume.setVol(i);
-  }
-
 
   Widget _emailWidget() {
     return Card(
@@ -290,116 +260,7 @@ class _SettingsState extends State<Settings> {
                 _updateButton()
               ],
             ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.volume_up,
-                    color: MainColors.green_100,
-                    size: 25,
-                  ),
-                ),
-                SizedBox(width: 13),
-                Expanded(
-                  child: Container(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      Strings.mypage_setting_sound,
-                      style: TextStyle(
-                          color: MainColors.grey_100,
-                          fontFamily: "NotoSansKR",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
             SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  child: Text(
-                    Strings.mypage_setting_voice,
-                    style: TextStyle(
-                      color: MainColors.grey_100,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: deviceWidth * 0.67,
-                    height: 8,
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Slider(
-                      value: currentVoiceVol != null ? currentVoiceVol / 1.0 : 0.0 / 1.0,
-                      max: maxVoiceVol != null ? maxVoiceVol / 1.0 : 0.0 / 1.0,
-                      min: 0,
-                      activeColor: MainColors.purple_100,
-                      inactiveColor: MainColors.grey_50,
-                      onChanged: (double d) {
-                        setVol(d.toInt());
-                        updateVoiceVolume();
-                      }
-                    )
-                  ),
-                  onTap: () {
-                    print("voice tap");
-                    initVoiceState(AudioManager.STREAM_MUSIC);
-                    updateVoiceVolume();
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: 10),
-                  child: Text(
-                    Strings.mypage_setting_sound_effect,
-                    style: TextStyle(
-                        color: MainColors.grey_100,
-                        fontFamily: "NotoSansKR",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  child: Container(
-                    width: deviceWidth * 0.67,
-                    height: 8,
-                    alignment: AlignmentDirectional.centerEnd,
-                    child: Slider(
-                      value: currentEffectVol != null ? currentEffectVol / 1.0 : 0.0 / 1.0,
-                      max: maxEffectVol != null ? maxEffectVol / 1.0 : 0.0 / 1.0,
-                      min: 0,
-                      activeColor: MainColors.purple_100,
-                      inactiveColor: MainColors.grey_50,
-                      onChanged: (double d) {
-                        setVol(d.toInt());
-                        updateEffectVolume();
-                      }
-                    ),
-                  ),
-                  onTap: () {
-                    print("effect tap");
-                    initVoiceState(AudioManager.STREAM_RING);
-                    updateEffectVolume();
-                  },
-                ),
-              ],
-            ),
           ],
         ),
       ),
