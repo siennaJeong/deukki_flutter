@@ -26,6 +26,8 @@ class _MainCategoryState extends State<MainCategory> {
   Future<void> getUserInfo;
   Future<void> getProductList;
 
+  double deviceWidth, deviceHeight;
+
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
@@ -82,7 +84,7 @@ class _MainCategoryState extends State<MainCategory> {
                 ),
                 elevation: 0,
                 child: Container(
-                  width: 133,
+                  width: deviceWidth * 0.16,
                   child: Center(
                     child: Stack(
                       alignment: AlignmentDirectional.center,
@@ -124,88 +126,93 @@ class _MainCategoryState extends State<MainCategory> {
   Widget build(BuildContext context) {
     resourceProviderModel.getFaq();
 
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: MainColors.yellow_20,
-      body: Center(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Stack(
+      body: SafeArea(
+        child: Center(
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Container(
-                    alignment: AlignmentDirectional.center,
-                    padding: EdgeInsets.only(top: 25, bottom: 25),
-                    child: Image.asset(
-                      AppImages.appLogoMint,
-                      width: 122,
-                    ),
-                  ),
-                  Container(
-                    width: 90,
-                    alignment: AlignmentDirectional.centerStart,
-                    margin: EdgeInsets.only(top: 14, left: 44),
-                    child: RaisedButton(
-                      padding: EdgeInsets.only(top: 6, bottom: 6, left: 12, right: 12),
-                      color: MainColors.green_100,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                          side: BorderSide(
-                              color: MainColors.green_100,
-                              width: 2.0
-                          )
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        alignment: AlignmentDirectional.center,
+                        padding: EdgeInsets.only(top: 25, bottom: 25),
+                        child: Image.asset(
+                          AppImages.appLogoMint,
+                          width: deviceWidth * 0.15,
+                        ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset(
-                            AppImages.myMenuIcon,
-                            width: 32,
-                            height: 32,
-                          ),
-                          SizedBox(width: 2),
-                          Text(
-                              Strings.main_btn_my,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontFamily: "TmoneyRound",
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white
+                      Container(                    //  My page Button
+                        width: deviceWidth * 0.12,
+                        alignment: AlignmentDirectional.centerStart,
+                        margin: EdgeInsets.only(top: 14, left: 44),
+                        child: RaisedButton(
+                          padding: EdgeInsets.only(top: 6, bottom: 6, left: 11, right: 11),
+                          color: MainColors.green_100,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              side: BorderSide(
+                                  color: MainColors.green_100,
+                                  width: 2.0
                               )
-                          )
-                        ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset(
+                                AppImages.myMenuIcon,
+                                width: (deviceWidth * 0.11) * 0.36,
+                                height: (deviceWidth * 0.11) * 0.36,
+                              ),
+                              SizedBox(width: 2),
+                              Text(
+                                  Strings.main_btn_my,
+                                  style: TextStyle(
+                                      fontSize: deviceWidth > 700 ? 16 : 13,
+                                      fontFamily: "TmoneyRound",
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white
+                                  )
+                              )
+                            ],
+                          ),
+                          onPressed: () { _myPage(); },
+                        ),
                       ),
-                      onPressed: () { _myPage(); },         //  My page Button
-                    ),
+                    ],
                   ),
+                  Container(
+                    height: deviceHeight * 0.6,
+                    margin: EdgeInsets.only(top: 30),
+                    child: _categoryLargeList(),
+                  ),
+                  Container(
+                    alignment: AlignmentDirectional.bottomCenter,
+                    margin: EdgeInsets.only(top: 20),
+                    child: Text(
+                      Strings.main_script,
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontFamily: "TmoneyRound",
+                          fontWeight: FontWeight.w700,
+                          color: MainColors.green_80
+                      ),
+                    ),
+                  )
                 ],
               ),
-              Container(
-                height: 223,
-                margin: EdgeInsets.only(top: 30),
-                child: _categoryLargeList(),
-              ),
-              Container(
-                alignment: AlignmentDirectional.bottomCenter,
-                margin: EdgeInsets.only(top: 20),
-                child: Text(
-                  Strings.main_script,
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontFamily: "TmoneyRound",
-                      fontWeight: FontWeight.w700,
-                      color: MainColors.green_80
-                  ),
-                ),
-              )
-            ],
-          ),
-        )
+            ),
+        ),
       ),
     );
   }
