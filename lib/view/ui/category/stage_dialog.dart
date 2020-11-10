@@ -158,15 +158,15 @@ class _StageDialogState extends State<StageDialog> {
       child: Card(
         elevation: 0,
         color: bgColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30), side: BorderSide(width: 2, color: borderColor)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(deviceWidth > 700 ? 30 : 24), side: BorderSide(width: 2, color: borderColor)),
         child: Container(
-          width: 90.0,
-          height: 90.0,
+          width: deviceWidth * 0.11,
+          height: deviceWidth * 0.11,
           alignment: AlignmentDirectional.center,
           child: Text(
             stageVO.stage.toString(),
             style: TextStyle(
-              fontSize: 32,
+              fontSize: (deviceWidth * 0.11) * 0.36,
               fontFamily: "TmoneyRound",
               fontWeight: FontWeight.w700,
               color: textColor,
@@ -220,7 +220,7 @@ class _StageDialogState extends State<StageDialog> {
         categoryProvider.selectedSentence.id,
         _selectedStageIdx,
         _selectedIndex == 0 ? true : false,
-        "M"       //  가입시 사용자가 선택한 성별로
+        userProviderModel.userVOForHttp.gender       //  가입시 사용자가 선택한 성별로
     ).then((value) {
       final commonResult = resourceProviderModel.value.getPronunciation;
       final pronunResult = commonResult.result.asValue.value.result;
@@ -266,7 +266,7 @@ class _StageDialogState extends State<StageDialog> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(top: 30, bottom: 4),
+                  margin: EdgeInsets.only(top: deviceHeight > 380 ? 30 : 20, bottom: 4),
                   child: Text('$_title', style: Theme.of(context).textTheme.headline4),
                 ),
                 Text(
@@ -280,7 +280,7 @@ class _StageDialogState extends State<StageDialog> {
                 ),
                 _listWidget(),          //  ListView
                 Container(
-                  margin: EdgeInsets.only(left: 36, right: 36, bottom: 32),
+                  margin: EdgeInsets.only(left: 36, right: 36, bottom: deviceHeight > 380 ? 32 : 20),
                   child: Row(
                     children: <Widget>[
                       Expanded(
