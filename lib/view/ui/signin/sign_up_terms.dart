@@ -145,7 +145,17 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   Widget textInkWell(String str) {
     return InkWell(
-      child: termsText(str, MainColors.purple_100, TextDecoration.underline)
+      child: termsText(str, MainColors.purple_100, TextDecoration.underline),
+      onTap: () {
+        switch(str) {
+          case Strings.sign_up_terms_terms:         //  이용약관
+            RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
+            break;
+          case Strings.sign_up_terms_info:          //  개인정보처리
+            RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
+            break;
+        }
+      },
     );
   }
 

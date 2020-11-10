@@ -246,7 +246,7 @@ class _RecordState extends State<Record> {
     Navigator.pop(context);
   }
 
-  Widget _closeButtonWidget() {
+  Widget _closeButtonWidget() {               //  close button
     return InkWell(
       child: Container(
         margin: EdgeInsets.all(24),

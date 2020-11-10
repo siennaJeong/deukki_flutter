@@ -7,6 +7,7 @@ import 'package:deukki/view/ui/category/stage/stage_complete_dialog.dart';
 import 'package:deukki/view/ui/category/stage/stage_quiz.dart';
 import 'package:deukki/view/ui/mypage/my_page.dart';
 import 'package:deukki/view/ui/signin/login.dart';
+import 'package:deukki/view/ui/signin/privacy_terms.dart';
 import 'package:deukki/view/ui/signin/sign_up_email.dart';
 import 'package:deukki/view/ui/signin/sign_up_input.dart';
 import 'package:deukki/view/ui/signin/sign_up_name.dart';
@@ -32,6 +33,8 @@ class GetRoutesName {
   static const String ROUTE_STAGE_COMPLETE = "/stageComplete";
   static const String ROUTE_RECORD = "/record";
   static const String ROUTE_MYPAGE = "/myPage";
+  static const String ROUTE_PRIVACY_TERMS = "/privacyTerms";
+  static const String ROUTE_PRIVACY_INFO = "/privacyInfo";
 }
 
 final routes = <String, WidgetBuilder> {
@@ -48,6 +51,8 @@ final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_STAGE_COMPLETE: (context) => StageCompleteDialog(),
   GetRoutesName.ROUTE_RECORD: (context) => ChangeNotifierProvider<RecordProvider>(create: (context) => RecordProvider(), child: Record(),),
   GetRoutesName.ROUTE_MYPAGE: (context) => ChangeNotifierProvider<MyPageProvider>(create: (context) => MyPageProvider(), child: MyPage(),),
+  GetRoutesName.ROUTE_PRIVACY_TERMS: (context) => PrivacyTerms(),
+  GetRoutesName.ROUTE_PRIVACY_INFO: (context) => PrivacyInfo(),
 };
 
 class RouteNavigator {
@@ -92,6 +97,12 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_MYPAGE:
         Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE);
+        break;
+      case GetRoutesName.ROUTE_PRIVACY_TERMS:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_PRIVACY_TERMS);
+        break;
+      case GetRoutesName.ROUTE_PRIVACY_INFO:
+        Navigator.pushNamed(context, GetRoutesName.ROUTE_PRIVACY_INFO);
         break;
     }
   }

@@ -283,7 +283,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                //  이용약관 보기.
+                RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
               },
             ),
           ),
@@ -300,7 +300,7 @@ class _SettingsState extends State<Settings> {
                 ),
               ),
               onTap: () {
-                //  개인정보 수집 및 이용 보기
+                RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
               },
             ),
           )

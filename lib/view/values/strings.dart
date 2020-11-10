@@ -1,6 +1,9 @@
 class Strings {
   static const String firebase_apple_url = 'https://deukki-flutter.firebaseapp.com/__/auth/handler';
   static const String ios_bundle_name = 'io.com.diction.deukki';
+  static const String privacy_terms_url = 'https://deukki.com/policy1/index.html';
+  static const String privacy_info_url = 'https://deukki.com/policy2/index.html';
+
   static const String service_name = "바름드끼";
 
   static const String connection_error = '인터넷에 연결되어 있지 않습니다.';

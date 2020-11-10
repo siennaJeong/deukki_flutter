@@ -48,6 +48,7 @@ dependencies:
   volume: ^1.0.1
   hardware_buttons: ^1.0.0
   lottie: ^0.7.0+1
+  webview_flutter: ^1.0.7
 
 
   # ======== Social Login API =========
