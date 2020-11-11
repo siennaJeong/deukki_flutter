@@ -76,10 +76,10 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       categoryProvider.updateScore(acquiredStars);
-      if(categoryProvider.selectStageIndex != -1 && (categoryProvider.selectStageIndex + 1) % 3 == 0) {
-        RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
-      }else {
+      if(categoryProvider.selectStageIndex % 3 != 0) {
         Navigator.pop(context);
+      }else {
+        RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
       }
     }
 

@@ -660,7 +660,6 @@ class _StageQuizState extends State<StageQuiz> {
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
         randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
-        print("random path : ${randomPath.toString()}");
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }
     }
