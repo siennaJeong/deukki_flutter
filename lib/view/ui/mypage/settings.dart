@@ -147,7 +147,7 @@ class _SettingsState extends State<Settings> {
       ),
       onTap: () {
         _authServiceAdapter.logout();                             //  Firebase 로그아웃
-        _userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
+        //_userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
         RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
       },
     );
