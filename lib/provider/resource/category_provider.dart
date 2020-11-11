@@ -13,9 +13,9 @@ class CategoryProvider with ChangeNotifier {
   bool isRootBookmark;
   int selectLargeIndex;
   int selectStageIndex;
-  int stageScore;
   int selectStageIdx;
   double stepProgress;
+  double stageAvgScore;
   String _largeId;
   String _mediumId;
   String _mediumTitle;
@@ -35,7 +35,7 @@ class CategoryProvider with ChangeNotifier {
     this.selectStageIdx = -1;
     this.isBookmark = false;
     this.stepProgress = 0.2;
-    this.stageScore = 0;
+    this.stageAvgScore = 0;
     this.isRootBookmark = false;
     if(dbHelper != null) {
       fetchAndSetLargeCategory();
@@ -131,18 +131,21 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setStageScore(int stageScore) {
-    this.stageScore = stageScore;
-    notifyListeners();
-  }
-
-  void updateScore(int score) {
+  void updateScore(int acquiredScore, double score) {
     if(this.selectStageIndex != null) {
       final stageItem = this._stageList.firstWhere((element) => element.stage == (this.selectStageIndex + 1));
-      stageItem.score = score;
+      stageItem.score = acquiredScore;
+      this.stageAvgScore = score;
       setStage(this._stageList);
       notifyListeners();
     }
+  }
+
+  void updateStageAvgScore() {
+    final sentenceItem = this.sentenceList.firstWhere((element) => element.id == (this.selectedSentence.id));
+    sentenceItem.avgScore = this.stageAvgScore;
+    setSentence(this.sentenceList);
+    notifyListeners();
   }
 
   Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {
@@ -158,9 +161,4 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setPreScore() {
-    if(this.stageList.length > 0) {
-
-    }
-  }
 }

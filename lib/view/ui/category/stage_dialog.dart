@@ -203,6 +203,9 @@ class _StageDialogState extends State<StageDialog> {
             resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id);
             categoryProvider.selectStageIndex = -1;
             categoryProvider.selectStageIdx = -1;
+            if(categoryProvider.stageAvgScore != 0) {
+              categoryProvider.updateStageAvgScore();
+            }
             Navigator.of(context).pop();
           },
         ),

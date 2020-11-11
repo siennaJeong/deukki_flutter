@@ -46,7 +46,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    var acquiredStars;
+    var acquiredStars, stageAvg;
 
     final result = userProviderModel.value.recordLearning;
     if(!result.hasData) {
@@ -54,6 +54,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }else {
       final recordResult = result.result.asValue.value.result;
       acquiredStars = recordResult['acquiredStars'];
+      stageAvg = recordResult['sentenceAvgScore'];
     }
 
     String firstStar, secondStar, thirdStar;
@@ -77,7 +78,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
-      categoryProvider.updateScore(acquiredStars);
+      categoryProvider.updateScore(acquiredStars, stageAvg);
       if(Platform.isIOS) {
         Navigator.pop(context);
       }else {
