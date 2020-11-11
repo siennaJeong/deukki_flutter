@@ -44,6 +44,8 @@
 	<string>639456823354844</string>
 	<key>FacebookDisplayName</key>
 	<string>deukki</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>KAKAO_APP_KEY</key>
 	<string>33194ae01d0ccade0fffcd22f39f300a</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -103,8 +105,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>
 </plist>

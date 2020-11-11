@@ -16,6 +16,8 @@ class _SignUpTermsState extends State<SignUpTerms> {
   bool marketingAgree = false;
   AuthServiceAdapter authServiceAdapter;
 
+  double deviceWidth, deviceHeight;
+
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
@@ -42,11 +44,14 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   @override
   Widget build(BuildContext context) {
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: MainColors.yellow_100,
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.only(left: 44, top: 19, right: 44, bottom: 19),
+          margin: EdgeInsets.only(left: 44, top: 19, right: 44),
           child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24.0),
@@ -56,6 +61,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                   color: Colors.white,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.only(top: 28, bottom: 40),
@@ -83,7 +89,6 @@ class _SignUpTermsState extends State<SignUpTerms> {
                       ),
                       termsText(Strings.sign_up_terms_script, MainColors.grey_100, null),
                       Container(
-                        margin: EdgeInsets.only(top: 24, bottom: 56),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,8 +107,9 @@ class _SignUpTermsState extends State<SignUpTerms> {
                         ),
                       ),
                       Container(
-                        width: 552,
+                        width: deviceWidth * 0.68,
                         height: 48,
+                        margin: EdgeInsets.only(top: 40, bottom: 20),
                         child: Row(
                           children: <Widget>[
                             Expanded(
