@@ -29,7 +29,7 @@ Widget _privacyWidget(String title, String url, BuildContext context) {
     backgroundColor: MainColors.yellow_100,
     body: SafeArea(
       child: Container(
-        margin: EdgeInsets.only(left: 44, top: 19, right: 44, bottom: 19),
+        margin: EdgeInsets.only(left: 44, top: 19, right: 44,),
         child: Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24.0),
@@ -67,6 +67,7 @@ Widget _privacyWidget(String title, String url, BuildContext context) {
                     color: MainColors.grey_30,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
+                    margin: EdgeInsets.only(left: 24, right: 24, bottom: 11),
                     child: Container(
                       width: deviceWidth * 0.81,
                       height: deviceHeight * 0.62,
