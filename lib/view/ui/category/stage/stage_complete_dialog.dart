@@ -46,7 +46,8 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-    var acquiredStars, stageAvg;
+    var acquiredStars;
+    double stageAvg;
 
     final result = userProviderModel.value.recordLearning;
     if(!result.hasData) {
@@ -54,7 +55,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }else {
       final recordResult = result.result.asValue.value.result;
       acquiredStars = recordResult['acquiredStars'];
-      stageAvg = recordResult['sentenceAvgScore'];
+      stageAvg = recordResult['sentenceAvgScore'] + .0;
     }
 
     String firstStar, secondStar, thirdStar;

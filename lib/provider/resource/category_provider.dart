@@ -132,10 +132,10 @@ class CategoryProvider with ChangeNotifier {
   }
 
   void updateScore(int acquiredScore, double score) {
+    this.stageAvgScore = score;
     if(this.selectStageIndex != null) {
       final stageItem = this._stageList.firstWhere((element) => element.stage == (this.selectStageIndex + 1));
       stageItem.score = acquiredScore;
-      this.stageAvgScore = score;
       setStage(this._stageList);
       notifyListeners();
     }

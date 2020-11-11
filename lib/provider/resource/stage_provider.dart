@@ -135,14 +135,18 @@ class StageProvider with ChangeNotifier{
   }
 
   void addHistory() {
-    var historyVO = HistoryVO(this.level.toString(), this.round.toString(), this.correct ? 'true' : 'false', this.soundRepeat.toString(), this.playPIdx.toString(), this.selectPIdx.toString());
-    print("add history : " + historyVO.toString());
+    var historyVO = HistoryVO(
+        this.level.toString(),
+        this.round.toString(),
+        this.correct ? 'true' : 'false',
+        this.soundRepeat.toString(),
+        this.playPIdx.toString(),
+        this.selectPIdx.toString());
     historyList.add(historyVO.bodyJson());
   }
 
   LearningVO generateLearningRecord(int idx) {
     LearningVO learningVO = LearningVO(this._learnTime.toString(), this.countCorrectAnswer.toString(), idx.toString(), historyList);
-    print("learning vo : " + learningVO.toString());
     return learningVO;
   }
 
