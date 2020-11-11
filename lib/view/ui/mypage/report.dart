@@ -54,7 +54,7 @@ class _ReportState extends State<Report> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    isAccuracy ? "$title -" : "${title}0.0 / 100",
+                    isAccuracy ? "$title -" : "${title}0 / 100",
                     style: TextStyle(
                       color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
                       fontSize: 24,
@@ -64,7 +64,7 @@ class _ReportState extends State<Report> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    isAccuracy ? "준비중" : "${script}0.0 / 100",
+                    isAccuracy ? "준비중" : "${script}0 / 100",
                     style: TextStyle(
                       color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
                       fontSize: 16,

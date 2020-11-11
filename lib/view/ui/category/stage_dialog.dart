@@ -58,10 +58,11 @@ class _StageDialogState extends State<StageDialog> {
       builder: (context, stages, child) {
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(top: 8, bottom: 30, left: deviceWidth > 700 ? 0 : 36),
+            margin: EdgeInsets.only(top: 8, bottom: deviceHeight > 380 ? 30 : 20, left: 36),
             alignment: AlignmentDirectional.bottomCenter,
             child: ListView.separated(
-              shrinkWrap: true,
+              shrinkWrap: false,
+              padding: EdgeInsets.only(left: 0),
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
               itemCount: stages.length,
@@ -218,9 +219,9 @@ class _StageDialogState extends State<StageDialog> {
     resourceProviderModel.getPronunciation(
         authServiceAdapter.authJWT,
         categoryProvider.selectedSentence.id,
-        _selectedStageIdx,
-        _selectedIndex == 0 ? true : false,
-        userProviderModel.userVOForHttp.gender       //  가입시 사용자가 선택한 성별로
+        categoryProvider.selectStageIdx,
+        categoryProvider.selectStageIndex == 0 ? true : false,
+        "M"       //  가입시 사용자가 선택한 성별로
     ).then((value) {
       final commonResult = resourceProviderModel.value.getPronunciation;
       final pronunResult = commonResult.result.asValue.value.result;

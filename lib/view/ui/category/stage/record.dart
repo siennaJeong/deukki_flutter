@@ -6,6 +6,7 @@ import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/record_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
@@ -26,6 +27,7 @@ class Record extends BaseWidget {
 class _RecordState extends State<Record> {
   AuthServiceAdapter authServiceAdapter;
   ResourceProviderModel resourceProviderModel;
+  UserProviderModel userProviderModel;
   CategoryProvider categoryProvider;
   RecordProvider recordProvider;
 
@@ -51,6 +53,7 @@ class _RecordState extends State<Record> {
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
     super.didChangeDependencies();
   }
@@ -308,7 +311,7 @@ class _RecordState extends State<Record> {
                   children: <Widget>[
                     Container(
                       child: Text(
-                        Strings.record_script,
+                        "${userProviderModel.userVOForHttp.name}${Strings.record_script}",
                         style: TextStyle(
                             fontSize: 20,
                             fontFamily: "NotoSansKR",

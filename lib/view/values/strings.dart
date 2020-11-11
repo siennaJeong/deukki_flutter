@@ -80,7 +80,7 @@ class Strings {
   static const String mypage_report = '리포트';
   static const String mypage_report_title = '님, 바름리포트는 매주 월요일에 발행됩니다.';
   static const String mypage_report_script = '바름리포트로';
-  static const String mypage_report_script_2 = '의 좋은 발음 듣기/말하기의 습관을 만들어주세요!';
+  static const String mypage_report_script_2 = '님의 좋은 발음 듣기/말하기의 습관을 만들어주세요!';
   static const String mypage_report_listening_score = '듣기 점수 : ';
   static const String mypage_report_listening_average = '같은 레벨의 평균 점수 : ';
   static const String mypage_report_accuracy = '발음 정확도 : ';

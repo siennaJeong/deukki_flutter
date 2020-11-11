@@ -168,7 +168,7 @@ class _StageQuizState extends State<StageQuiz> {
 
   Widget _backButtonWidget() {            //  Back Button
     return Container(
-      margin: EdgeInsets.only(bottom: 25, left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
+      margin: EdgeInsets.only(bottom: 25),
       child: Ink(
         decoration: BoxDecoration(
           border: Border.all(color: MainColors.green_100, width: 2.0),
@@ -232,7 +232,6 @@ class _StageQuizState extends State<StageQuiz> {
       children: [
         Container(
           width: width + 24,
-          margin: EdgeInsets.only(left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -288,7 +287,6 @@ class _StageQuizState extends State<StageQuiz> {
         ),
         Container(
           width: width,
-          margin: EdgeInsets.only(left: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
           child: LinearProgressIndicator(
             value: categoryProvider.stepProgress,
             valueColor: AlwaysStoppedAnimation<Color>(MainColors.purple_80),
@@ -327,7 +325,7 @@ class _StageQuizState extends State<StageQuiz> {
 
     return Container(
       width: width + 2,
-      margin: EdgeInsets.only(top: 32, right: deviceWidth > 700 ? deviceWidth * 0.05 : 0),
+      margin: EdgeInsets.only(top: 32),
       child: RaisedButton(
         padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
         color: !stageProvider.isPlaying ? MainColors.purple_80 : Colors.white,
@@ -420,6 +418,7 @@ class _StageQuizState extends State<StageQuiz> {
           child: StaggeredGridView.countBuilder(
             primary: false,
             shrinkWrap: true,
+            padding: EdgeInsets.only(left: 0),
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: 16,
@@ -672,19 +671,23 @@ class _StageQuizState extends State<StageQuiz> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Container(
-          width: deviceWidth,
-          height: deviceHeight,
-          margin: EdgeInsets.only(top: 14, bottom: 32, left: deviceWidth > 700 ? 0 : deviceWidth * 0.05, right: deviceWidth * 0.05),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              _header(),
-              _listWidget(deviceWidth),
-              _bottom(ratioWidth)
-            ],
+      body: SafeArea(
+        left: false,
+        right: false,
+        child: Center(
+          child: Container(
+            width: deviceWidth,
+            height: deviceHeight,
+            margin: EdgeInsets.only(top: 14, bottom: 10, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _header(),
+                _listWidget(deviceWidth),
+                _bottom(ratioWidth)
+              ],
+            ),
           ),
         ),
       ),

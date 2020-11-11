@@ -84,7 +84,7 @@ class _MainCategoryState extends State<MainCategory> {
                 ),
                 elevation: 0,
                 child: Container(
-                  width: deviceWidth * 0.16,
+                  width: deviceWidth * 0.19,
                   child: Center(
                     child: Stack(
                       alignment: AlignmentDirectional.center,
@@ -132,13 +132,16 @@ class _MainCategoryState extends State<MainCategory> {
     return Scaffold(
       backgroundColor: MainColors.yellow_20,
       body: SafeArea(
+        left: false,
+        right: false,
+        bottom: false,
         child: Center(
             child: Container(
               width: double.infinity,
               height: double.infinity,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Stack(
@@ -193,12 +196,11 @@ class _MainCategoryState extends State<MainCategory> {
                   ),
                   Container(
                     height: deviceHeight * 0.6,
-                    margin: EdgeInsets.only(top: 30),
                     child: _categoryLargeList(),
                   ),
                   Container(
                     alignment: AlignmentDirectional.bottomCenter,
-                    margin: EdgeInsets.only(top: 20),
+                    margin: EdgeInsets.only(top: 20, bottom: 20),
                     child: Text(
                       Strings.main_script,
                       style: TextStyle(
