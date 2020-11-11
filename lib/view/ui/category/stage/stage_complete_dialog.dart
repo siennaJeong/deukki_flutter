@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -76,10 +78,14 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       categoryProvider.updateScore(acquiredStars);
-      if(categoryProvider.selectStageIndex % 3 != 0) {
+      if(Platform.isIOS) {
         Navigator.pop(context);
       }else {
-        RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
+        if(categoryProvider.selectStageIndex % 3 != 0) {
+          Navigator.pop(context);
+        }else {
+          RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
+        }
       }
     }
 
