@@ -53,7 +53,6 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
     if(_formKey.currentState.validate() && this.selectGender.isNotEmpty) {
       _formKey.currentState.save();
       authServiceAdapter.userVO.birthDate = "$year-$month";
-      authServiceAdapter.userVO.gender = selectGender;
       RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
       userProviderModel.signUp(
           authServiceAdapter.userVO,

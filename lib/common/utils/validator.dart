@@ -14,9 +14,9 @@ class Validator {
     final valid = RegExp(r'^[a-zA-Z0-9 ]+$');
     if(value.length > 1) {
       if(!valid.hasMatch(value)) {
-        return null;
-      }else {
         return Strings.sign_up_name_invalid;
+      }else {
+        return null;
       }
     }else {
       return Strings.sign_up_name_invalid;
