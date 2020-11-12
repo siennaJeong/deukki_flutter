@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "890185520334-m2vmmt4q37nf5aervdtcpgc3tulcl5h4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diction.deukki",
+            "certificate_hash": "8637772c6ad0b693c3a759d079467cf9f81fa33e"
+          }
+        },
+        {
           "client_id": "890185520334-8p7ap2b9avp6i13aev9ciedppcfq5or3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,8 +44,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "890185520334-i0f5b5e9tegkgpjqen2g3vbue6l9uog0.apps.googleusercontent.com",
+              "client_id": "890185520334-ogtgc8nhk4nrqsdknb45gf3cfrde5k53.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.com.diction.deukki"
+              }
             }
           ]
         }
