@@ -28,8 +28,11 @@ Widget _privacyWidget(String title, String url, BuildContext context) {
   return Scaffold(
     backgroundColor: MainColors.yellow_100,
     body: SafeArea(
+      right: false,
+      left: false,
+      bottom: false,
       child: Container(
-        margin: EdgeInsets.only(left: 44, top: 19, right: 44,),
+        margin: EdgeInsets.only(left: 44, top: 19, right: 44, bottom: 19),
         child: Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24.0),
@@ -38,6 +41,8 @@ Widget _privacyWidget(String title, String url, BuildContext context) {
               height: double.infinity,
               color: Colors.white,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Stack(
                     children: [

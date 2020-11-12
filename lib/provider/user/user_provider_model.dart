@@ -39,7 +39,6 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> login(String authType, String authId) async {
     final login = _userRepository.login(authType, authId);
-    print("login");
     await value.login.set(login, notifyListeners);
   }
 
@@ -50,15 +49,10 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> recordLearning(String authJWT, String sentenceId, LearningVO learningVO) async {
     final recordLearn = _userRepository.recordLearning(authJWT, sentenceId, learningVO);
-    recordLearn.then((value) {
-      print("record learn result : " + value.asValue.value.result.toString());
-    });
-
     await value.recordLearning.set(recordLearn, notifyListeners);
   }
 
   Future<void> updateBookmark(String authJWT, String sentenceId, int stageIdx) async {
-    print("update book mark");
     final updateBookmark = _userRepository.updateBookmark(authJWT, sentenceId, stageIdx);
     await value.updateBookmark.set(updateBookmark, notifyListeners);
     getBookmark(authJWT);
@@ -78,7 +72,6 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   }
 
   void setCurrentBookmarkList(list) {
-    print("set book mark list : ${list.toString()}");
     this.currentBookmarkList = list;
     notifyListeners();
   }
