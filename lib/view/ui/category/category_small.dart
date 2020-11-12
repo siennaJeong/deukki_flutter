@@ -154,6 +154,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
           resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
             categoryProvider.selectStageIndex = -1;
+            categoryProvider.stageAvgScore = 0;
             categoryProvider.onSelectedSentence(sentenceVO);
             final stageResult = resourceProviderModel.value.getSentenceStages;
             if(stageResult.hasData) {
