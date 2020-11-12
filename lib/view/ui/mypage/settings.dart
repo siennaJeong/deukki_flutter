@@ -257,7 +257,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                 ),
-                _updateButton()
+                //_updateButton()
               ],
             ),
           ],
