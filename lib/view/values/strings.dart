@@ -12,6 +12,8 @@ class Strings {
   static const String empty_result_error = "Empty Result Error - Request body is Empty";
   static const String unknown_error = "Unknown Error";
 
+  static const String no_data = '컨텐츠 준비중입니다.';
+
   static const String invalid_input = "형식이 올바르지 않습니다.";
 
   static const String login_for_kakao = "카카오로 시작하기";

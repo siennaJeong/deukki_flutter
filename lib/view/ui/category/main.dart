@@ -28,6 +28,8 @@ class _MainCategoryState extends State<MainCategory> {
 
   double deviceWidth, deviceHeight;
 
+  bool isClick = false;
+
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
@@ -50,6 +52,7 @@ class _MainCategoryState extends State<MainCategory> {
             categoryProvider.setSentence(sentenceResult.result.asValue.value);
           }
           RouteNavigator().go(GetRoutesName.ROUTE_CATEGORY_SMALL, context);
+          isClick = false;
         });
       });
     }
@@ -110,7 +113,12 @@ class _MainCategoryState extends State<MainCategory> {
                   ),
                 ),
               ),
-              onTap: () => _onSelectedLarge(index, largeVO.id),    //  ListView Item Click
+              onTap: () {                             //  ListView Item Click
+                if(!isClick) {
+                  isClick = true;
+                  _onSelectedLarge(index, largeVO.id);
+                }
+              },
             );
           },
         );

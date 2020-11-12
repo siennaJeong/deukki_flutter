@@ -99,26 +99,41 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     return Selector<CategoryProvider, List<SentenceVO>>(
       selector: (context, provider) => provider.sentenceList,
       builder: (context, sentences, child) {
-        return Expanded(
-          child: Container(
-            alignment: AlignmentDirectional.topStart,
-            margin: EdgeInsets.only(bottom: 25, left: 40),
-            child: StaggeredGridView.countBuilder(
-                shrinkWrap: false,
-                padding: EdgeInsets.only(left: 0),
-                physics: BouncingScrollPhysics(),
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                scrollDirection: Axis.horizontal,
-                itemCount: sentences.length,
-                itemBuilder: (BuildContext context, index) {
-                  return _listItemWidget(cellColor[index], sentences[index]);
-                },
-                staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
+        if(sentences.length > 0) {
+          return Expanded(
+              child: Container(
+                alignment: AlignmentDirectional.topStart,
+                margin: EdgeInsets.only(bottom: 25, left: 40),
+                child: StaggeredGridView.countBuilder(
+                    shrinkWrap: false,
+                    padding: EdgeInsets.only(left: 0),
+                    physics: BouncingScrollPhysics(),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: sentences.length,
+                    itemBuilder: (BuildContext context, index) {
+                      return _listItemWidget(cellColor[index], sentences[index]);
+                    },
+                    staggeredTileBuilder: (index) => StaggeredTile.count(1, mainAxis[index])
+                ),
+              )
+          );
+        }else {
+          return Container(
+            margin: EdgeInsets.only(top: deviceHeight * 0.27),
+            child: Text(
+              Strings.no_data,
+              style: TextStyle(
+                  color: MainColors.grey_70,
+                  fontSize: 20,
+                  fontFamily: "TmoneyRound",
+                  fontWeight: FontWeight.w700
+              ),
             ),
-          )
-        );
+          );
+        }
       },
     );
   }
@@ -279,8 +294,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           bottom: false,
           child: Container(
             width: double.infinity,
+            height: double.infinity,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Stack(
