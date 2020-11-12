@@ -1,5 +1,6 @@
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +31,11 @@ class StageProvider with ChangeNotifier{
   StageProvider() {
     this.isPlaying = false;
     this.playCount = 0;
-    this.playRate = 0.8;
+    if(Platform.isIOS) {
+      this.playRate = 1;
+    }else {
+      this.playRate = 0.8;
+    }
     this.selectAnswerIndex = [];
     this.selectedAnswer = [];
     this._learnTime = 0;

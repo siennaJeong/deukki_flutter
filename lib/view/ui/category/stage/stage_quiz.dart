@@ -299,17 +299,31 @@ class _StageQuizState extends State<StageQuiz> {
 
   Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
-    String soundIcons;
-    if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
-      playSpeed = Strings.play_speed_15;
-    }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
-      playSpeed = Strings.play_speed_20;
-    }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
-      playSpeed = Strings.play_speed_25;
-    }else if(stageProvider.playRate >= 1.4) {
-      playSpeed = Strings.play_speed_30;
+    String soundIcons;    // iphone 1, 1.15, 1.3, 1.45, 1.6 / android 0.8, 0.95, 1.1, 1.25, 1.4
+    if(Platform.isIOS) {
+      if(stageProvider.playRate >= 1.15 && stageProvider.playRate < 1.3) {
+        playSpeed = Strings.play_speed_15;
+      }else if(stageProvider.playRate >= 1.3 && stageProvider.playRate < 1.45) {
+        playSpeed = Strings.play_speed_20;
+      }else if(stageProvider.playRate >= 1.45 && stageProvider.playRate < 1.6) {
+        playSpeed = Strings.play_speed_25;
+      }else if(stageProvider.playRate >= 1.6) {
+        playSpeed = Strings.play_speed_30;
+      }else {
+        playSpeed = "";
+      }
     }else {
-      playSpeed = "";
+      if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
+        playSpeed = Strings.play_speed_15;
+      }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
+        playSpeed = Strings.play_speed_20;
+      }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
+        playSpeed = Strings.play_speed_25;
+      }else if(stageProvider.playRate >= 1.4) {
+        playSpeed = Strings.play_speed_30;
+      }else {
+        playSpeed = "";
+      }
     }
 
     if(!stageProvider.isPlaying) {

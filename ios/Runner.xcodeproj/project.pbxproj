@@ -18,6 +18,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		83034E19255CF40600BFEB16 /* Embed App Clips */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/AppClips";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			name = "Embed App Clips";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -147,6 +157,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				02721391CCA11A6A30A77F68 /* [CP] Embed Pods Frameworks */,
 				6EE8CF04636F175DB6B4AC40 /* [CP] Copy Pods Resources */,
+				83034E19255CF40600BFEB16 /* Embed App Clips */,
 			);
 			buildRules = (
 			);
@@ -163,6 +174,7 @@
 		97C146E61CF9000F007C117D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1210;
 				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
