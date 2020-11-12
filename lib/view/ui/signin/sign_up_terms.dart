@@ -50,8 +50,9 @@ class _SignUpTermsState extends State<SignUpTerms> {
     return Scaffold(
       backgroundColor: MainColors.yellow_100,
       body: SafeArea(
+        bottom: false,
         child: Container(
-          margin: EdgeInsets.only(left: 44, top: 19, right: 44),
+          margin: EdgeInsets.only(left: 44, top: 19, right: 44, bottom: 19),
           child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24.0),

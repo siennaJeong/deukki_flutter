@@ -48,7 +48,7 @@ Widget _privacyWidget(String title, String url, BuildContext context) {
                     children: [
                       Container(
                         alignment: AlignmentDirectional.center,
-                        margin: EdgeInsets.only(top: 24, bottom: 24),
+                        margin: EdgeInsets.only(top: 24, bottom: 20),
                         child: Text(
                           title,
                           textAlign: TextAlign.center,
