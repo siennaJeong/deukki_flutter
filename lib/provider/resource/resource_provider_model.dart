@@ -43,7 +43,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   bool requireInstall = false;
   List<FaqVO> faqs = [];
   List<AudioFilePathVO> _audioFilePath = [];
-  List<AudioFilePathVO> filePathList = [];
   Directory directory;
 
   Future<void> _initData() async {
@@ -172,7 +171,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   Future<void> getSentenceStages(String authJWT, String sentenceId) async {
     final getSentenceStage = _categoryRepository.getSentenceStages(authJWT, sentenceId);
     await value.getSentenceStages.set(getSentenceStage, notifyListeners);
-    getFilePathFromDB(sentenceId);
   }
 
   Future<void> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
@@ -195,15 +193,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       rightPronun = PronunciationVO.fromJson(result['rightPronunciation']);
       filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
       dbFilePath = "$fileDir/$filePath";
-      print("right file path : " + dbFilePath);
-      print("file path list : ${filePathList.toString()}");
-      if(filePathList != null && (filePathList.singleWhere((it) => it.path == filePath, orElse: () => null)) != null) {
+      if(File(dbFilePath).existsSync()) {
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {
-        print("right file path null ? " + filePathList.toString());
         saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
         setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
-        _dbHelper.insertAudioFile(sentenceId, rightPronun.pIdx, filePath);
       }
 
       wrongList = result['wrongPronunciationList'] as List;
@@ -211,14 +205,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
         filePath = "$fileId-${pronunciationVO.pIdx.toString()}-$voice.mp3";
         dbFilePath = "$fileDir/$filePath";
-        print("wrong file path : " + dbFilePath);
-        if(filePathList != null && (filePathList.singleWhere((it) => it.path == filePath, orElse: () => null)) != null) {
+        if(File(dbFilePath).existsSync()) {
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }else {
-          print("wrong file path null ? " + filePathList.toString());
           saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
           setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
-          _dbHelper.insertAudioFile(sentenceId, pronunciationVO.pIdx, filePath);
         }
       });
     });
@@ -246,10 +237,4 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     faqs = faqList;
   }
 
-  Future<void> getFilePathFromDB(String sentenceId) async {
-    final dbFile = await _dbHelper.getFilePath(sentenceId);
-    if(dbFile != null) {
-      filePathList = dbFile.map((items) => AudioFilePathVO.fromJson(items)).toList();
-    }
-  }
 }

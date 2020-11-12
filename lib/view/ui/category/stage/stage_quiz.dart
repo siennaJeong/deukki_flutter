@@ -182,7 +182,6 @@ class _StageQuizState extends State<StageQuiz> {
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
           onTap: () => {
-            resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id),
             Navigator.of(context).pop()
           },
         ),

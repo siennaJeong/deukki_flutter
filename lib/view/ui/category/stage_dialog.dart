@@ -200,7 +200,6 @@ class _StageDialogState extends State<StageDialog> {
             child: Icon(Icons.arrow_back, color: MainColors.purple_100, size: 30),
           ),
           onTap: () {
-            resourceProviderModel.getFilePathFromDB(categoryProvider.selectedSentence.id);
             categoryProvider.selectStageIndex = -1;
             categoryProvider.selectStageIdx = -1;
             if(categoryProvider.stageAvgScore != 0) {
