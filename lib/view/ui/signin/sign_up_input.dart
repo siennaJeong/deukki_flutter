@@ -24,7 +24,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
   FocusScopeNode _focusNode;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
-  String year, month, selectGender = "";
+  String year, month, selectGender= "";
 
   @override
   void initState() {
@@ -55,11 +55,12 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
       authServiceAdapter.userVO.birthDate = "$year-$month";
       RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
       userProviderModel.signUp(
-          authServiceAdapter.userVO,
-          authServiceAdapter.socialMethod,
-          authServiceAdapter.socialId,
-          authServiceAdapter.marketingAgree,
-          authServiceAdapter.marketingMethod
+        authServiceAdapter.userVO,
+        authServiceAdapter.socialMethod,
+        authServiceAdapter.socialId,
+        authServiceAdapter.marketingAgree,
+        authServiceAdapter.marketingMethod,
+        authServiceAdapter.phone
       ).then((value) {
         final signUpResult = userProviderModel.value.signUp;
         if(!signUpResult.hasData) {

@@ -31,7 +31,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   bool marketingAgree = false;
   UserVO _userVO;
   String _authJWT;
-  String socialId, socialMethod, marketingMethod;
+  String socialId, socialMethod, marketingMethod, phone;
 
   AuthServiceAdapter(this._authJWT, {this.sharedHelper, this.dbHelper}) {
     if(sharedHelper != null) {
@@ -61,6 +61,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await _snsAuthService.signInWithGoogle().then((value) {
           socialMethod = AuthService.AUTH_TYPE_Google;
           socialId = value;
+          phone = "";
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -69,6 +70,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await _snsAuthService.signInWithFacebook().then((value) {
           socialMethod = AuthService.AUTH_TYPE_FB;
           socialId = value;
+          phone = "";
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -77,6 +79,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await _snsAuthService.signInWithApple().then((value) {
           socialMethod = AuthService.AUTH_TYPE_APPLE;
           socialId = value;
+          phone = "";
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -85,6 +88,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await _kakaoAuthService.signInWithKakao().then((value) {
           socialMethod = AuthService.AUTH_TYPE_KAKAO;
           socialId = value;
+          phone = _kakaoAuthService.phone;
           userVO.email = _kakaoAuthService.email;
         });
         return socialId;

@@ -11,7 +11,7 @@ class Validator {
   }
 
   String nameValidation(String value) {
-    final valid = RegExp(r'^[a-zA-Z0-9 ]+$');
+    final valid = RegExp(r'^[ㄱ-ㅎ가-힣a-zA-Z0-9 ]+$');
     if(value.length > 1) {
       if(!valid.hasMatch(value)) {
         return Strings.sign_up_name_invalid;

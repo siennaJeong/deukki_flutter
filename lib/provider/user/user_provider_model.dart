@@ -27,8 +27,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.checkSignUp.set(checkSignUp, notifyListeners);
   }
 
-  Future<void> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) async {
-    final signUp = _userRepository.signUp(userVO, authType, authId, agreeMarketing, marketingMethod);
+  Future<void> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod, String phone) async {
+    final signUp = _userRepository.signUp(userVO, authType, authId, agreeMarketing, marketingMethod, phone);
     await value.signUp.set(signUp, notifyListeners);
   }
 

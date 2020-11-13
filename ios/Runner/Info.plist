@@ -68,19 +68,19 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>$(PRODUCT_NAME) Music use.</string>
+	<string>Can We Use Your Media Library Please.</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>$(PRODUCT_NAME) Calendar use.</string>
+	<string>Can We Use Your Calendar Please.</string>
 	<key>NSContactsUsageDescription</key>
-	<string>$(PRODUCT_NAME) Contact use.</string>
+	<string>Can We Use Your Contacts Please.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>$(PRODUCT_NAME) Location use.</string>
+	<string>Can We Use Your Location When in usage</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Can We Use Your Microphone Please</string>
 	<key>NSMotionUsageDescription</key>
-	<string>$(PRODUCT_NAME) Motion use.</string>
+	<string>Can We Use Your Motion Please</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>$(PRODUCT_NAME) Speech Recognition use.</string>
+	<string>Can We Use Your Speech Recognition Please.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

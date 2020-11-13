@@ -7,7 +7,7 @@ import 'package:deukki/data/model/user_vo.dart';
 
 abstract class UserRepository {
   Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId);
-  Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod);
+  Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod, String phone);
   Future<Result<CommonResultVO>> signOut(String authJWT);
   Future<Result<CommonResultVO>> login(String authType, String authId);
   Future<Result<CommonResultVO>> logout(String authJWT);

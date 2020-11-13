@@ -20,7 +20,7 @@ class UserRestRepository implements UserRepository {
     'socialId': authId
   };
 
-  Map<String, dynamic> _signupToJson(UserVO userVO, String authType, String authId, String agreeMarketing, String marketingMethod) => <String, dynamic> {
+  Map<String, dynamic> _signupToJson(UserVO userVO, String authType, String authId, String agreeMarketing, String marketingMethod, String phone) => <String, dynamic> {
     'socialMethod': authType,
     'socialId': authId,
     'email': userVO.email,
@@ -28,7 +28,8 @@ class UserRestRepository implements UserRepository {
     'birthDate': userVO.birthDate,
     'gender': userVO.gender,
     'agreeMarketing': agreeMarketing,
-    'marketingMethod': marketingMethod
+    'marketingMethod': marketingMethod,
+    'phone': phone
   };
 
   @override
@@ -42,8 +43,8 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod) async {
-     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, HttpUrls.postHeaders(""), _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod));
+  Future<Result<CommonResultVO>> signUp(UserVO userVO, String authType, String authId, bool agreeMarketing, String marketingMethod, String phone) async {
+     final signUpJson = await _httpClient.postRequest(HttpUrls.SIGN_UP, HttpUrls.postHeaders(""), _signupToJson(userVO, authType, authId, agreeMarketing.toString(), marketingMethod, phone));
      if(signUpJson.isValue) {
        return Result.value(CommonResultVO.fromJson(signUpJson.asValue.value as Map<String, dynamic>));
      }else {
