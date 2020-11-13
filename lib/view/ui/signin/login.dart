@@ -9,6 +9,7 @@ import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,8 @@ class _LoginState extends State<Login> {
   AuthServiceAdapter authServiceAdapter;
   String authId;
 
+  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
@@ -32,32 +35,42 @@ class _LoginState extends State<Login> {
     super.didChangeDependencies();
   }
 
-  void _checkSignUp(String authType, AuthServiceType authServiceType) {
+  void _checkSignUp(String authType, AuthServiceType authServiceType) async {
+    IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.apple_sign_in_only_ios)));
         return;
       }
-    }
-
-    authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-      signInProviderModel.checkSignUp(authType, value).then((val) {
-        final isSignUp = signInProviderModel.value.checkSignUp;
-        if(!isSignUp.hasData) {
-          print("isSignUp no data");
-        }
-        if(isSignUp.result.isValue) {
-          if(isSignUp.result.asValue.value.result) {
-            _login(authType, value);
-          }else {
-            RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
+    }else {
+      if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.ios_low_version_apple_login)));
+        return;
+      }else {
+        //  Firebase 에서 다른 소셜 플랫폼인데 같이 계정일때 에러.
+        authServiceAdapter.signInWithSNS(authServiceType).then((value) {
+          if(value.isNotEmpty) {
+            signInProviderModel.checkSignUp(authType, value).then((val) {
+              final isSignUp = signInProviderModel.value.checkSignUp;
+              if(!isSignUp.hasData) {
+                print("isSignUp no data");
+              }
+              if(isSignUp.result.isValue) {
+                if(isSignUp.result.asValue.value.result) {
+                  _login(authType, value);
+                }else {
+                  RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
+                }
+              }else if(isSignUp.result.isError) {
+                print("isSignUp error : " + isSignUp.result.asError.error.toString());
+              }
+            });
           }
-        }else if(isSignUp.result.isError) {
-          print("isSignUp error : " + isSignUp.result.asError.error.toString());
-        }
-      });
-    });
+        });
+      }
+    }
   }
 
   void _login(String authType, String authId) {

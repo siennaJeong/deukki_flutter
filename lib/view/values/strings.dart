@@ -28,6 +28,8 @@ class Strings {
   static const String dialog_btn_update_cancel = '앱 종료';
 
   static const String apple_sign_in_only_ios = 'Apple 로그인은 Apple 기기에서만 가능합니다.';
+  static const String auth_exists_account_error = '이미 존재하는 계정입니다.';
+  static const String ios_low_version_apple_login = '현재 iOS 버전이 낮아 사용할 수 없습니다.';
 
   static const String login_sns_other_type = '또는';
   static const String sign_up_terms_title = '바름드끼 시작하기';
