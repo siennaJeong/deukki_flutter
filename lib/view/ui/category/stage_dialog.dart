@@ -223,7 +223,7 @@ class _StageDialogState extends State<StageDialog> {
         categoryProvider.selectedSentence.id,
         categoryProvider.selectStageIdx,
         categoryProvider.selectStageIndex == 0 ? true : false,
-        "M"       //  가입시 사용자가 선택한 성별로
+        userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
     ).then((value) {
       final commonResult = resourceProviderModel.value.getPronunciation;
       final pronunResult = commonResult.result.asValue.value.result;

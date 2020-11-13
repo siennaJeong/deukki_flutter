@@ -12,6 +12,7 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SNSAuthService {
   String _email;
+  String _fbUid;
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
@@ -26,40 +27,33 @@ class SNSAuthService {
     }else {
       _email = "";
     }
-    return userCredential.user.uid;
+    _fbUid = userCredential.user.uid;
+    return googleUser.id;
   }
 
   Future<String> signInWithFacebook() async {
     final result = await FacebookAuth.instance.login(permissions: ['email', 'public_profile']);
-    switch (result.status) {
-      case FacebookAuthLoginResponse.ok:
-        final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
-        final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
-        if(userCredential.user.email.isNotEmpty) {
-          _email = userCredential.user.email;
-        }else {
-          _email = "";
-        }
-        return userCredential.user.uid;
-      case FacebookAuthLoginResponse.cancelled:
-        print("login cancelled");
-        break;
-      case FacebookAuthLoginResponse.error:
-        break;
-    }
-  }
-
-  Future<String> signInWithApple() async {
-    final oauthCred = await _createAppleOAuthCred();
-    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCred);
-    print("user id ${userCredential.user.email}");
+    final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
     if(userCredential.user.email.isNotEmpty) {
       _email = userCredential.user.email;
     }else {
       _email = "";
     }
-    print("firebase apple user : " + jsonEncode(userCredential.user.toString()));
-    return userCredential.user.uid;
+    _fbUid = userCredential.user.uid;
+    return facebookAuthCredential.providerId;
+  }
+
+  Future<String> signInWithApple() async {
+    final oauthCred = await _createAppleOAuthCred();
+    final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(oauthCred);
+    if(userCredential.user.email.isNotEmpty) {
+      _email = userCredential.user.email;
+    }else {
+      _email = "";
+    }
+    _fbUid = userCredential.user.uid;
+    return oauthCred.providerId;
   }
 
   String _createNonce(int length) {
@@ -115,5 +109,6 @@ class SNSAuthService {
   }
 
   String get email => _email;
+  String get fbUid => _fbUid;
 }
 

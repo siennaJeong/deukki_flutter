@@ -15,7 +15,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="deukki"
+        android:label="바름드끼"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

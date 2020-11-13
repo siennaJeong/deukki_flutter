@@ -58,6 +58,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
         authServiceAdapter.userVO,
         authServiceAdapter.socialMethod,
         authServiceAdapter.socialId,
+        authServiceAdapter.fbUid,
         authServiceAdapter.marketingAgree,
         authServiceAdapter.marketingMethod,
         authServiceAdapter.phone

@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>deukki</string>
+	<string>바름드끼</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -26,13 +26,6 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kakao33194ae01d0ccade0fffcd22f39f300a</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
 				<string>fb639456823354844</string>
 				<string>com.googleusercontent.apps.890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum</string>
 			</array>
@@ -51,10 +44,20 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
+		<string>fbapi20130214</string>
+		<string>fbapi20130410</string>
+		<string>fbapi20130702</string>
+		<string>fbapi20131010</string>
+		<string>fbapi20131219</string>
+		<string>fbapi20140410</string>
+		<string>fbapi20140116</string>
+		<string>fbapi20150313</string>
+		<string>fbapi20150629</string>
+		<string>fbapi20160328</string>
+		<string>fbauth</string>
 		<string>fb-messenger-share-api</string>
 		<string>fbauth2</string>
 		<string>fbshareextension</string>
-		<string>33194ae01d0ccade0fffcd22f39f300a</string>
 		<string>kakaokompassauth</string>
 		<string>kakaotalk-4.5.0</string>
 	</array>
