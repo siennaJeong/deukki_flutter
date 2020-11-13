@@ -44,33 +44,35 @@ class _LoginState extends State<Login> {
         return;
       }
     }else {
-      if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.ios_low_version_apple_login)));
-        return;
-      }else {
-        //  Firebase 에서 다른 소셜 플랫폼인데 같이 계정일때 에러.
-        authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-          if(value.isNotEmpty) {
-            signInProviderModel.checkSignUp(authType, value).then((val) {
-              final isSignUp = signInProviderModel.value.checkSignUp;
-              if(!isSignUp.hasData) {
-                print("isSignUp no data");
-              }
-              if(isSignUp.result.isValue) {
-                if(isSignUp.result.asValue.value.result) {
-                  _login(authType, value);
-                }else {
-                  RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
-                }
-              }else if(isSignUp.result.isError) {
-                print("isSignUp error : " + isSignUp.result.asError.error.toString());
-              }
-            });
+      if(authServiceType == AuthServiceType.Apple) {
+        if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
+          scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(Strings.ios_low_version_apple_login)));
+          return;
+        }
+      }
+    }
+
+    //  Firebase 에서 다른 소셜 플랫폼인데 같이 계정일때 에러.
+    authServiceAdapter.signInWithSNS(authServiceType).then((value) {
+      if(value.isNotEmpty) {
+        signInProviderModel.checkSignUp(authType, value).then((val) {
+          final isSignUp = signInProviderModel.value.checkSignUp;
+          if(!isSignUp.hasData) {
+            print("isSignUp no data");
+          }
+          if(isSignUp.result.isValue) {
+            if(isSignUp.result.asValue.value.result) {
+              _login(authType, value);
+            }else {
+              RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
+            }
+          }else if(isSignUp.result.isError) {
+            print("isSignUp error : " + isSignUp.result.asError.error.toString());
           }
         });
       }
-    }
+    });
   }
 
   void _login(String authType, String authId) {
