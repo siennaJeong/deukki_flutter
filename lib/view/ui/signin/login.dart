@@ -26,8 +26,6 @@ class _LoginState extends State<Login> {
   AuthServiceAdapter authServiceAdapter;
   String authId;
 
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
@@ -36,7 +34,6 @@ class _LoginState extends State<Login> {
   }
 
   void _checkSignUp(String authType, AuthServiceType authServiceType) async {
-    IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         scaffoldKey.currentState.showSnackBar(
@@ -44,6 +41,8 @@ class _LoginState extends State<Login> {
         return;
       }
     }else {
+      DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+      IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
       if(authServiceType == AuthServiceType.Apple) {
         if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
           scaffoldKey.currentState.showSnackBar(
@@ -53,7 +52,6 @@ class _LoginState extends State<Login> {
       }
     }
 
-    //  Firebase 에서 다른 소셜 플랫폼인데 같이 계정일때 에러.
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
       if(value.isNotEmpty) {
         signInProviderModel.checkSignUp(authType, value).then((val) {
