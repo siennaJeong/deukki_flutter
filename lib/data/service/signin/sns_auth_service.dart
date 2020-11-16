@@ -19,7 +19,7 @@ class SNSAuthService {
 
   Future<UserCredential> authExceptionHandler(AuthCredential authCredential) async {
     try {
-      await firebaseAuth.signInWithCredential(authCredential);
+      return await firebaseAuth.signInWithCredential(authCredential);
     }on FirebaseAuthException catch(e) {
       if(e.code == 'account-exists-with-different-credential') {
         String existMail = e.email;
@@ -65,7 +65,6 @@ class SNSAuthService {
         }
       }
     }
-    return await firebaseAuth.signInWithCredential(authCredential);
   }
 
   Future<String> signInWithGoogle() async {
