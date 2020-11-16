@@ -138,6 +138,13 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     dbHelper.insertUser(userVO);
   }
 
+  @override
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.currentUser.delete();
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
+    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
+  }
+
   UserVO get userVO => _userVO;
 
   @override

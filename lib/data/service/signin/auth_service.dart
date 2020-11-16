@@ -14,5 +14,6 @@ abstract class AuthService{
   Future<String> signInWithSNS(AuthServiceType authServiceType);
   Future<void> logout();
   Future<void> userAuthState();
+  Future<void> signOut();
   void dispose();
 }
