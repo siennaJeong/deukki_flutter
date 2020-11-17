@@ -15,9 +15,10 @@ import 'package:deukki/data/repository/user/user_repository.dart';
 class UserRestRepository implements UserRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, String> _loginToJson(String authType, String authId) => <String, String> {
+  Map<String, String> _loginToJson(String authType, String authId, String fbUid) => <String, String> {
     'socialMethod': authType,
-    'socialId': authId
+    'socialId': authId,
+    'fbUid': fbUid,
   };
 
   Map<String, dynamic> _signupToJson(UserVO userVO, String authType, String authId, String fbUid, String agreeMarketing, String marketingMethod, String phone) => <String, dynamic> {
@@ -34,8 +35,8 @@ class UserRestRepository implements UserRepository {
   };
 
   @override
-  Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId) async {
-    final checkSignUpJson = await _httpClient.getRequest(HttpUrls.SIGN_UP_CHECK + "/$authType/$authId", HttpUrls.headers(""));
+  Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId, String fbUid) async {
+    final checkSignUpJson = await _httpClient.getRequest("${HttpUrls.SIGN_UP_CHECK}/$authType?socialId=$authId&fbUid=$fbUid", HttpUrls.headers(""));
     if(checkSignUpJson.isValue) {
       return Result.value(CommonResultVO.fromJson(checkSignUpJson.asValue.value as Map<String, dynamic>));
     }else {
@@ -64,8 +65,8 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> login(String authType, String authId) async {
-    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, HttpUrls.postHeaders(""), _loginToJson(authType, authId));
+  Future<Result<CommonResultVO>> login(String authType, String authId, String fbUid) async {
+    final loginJson = await _httpClient.postRequest(HttpUrls.LOGIN, HttpUrls.postHeaders(""), _loginToJson(authType, authId, fbUid));
     if(loginJson.isValue) {
       return Result.value(CommonResultVO.fromJson(loginJson.asValue.value as Map<String, dynamic>));
     }else {

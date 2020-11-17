@@ -22,8 +22,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   UserVOForHttp userVOForHttp;
   int bookmarkScore = 0;
 
-  Future<void> checkSignUp(String authType, String authId) async {
-    final checkSignUp = _userRepository.checkUserSignUp(authType, authId);
+  Future<void> checkSignUp(String authType, String authId, String fbUid) async {
+    final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
     await value.checkSignUp.set(checkSignUp, notifyListeners);
   }
 
@@ -37,8 +37,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.signOut.set(signOut, notifyListeners);
   }
 
-  Future<void> login(String authType, String authId) async {
-    final login = _userRepository.login(authType, authId);
+  Future<void> login(String authType, String authId, String fbUid) async {
+    final login = _userRepository.login(authType, authId, fbUid);
     await value.login.set(login, notifyListeners);
   }
 

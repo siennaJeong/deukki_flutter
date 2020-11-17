@@ -54,14 +54,14 @@ class _LoginState extends State<Login> {
 
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
       if(value.isNotEmpty) {
-        signInProviderModel.checkSignUp(authType, value).then((val) {
+        signInProviderModel.checkSignUp(authType, value, authServiceAdapter.fbUid).then((val) {
           final isSignUp = signInProviderModel.value.checkSignUp;
           if(!isSignUp.hasData) {
             print("isSignUp no data");
           }
           if(isSignUp.result.isValue) {
             if(isSignUp.result.asValue.value.result) {
-              _login(authType, value);
+              _login(authType, value, authServiceAdapter.fbUid);
             }else {
               RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
             }
@@ -73,8 +73,8 @@ class _LoginState extends State<Login> {
     });
   }
 
-  void _login(String authType, String authId) {
-    signInProviderModel.login(authType, authId).then((value) {
+  void _login(String authType, String authId, String fbUid) {
+    signInProviderModel.login(authType, authId, fbUid).then((value) {
       final loginResult = signInProviderModel.value.login;
       if(!loginResult.hasData) {
         print('login no date');
@@ -174,14 +174,15 @@ class _LoginState extends State<Login> {
                 ],
               ),
               Container(
-                width: 200,
+                //width: 200,
                 margin: EdgeInsets.only(top: 16.0),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     _snsButton(context, AppImages.googleLogo, MainColors.grey_google, AuthServiceType.Google, AuthService.AUTH_TYPE_Google),
-                    _snsButton(context, AppImages.facebookLogo, MainColors.blue_facebook, AuthServiceType.Facebook, AuthService.AUTH_TYPE_FB),
+                    //_snsButton(context, AppImages.facebookLogo, MainColors.blue_facebook, AuthServiceType.Facebook, AuthService.AUTH_TYPE_FB),
+                    SizedBox(width: 10),
                     _snsButton(context, AppImages.appleLogo, Colors.black, AuthServiceType.Apple, AuthService.AUTH_TYPE_APPLE)
                   ],
                 ),

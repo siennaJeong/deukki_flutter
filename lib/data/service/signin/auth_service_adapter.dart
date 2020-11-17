@@ -91,7 +91,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await _kakaoAuthService.signInWithKakao().then((value) {
           socialMethod = AuthService.AUTH_TYPE_KAKAO;
           socialId = value;
-          fbUid = "";
+          fbUid = "kakaoFbUid";
           phone = _kakaoAuthService.phone;
           userVO.email = _kakaoAuthService.email;
         });
