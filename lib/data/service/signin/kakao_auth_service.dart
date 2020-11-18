@@ -11,7 +11,7 @@ class KakaoAuthService {
   var kakaoUserToken;
   var kakaoAuthCode;
   bool isKakaoInstalled;
-  String _email, _phone = "";
+  String _email, _phone, _name, _birthDate, _gender = "";
 
   KakaoAuthService() { _isInstalled(); }
 
@@ -37,6 +37,7 @@ class KakaoAuthService {
         _email = "";
       }
 
+      _name = user.kakaoAccount.profile.nickname;
       _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
 
       return user.id.toString();
@@ -49,4 +50,7 @@ class KakaoAuthService {
 
   String get email => _email;
   String get phone => _phone;
+  String get name => _name;
+  String get birthDate => _birthDate;
+  String get gender => _gender;
 }

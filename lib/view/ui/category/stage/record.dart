@@ -233,7 +233,7 @@ class _RecordState extends State<Record> {
         file,
         categoryProvider.selectStageIndex,        //  stage
         roundCount,                               //  round
-        categoryProvider.getSentenceTitle()       //  sentenceId
+        categoryProvider.selectedSentence.id      //  sentenceId
     );
   }
 

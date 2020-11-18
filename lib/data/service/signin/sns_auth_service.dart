@@ -11,9 +11,11 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 class SNSAuthService {
   String _email;
   String _fbUid;
+  String _name;
 
   String get email => _email;
   String get fbUid => _fbUid;
+  String get name => _name;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -80,6 +82,7 @@ class SNSAuthService {
     }else {
       _email = "";
     }
+    _name = userCredential.user.displayName;
     _fbUid = userCredential.user.uid;
     return googleUser.id;
   }
@@ -93,6 +96,7 @@ class SNSAuthService {
     }else {
       _email = "";
     }
+    _name = userCredential.user.displayName;
     _fbUid = userCredential.user.uid;
     return facebookAuthCredential.providerId;
   }
@@ -120,6 +124,7 @@ class SNSAuthService {
     }else {
       _email = "";
     }
+    _name = userCredential.user.displayName;
     _fbUid = userCredential.user.uid;
     return oauthCredential.providerId;
   }

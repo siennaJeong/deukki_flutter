@@ -1,5 +1,6 @@
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -15,12 +16,14 @@ class SignUpTerms extends BaseWidget {
 class _SignUpTermsState extends State<SignUpTerms> {
   bool marketingAgree = false;
   AuthServiceAdapter authServiceAdapter;
+  UserProviderModel userProviderModel;
 
   double deviceWidth, deviceHeight;
 
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: true);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -28,10 +31,36 @@ class _SignUpTermsState extends State<SignUpTerms> {
     setState(() {
       authServiceAdapter.marketingAgree = marketingAgree;
       authServiceAdapter.marketingMethod = "email";
-      if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
+      /*if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, context);
       }else {
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, context);
+      }*/
+      if(authServiceAdapter.userVO != null) {
+        RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
+        _signUpDone();
+      }
+    });
+  }
+
+  void _signUpDone() {
+    userProviderModel.signUp(
+        authServiceAdapter.userVO,
+        authServiceAdapter.socialMethod,
+        authServiceAdapter.socialId,
+        authServiceAdapter.fbUid,
+        authServiceAdapter.marketingAgree,
+        authServiceAdapter.marketingMethod,
+        authServiceAdapter.phone
+    ).then((value) {
+      final signUpResult = userProviderModel.value.signUp;
+      if(!signUpResult.hasData) {
+        print("sign up failed");
+      }
+      if(signUpResult.result.isValue) {
+        authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
+      }else if(signUpResult.result.isError) {
+        print("sign up error : " + signUpResult.result.asError.error.toString());
       }
     });
   }

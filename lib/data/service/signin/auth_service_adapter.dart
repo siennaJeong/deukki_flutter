@@ -63,6 +63,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           socialId = value;
           phone = "";
           fbUid = _snsAuthService.fbUid;
+          userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -73,6 +74,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           socialId = value;
           phone = "";
           fbUid = _snsAuthService.fbUid;
+          userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -83,6 +85,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           socialId = value;
           phone = "";
           fbUid = _snsAuthService.fbUid;
+          userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
         });
         return socialId;
@@ -93,6 +96,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           socialId = value;
           fbUid = "kakaoFbUid";
           phone = _kakaoAuthService.phone;
+          userVO.name = _kakaoAuthService.name;
           userVO.email = _kakaoAuthService.email;
         });
         return socialId;
