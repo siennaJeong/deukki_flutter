@@ -231,9 +231,9 @@ class _RecordState extends State<Record> {
     resourceProviderModel.recordUpload(
         authServiceAdapter.authJWT,
         file,
-        categoryProvider.selectStageIndex,        //  stage
-        roundCount,                               //  round
-        categoryProvider.getSentenceTitle()       //  sentenceId
+        categoryProvider.selectStageIndex,          //  stage
+        roundCount,                                 //  round
+        categoryProvider.selectedSentence.id        //  sentenceId
     );
   }
 
