@@ -358,7 +358,7 @@ packages:
       name: hardware_buttons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "1.0.0"
   http:
     dependency: "direct main"
     description:

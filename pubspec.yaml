@@ -46,7 +46,7 @@ dependencies:
   dotted_border: ^1.0.6
   audioplayers: ^0.16.1
   volume: ^1.0.1
-  hardware_buttons: ^0.1.0
+  hardware_buttons: ^1.0.0
   lottie: ^0.7.0+1
   webview_flutter: ^1.0.7
   crypto: ^2.1.5
