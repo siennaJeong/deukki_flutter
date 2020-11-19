@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-//import 'package:hardware_buttons/hardware_buttons.dart';
+import 'package:hardware_buttons/hardware_buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
 
@@ -60,7 +60,7 @@ class _StageQuizState extends State<StageQuiz> {
   void initState() {
     _audioManager = AudioManager.STREAM_MUSIC;
 
-    /*_volumeButtonEvent = volumeButtonEvents.listen((event) {
+    _volumeButtonEvent = volumeButtonEvents.listen((event) {
       switch(event) {
         case VolumeButtonEvent.VOLUME_UP:
           _setVolume(true);
@@ -69,7 +69,7 @@ class _StageQuizState extends State<StageQuiz> {
           _setVolume(false);
           break;
       }
-    });*/
+    });
 
     if(!Platform.isIOS) {
       initVolume();
