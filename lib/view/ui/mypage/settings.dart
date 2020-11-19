@@ -208,12 +208,13 @@ class _SettingsState extends State<Settings> {
                 ),
                 Transform.scale(
                   scale: 0.8,
-                  child: CupertinoSwitch(
+                  child: CupertinoSwitch(                         //  카카오톡 학습 알림
                     activeColor: MainColors.purple_100,
                     value: _kakaoNotification,
                     onChanged: (value) {
                       setState(() {
                         _kakaoNotification = value;
+                        
                       });
                     },
                   ),
@@ -314,6 +315,8 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+    _kakaoNotification = _userProviderModel.userVOForHttp.loginMethod == LoginMethod.kakao ? true : false;
 
     return Scaffold(
       backgroundColor: Colors.white,

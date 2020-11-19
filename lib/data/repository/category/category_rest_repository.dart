@@ -116,7 +116,6 @@ class CategoryRestRepository implements CategoryRepository {
       final result = recordUploadLink.asValue.value['result'];
       final idx = result['idx'];
       final uploadUrl = result['uploadUrl'];
-      print("upload : ${recordUploadLink.asValue.value[result]}");
       _upload(authJWT, idx, uploadUrl, file);
       return Result.value(CommonResultVO.fromJson(recordUploadLink.asValue.value as Map<String, dynamic>));
     }else {
