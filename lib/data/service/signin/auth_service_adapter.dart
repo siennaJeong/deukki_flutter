@@ -31,7 +31,21 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   bool marketingAgree = false;
   UserVO _userVO;
   String _authJWT;
+  String _kakaoNoti;
   String socialId, socialMethod, marketingMethod, phone, fbUid;
+
+  UserVO get userVO => _userVO;
+  String get authJWT => _authJWT;
+  String get kakaoNoti => _kakaoNoti;
+
+  set authJWT(String value) {
+    _authJWT = value;
+    notifyListeners();
+  }
+
+  set kakaoNoti(String value) {
+    this._kakaoNoti = value;
+  }
 
   AuthServiceAdapter(this._authJWT, {this.sharedHelper, this.dbHelper}) {
     if(sharedHelper != null) {
@@ -50,6 +64,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     _init();
     if(sharedHelper.sharedPreference != null) {
       authJWT = await sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "") as String;
+      kakaoNoti = await sharedHelper.getStringSharedPref(AuthService.KAKAO_NOTIFICATION, "") as String;
       notifyListeners();
     }
   }
@@ -65,6 +80,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           fbUid = _snsAuthService.fbUid;
           userVO.email = _snsAuthService.email;
         });
+        changeKakaoNoti(false);
         return socialId;
         break;
       case AuthServiceType.Facebook:
@@ -75,6 +91,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           fbUid = _snsAuthService.fbUid;
           userVO.email = _snsAuthService.email;
         });
+        changeKakaoNoti(false);
         return socialId;
         break;
       case AuthServiceType.Apple:
@@ -85,6 +102,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           fbUid = _snsAuthService.fbUid;
           userVO.email = _snsAuthService.email;
         });
+        changeKakaoNoti(false);
         return socialId;
         break;
       case AuthServiceType.Kakao:
@@ -94,6 +112,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           fbUid = "kakaoFbUid";
           phone = _kakaoAuthService.phone;
           userVO.email = _kakaoAuthService.email;
+          changeKakaoNoti(true);
         });
         return socialId;
         break;
@@ -123,6 +142,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     }
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
+    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
     return true;
   }
 
@@ -138,25 +158,21 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     dbHelper.insertUser(userVO);
   }
 
+  changeKakaoNoti(bool isBool) async {
+    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, isBool ? "true" : "false");
+  }
+
   @override
   Future<void> signOut() async {
     await FirebaseAuth.instance.currentUser.delete();
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
+    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
   }
-
-  UserVO get userVO => _userVO;
 
   @override
   void dispose() {
 
-  }
-
-  String get authJWT => _authJWT;
-
-  set authJWT(String value) {
-    _authJWT = value;
-    notifyListeners();
   }
 
 }
