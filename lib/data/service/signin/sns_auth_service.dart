@@ -19,7 +19,7 @@ class SNSAuthService {
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future<UserCredential> authExceptionHandler(AuthCredential authCredential) async {
+  Future<UserCredential> authExceptionHandler(OAuthCredential authCredential) async {
     try {
       return await firebaseAuth.signInWithCredential(authCredential);
     }on FirebaseAuthException catch(e) {
@@ -124,7 +124,18 @@ class SNSAuthService {
     }else {
       _email = "";
     }
-    _name = userCredential.user.displayName;
+
+    if(appleCredential.familyName != null) {
+      _name = appleCredential.familyName + appleCredential.givenName;
+      userCredential.user.updateProfile(displayName: appleCredential.familyName + appleCredential.givenName);
+    }else {
+      if(userCredential.user.displayName != null) {
+        _name = userCredential.user.displayName;
+      }else {
+        _name = "회원";
+      }
+    }
+
     _fbUid = userCredential.user.uid;
     return oauthCredential.providerId;
   }
