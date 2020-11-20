@@ -26,6 +26,8 @@ class _LoginState extends State<Login> {
   AuthServiceAdapter authServiceAdapter;
   String authId;
 
+  double deviceWidth, deviceHeight;
+
   @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
@@ -88,109 +90,90 @@ class _LoginState extends State<Login> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    KakaoContext.clientId = KAKAO_APP_KEY;
-    KakaoContext.javascriptClientId = KAKAO_JS_KEY;
-
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
-      body: Center(
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
-              Container(
-                  margin: EdgeInsets.only(top: 50),
-                  width: 160,
-                  child: Image.asset(
-                    AppImages.appLogoMint,
-                  )
+  Widget _loginButtonWidget(String logoImg, String title, Color logoColor, Color textColor, String serviceType, AuthServiceType authServiceType) {
+    return Container(
+      width: deviceWidth * 0.5,
+      height: deviceHeight * 0.13,
+      margin: EdgeInsets.only(bottom: Platform.isIOS ? 8 : 30),
+      child: RaisedButton(
+        padding: EdgeInsets.only(left: 20, top: 13, right: 20, bottom: 13),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 0,
+              child: Image.asset(
+                logoImg,
+                width: 24,
               ),
-              Container(
-                width: 406,
-                height: 48,
-                margin: EdgeInsets.only(top: 55.0, bottom: 30.0),
-                child: RaisedButton(
-                  padding: EdgeInsets.only(left: 20, top: 13, right: 20, bottom: 13),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        flex: 0,
-                        child: Image.asset(
-                          AppImages.kakaoLogo,
-                          width: 24,
-                        ),
-                      ),
-                      Expanded(
-                          flex: 2,
-                          child: Text(
-                            Strings.login_for_kakao,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: "TmoneyRound",
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700
-                            ),
-                          )
-                      ),
-                    ],
+            ),
+            Expanded(
+                flex: 2,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: textColor,
+                    fontFamily: "TmoneyRound",
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
-                  color: MainColors.yellow_kakao,
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(70.0))
-                  ),
-                  onPressed: () => _checkSignUp(AuthService.AUTH_TYPE_KAKAO, AuthServiceType.Kakao),
-                ),  //  카카오톡 로그인
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(right: 8),
-                    width: 16.0,
-                    height: 1.0,
-                    color: MainColors.grey_text,
-                  ),
-                  Text(
-                      Strings.login_sns_other_type,
-                      style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13, color: MainColors.grey_text)
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(left: 8),
-                    width: 16.0,
-                    height: 1.0,
-                    color: MainColors.grey_text,
-                  )
-                ],
-              ),
-              Container(
-                //width: 200,
-                margin: EdgeInsets.only(top: 16.0),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _snsButton(context, AppImages.googleLogo, MainColors.grey_google, AuthServiceType.Google, AuthService.AUTH_TYPE_Google),
-                    //_snsButton(context, AppImages.facebookLogo, MainColors.blue_facebook, AuthServiceType.Facebook, AuthService.AUTH_TYPE_FB),
-                    SizedBox(width: 10),
-                    _snsButton(context, AppImages.appleLogo, Colors.black, AuthServiceType.Apple, AuthService.AUTH_TYPE_APPLE)
-                  ],
                 ),
-              )
+            ),
+          ],
+        ),
+        color: logoColor,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(70.0))
+        ),
+        onPressed: () => _checkSignUp(serviceType, authServiceType),
+      ),
+    );
+  }
+
+  Widget _androidWidget() {
+    return Column(
+      children: <Widget>[
+        _loginButtonWidget(AppImages.kakaoLogo, Strings.login_for_kakao, MainColors.yellow_kakao, Colors.black, AuthService.AUTH_TYPE_KAKAO, AuthServiceType.Kakao),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 8),
+              width: 16.0,
+              height: 1.0,
+              color: MainColors.grey_text,
+            ),
+            Text(
+                Strings.login_sns_other_type,
+                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13, color: MainColors.grey_text)
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 8),
+              width: 16.0,
+              height: 1.0,
+              color: MainColors.grey_text,
+            )
+          ],
+        ),
+        Container(
+          //width: 200,
+          margin: EdgeInsets.only(top: 16.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _snsButton(context, AppImages.googleLogo, MainColors.grey_google, AuthServiceType.Google, AuthService.AUTH_TYPE_Google),
+              //_snsButton(context, AppImages.facebookLogo, MainColors.blue_facebook, AuthServiceType.Facebook, AuthService.AUTH_TYPE_FB),
+              SizedBox(width: 10),
+              _snsButton(context, AppImages.appleLogo, Colors.black, AuthServiceType.Apple, AuthService.AUTH_TYPE_APPLE)
             ],
           ),
-        ),
-      ),
+        )
+      ],
     );
   }
 
@@ -210,6 +193,53 @@ class _LoginState extends State<Login> {
       )
   );
 
+  Widget _iosWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        _loginButtonWidget(AppImages.kakaoLogo, Strings.login_for_kakao, MainColors.yellow_kakao, Colors.black, AuthService.AUTH_TYPE_KAKAO, AuthServiceType.Kakao),
+        _loginButtonWidget(AppImages.googleLogo, Strings.login_for_google, MainColors.grey_google, Colors.black, AuthService.AUTH_TYPE_Google, AuthServiceType.Google),
+        //_loginButtonWidget(AppImages.facebookLogo, Strings.login_for_facebook, MainColors.blue_facebook, Colors.white, AuthService.AUTH_TYPE_FB, AuthServiceType.Facebook),
+        _loginButtonWidget(AppImages.appleLogo, Strings.login_for_apple, Colors.black, Colors.white, AuthService.AUTH_TYPE_APPLE, AuthServiceType.Apple),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    KakaoContext.clientId = KAKAO_APP_KEY;
+    KakaoContext.javascriptClientId = KAKAO_JS_KEY;
+
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
+    return Scaffold(
+      key: scaffoldKey,
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: Center(
+        child: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget> [
+              Container(
+                  margin: EdgeInsets.only(top: 50),
+                  width: deviceWidth * 0.2,
+                  child: Image.asset(
+                    AppImages.appLogoMint,
+                  )
+              ),
+              SizedBox(height: Platform.isIOS ? deviceHeight * 0.11 : deviceHeight * 0.16),
+              Platform.isIOS ? _iosWidget() : _androidWidget(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 
