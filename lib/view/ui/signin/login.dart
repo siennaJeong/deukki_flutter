@@ -116,7 +116,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                     color: textColor,
                     fontFamily: "TmoneyRound",
-                    fontSize: deviceHeight > 700 ? 22 : 16,
+                    fontSize: deviceHeight > 700 ? 24 : 19,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
