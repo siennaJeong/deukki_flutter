@@ -83,7 +83,7 @@ class _StageDialogState extends State<StageDialog> {
     return GestureDetector(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: deviceHeight > 700 ? MainAxisAlignment.center : MainAxisAlignment.end,
         children: <Widget>[
           _scoreWidget(stageVO.score, index),
           _stageWidget(stageVO, index)
@@ -97,9 +97,9 @@ class _StageDialogState extends State<StageDialog> {
     double size;
     if(score != null) {
       if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
-        size = 24;
+        size = deviceHeight > 700 ? 32 : 24;
       }else {
-        size = 16;
+        size = deviceHeight > 700 ? 24 : 16;
       }
       switch(score) {
         case 1:
@@ -265,12 +265,16 @@ class _StageDialogState extends State<StageDialog> {
           ),
           child: Container(
             alignment: AlignmentDirectional.center,
+            margin: EdgeInsets.only(top: deviceHeight > 700 ? 40 : 0, bottom: deviceHeight > 700 ? 40 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
                   margin: EdgeInsets.only(top: deviceHeight > 380 ? 30 : 20, bottom: 4),
-                  child: Text('$_title', style: Theme.of(context).textTheme.headline4),
+                  child: Text(
+                    '$_title',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
                 ),
                 Text(
                   Strings.stage_script,

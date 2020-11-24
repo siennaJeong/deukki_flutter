@@ -93,7 +93,7 @@ class _LoginState extends State<Login> {
   Widget _loginButtonWidget(String logoImg, String title, Color logoColor, Color textColor, String serviceType, AuthServiceType authServiceType) {
     return Container(
       width: deviceWidth * 0.5,
-      height: deviceHeight * 0.13,
+      height: deviceHeight > 700 ? 56 : deviceHeight * 0.13,
       margin: EdgeInsets.only(bottom: Platform.isIOS ? 8 : 30),
       child: RaisedButton(
         padding: EdgeInsets.only(left: 20, top: 13, right: 20, bottom: 13),
@@ -116,7 +116,7 @@ class _LoginState extends State<Login> {
                   style: TextStyle(
                     color: textColor,
                     fontFamily: "TmoneyRound",
-                    fontSize: 16,
+                    fontSize: deviceHeight > 700 ? 24 : 19,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
