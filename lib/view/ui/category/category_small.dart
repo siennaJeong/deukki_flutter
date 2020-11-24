@@ -108,7 +108,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                     shrinkWrap: false,
                     padding: EdgeInsets.only(left: 0),
                     physics: BouncingScrollPhysics(),
-                    crossAxisCount: 2,
+                    crossAxisCount: deviceHeight > 700 ? 3 : 2,
                     crossAxisSpacing: 8.0,
                     mainAxisSpacing: 8.0,
                     scrollDirection: Axis.horizontal,
@@ -154,7 +154,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   alignment: AlignmentDirectional.center,
                   child: Text(
                     sentenceVO.content,
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: deviceHeight > 700 ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.subtitle1,
                   ),
                 ),
               ),
@@ -234,6 +234,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   Widget _scoreTagWidget(double avgScore) {
     String firstStar, secondStar, thirdStar;
+    double size = deviceHeight > 700 ? 32 : 22;
     if(avgScore != null) {
       if(avgScore > 0 && avgScore < 1) {
         firstStar = AppImages.halfStar;
@@ -268,9 +269,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
         child: Row(
           children: [
-            Image.asset(firstStar, width: 22, height: 22),
-            Image.asset(secondStar, width: 22, height: 22),
-            Image.asset(thirdStar, width: 22, height: 22)
+            Image.asset(firstStar, width: size, height: size),
+            Image.asset(secondStar, width: size, height: size),
+            Image.asset(thirdStar, width: size, height: size)
           ],
         ),
       );
@@ -328,7 +329,10 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(top: 19, bottom: 20),
-                            child: Text('${categoryProvider.getMediumTitle()}', style: Theme.of(context).textTheme.subtitle1,),
+                            child: Text(
+                              '${categoryProvider.getMediumTitle()}',
+                              style: deviceHeight > 700 ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.subtitle1,
+                            ),
                           ),
                           SizedBox(width: 8),
                           Container(
