@@ -96,4 +96,9 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.getProductList.set(getProductList, notifyListeners);
   }
 
+  Future<void> updateMarketingAgree(String authJWT, String marketingMethod, bool agreement) async {
+    final updateMarketingAgree = _userRepository.marketingAgreement(authJWT, marketingMethod, agreement);
+    await value.updateMarketingAgree.set(updateMarketingAgree, notifyListeners);
+  }
+
 }

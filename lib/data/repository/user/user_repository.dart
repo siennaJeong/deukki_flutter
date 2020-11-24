@@ -11,6 +11,7 @@ abstract class UserRepository {
   Future<Result<CommonResultVO>> signOut(String authJWT);
   Future<Result<CommonResultVO>> login(String authType, String authId, String fbUid);
   Future<Result<CommonResultVO>> logout(String authJWT);
+  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement);
   Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx);
   Future<Result<List<BookmarkVO>>> getBookmark(String authJWT);
   Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx);

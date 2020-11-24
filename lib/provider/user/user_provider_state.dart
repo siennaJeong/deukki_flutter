@@ -16,4 +16,5 @@ class UserProviderState {
   final deleteBookmark = ProviderModelResult<CommonResultVO>();
   final getUserInfo = ProviderModelResult<UserVOForHttp>();
   final getProductList = ProviderModelResult<List<ProductionVO>>();
+  final updateMarketingAgree = ProviderModelResult<CommonResultVO>();
 }

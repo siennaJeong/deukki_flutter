@@ -20,6 +20,7 @@ class HttpUrls {
   static const String SIGN_OUT = "$SERVER_URL/users/me";
   static const String LOGIN = "$SERVER_URL/auth/login";
   static const String LOGOUT = "$SERVER_URL/auth";
+  static const String MARKETING_AGREEMENT = "$SERVER_URL/users/marketing-agree";
 
   static const String CATEGORY = "$SERVER_URL/categories";
   static const String CATEGORY_LARGE = "$CATEGORY/large";
