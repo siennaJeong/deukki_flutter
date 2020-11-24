@@ -19,7 +19,7 @@ class Strings {
   static const String login_for_kakao = '카카오로 시작하기';
   static const String login_for_google = '구글로 시작하기';
   static const String login_for_facebook = '페이스북으로 시작하기';
-  static const String login_for_apple = 'Apple로 시작하기';
+  static const String login_for_apple = 'Apple로 등록';
 
   static const String common_btn_ok = '확인';
   static const String common_btn_cancel = '취소';

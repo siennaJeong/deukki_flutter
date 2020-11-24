@@ -493,7 +493,9 @@ class _StageQuizState extends State<StageQuiz> {
         ),
       ),
       onTap: () {                   // List Item Click (Quiz answer click)
-        if(!stageProvider.isPlaying && stageProvider.playCount > 0) {
+        if(!stageProvider.isPlaying
+            && stageProvider.playCount > 0
+            && (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) == null) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
             _answerResultDialog(pronunciationVO.pIdx);
