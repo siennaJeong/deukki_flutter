@@ -4,6 +4,7 @@ import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -26,6 +27,7 @@ class _BookMarkState extends State<BookMark> {
   ResourceProviderModel resourceProviderModel;
   CategoryProvider categoryProvider;
   AuthServiceAdapter authServiceAdapter;
+  UserProviderModel userProviderModel;
 
   @override
   void didChangeDependencies() {
@@ -33,6 +35,7 @@ class _BookMarkState extends State<BookMark> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -129,7 +132,7 @@ class _BookMarkState extends State<BookMark> {
             _bookmarkList[index].sentenceId,
             _bookmarkList[index].stageIdx,
             _bookmarkList[index].stage == 1 ? true : false,
-            "M"       //  가입시 사용자가 선택한 성별로
+            userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
         ).then((value) {
           final commonResult = resourceProviderModel.value.getPronunciation;
           final pronunResult = commonResult.result.asValue.value.result;

@@ -34,7 +34,6 @@ class _StageDialogState extends State<StageDialog> {
   double deviceWidth, deviceHeight;
   String _title;
   int _selectedStageIdx, _selectedIndex;
-  //List<bool> _preScore = [true];
 
   @override
   void initState() {
@@ -242,14 +241,6 @@ class _StageDialogState extends State<StageDialog> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-
-    /*for(int i = 1 ; i <= categoryProvider.stageList.length ; i++) {
-      if(categoryProvider.stageList[i - 1].score != null) {
-        _preScore.add(true);
-      }else {
-        _preScore.add(false);
-      }
-    }*/
 
     categoryProvider.initPreScore();
 
