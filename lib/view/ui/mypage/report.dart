@@ -26,7 +26,7 @@ class _ReportState extends State<Report> {
   Widget _cardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
     return Card(
       color: isAccuracy ? MainColors.grey_google : bgColor,
-      margin: EdgeInsets.only(top: 16),
+      margin: EdgeInsets.only(top: 16, left: 60),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
@@ -119,11 +119,11 @@ class _ReportState extends State<Report> {
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   _cardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
-                  SizedBox(width: 16),
-                  _cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
+                  //SizedBox(width: 16),
+                  //_cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
                 ],
               ),
             ],

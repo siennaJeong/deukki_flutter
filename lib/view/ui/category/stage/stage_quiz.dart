@@ -55,6 +55,8 @@ class _StageQuizState extends State<StageQuiz> {
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
+  List<AudioFilePathVO> randomPathList = [];
+  int randomIndex = 0;
 
   @override
   void initState() {
@@ -674,6 +676,11 @@ class _StageQuizState extends State<StageQuiz> {
 
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
+        /*for(int i = 0 ; i < 5 ; i++) {
+          randomPathList.add(resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)]);
+          i++;
+          print("random path list : ${randomPathList.toString()}");
+        }*/
         randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }

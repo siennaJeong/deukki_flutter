@@ -83,6 +83,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
            _dbHelper.deleteAllResource().then((value) {
              _initData();
            });
+           _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]);
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_MEDIUM_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]) {
@@ -90,6 +91,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
             _dbHelper.deleteAllResource().then((value) {
               _initData();
             });
+            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]);
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.FAQ_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultFaq[VersionRepository.VERSION]) {
@@ -97,11 +99,16 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
             _dbHelper.deleteAllResource().then((value) {
               _initData();
             });
+            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.FAQ_VERSION]);
           }
         }
       }
     });
     await value.checkAllVersion.set(versionResultApp, notifyListeners);
+  }
+
+  _updateVersion(int idx, String versionName, int version) {
+    _dbHelper.updateVersion(VersionVOwithDB(idx, versionName, version));
   }
 
   Future<void> checkAppVersion() async {
