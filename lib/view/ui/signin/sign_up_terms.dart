@@ -37,7 +37,6 @@ class _SignUpTermsState extends State<SignUpTerms> {
         RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, context);
       }*/
       if(authServiceAdapter.userVO != null) {
-        RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
         _signUpDone();
       }
     });
@@ -57,9 +56,10 @@ class _SignUpTermsState extends State<SignUpTerms> {
       if(!signUpResult.hasData) {
         print("sign up failed");
       }
-      if(signUpResult.result.isValue) {
+      if(signUpResult.result.asValue.value.status == 200) {
+        RouteNavigator().go(GetRoutesName.ROUTE_WELCOME, context);
         authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
-      }else if(signUpResult.result.isError) {
+      }else if(signUpResult.result.asValue.value.status > 200 || signUpResult.result.isError) {
         print("sign up error : " + signUpResult.result.asError.error.toString());
       }
     });
