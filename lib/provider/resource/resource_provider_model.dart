@@ -57,6 +57,32 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     });
   }
 
+  Future<void> _updateLargeCategory() async {
+    final initData = _versionRepository.initData();
+    initData.then((value) {
+      final initResult = value.asValue.value.result;
+      _dbHelper.insertCategoryLarge(initResult['largeCategories']);
+    });
+  }
+
+  Future<void> _updateMediumCategory() async {
+    final initData = _versionRepository.initData();
+    initData.then((value) {
+      final initResult = value.asValue.value.result;
+      for(int i = 0 ; i < initResult['largeCategories'].length ; i++) {
+        _dbHelper.insertCategoryMedium(initResult['mediumCategories'][i][0], initResult['mediumCategories'][i][1]);
+      }
+    });
+  }
+
+  Future<void> _updateFaq() async {
+    final initData = _versionRepository.initData();
+    initData.then((value) {
+      final initResult = value.asValue.value.result;
+      _dbHelper.insertFaq(initResult['faq']);
+    });
+  }
+
   Future<void> checkAllVersion() async {
     final checkAllVersion = _versionRepository.checkAllVersion();
     final dbVersion = await _dbHelper.getVersion();
@@ -80,28 +106,35 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
             print("large category update");
-           _dbHelper.deleteAllResource().then((value) {
-             _initData();
+           _dbHelper.delete(TABLE_CATEGORY_LARGE).then((value) {
+             _updateLargeCategory();
            });
+           _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]);
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_MEDIUM_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]) {
             print("medium category update");
-            _dbHelper.deleteAllResource().then((value) {
-              _initData();
+            _dbHelper.delete(TABLE_CATEGORY_MEDIUM).then((value) {
+              _updateMediumCategory();
             });
+            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]);
           }
           if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.FAQ_VERSION &&
           dbVersion.elementAt(i).values.elementAt(2) < versionResultFaq[VersionRepository.VERSION]) {
             print("faq update");
-            _dbHelper.deleteAllResource().then((value) {
-              _initData();
+            _dbHelper.delete(TABLE_FAQ).then((value) {
+              _updateFaq();
             });
+            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.FAQ_VERSION]);
           }
         }
       }
     });
     await value.checkAllVersion.set(versionResultApp, notifyListeners);
+  }
+
+  _updateVersion(int idx, String versionName, int version) {
+    _dbHelper.updateVersion(VersionVOwithDB(idx, versionName, version));
   }
 
   Future<void> checkAppVersion() async {

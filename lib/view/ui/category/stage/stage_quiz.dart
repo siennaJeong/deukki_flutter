@@ -55,6 +55,8 @@ class _StageQuizState extends State<StageQuiz> {
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
+  //List<AudioFilePathVO> randomPathList = [];
+  //int randomIndex = 0;
 
   @override
   void initState() {

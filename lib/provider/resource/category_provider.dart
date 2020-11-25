@@ -27,7 +27,7 @@ class CategoryProvider with ChangeNotifier {
   List<SentenceVO> _sentenceList = [];
   List<StageVO> _stageList = [];
   List<PronunciationVO> _pronunciationList = [];
-  List<bool> _preScore = [];
+  List<PreScoreVO> _preScoreList;
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
     this.selectLargeIndex = -1;
@@ -47,7 +47,7 @@ class CategoryProvider with ChangeNotifier {
   List<SentenceVO> get sentenceList => [..._sentenceList];
   List<StageVO> get stageList => [..._stageList];
   List<PronunciationVO> get pronunciationList => [..._pronunciationList];
-  List<bool> get preScore => [..._preScore];
+  List<PreScoreVO> get preScoreList => [..._preScoreList];
 
   getLargeId() => _largeId;
   getMediumId() => _mediumId;
@@ -93,6 +93,22 @@ class CategoryProvider with ChangeNotifier {
         break;
       }
     }
+  }
+
+  Future<void> initPreScore() async {
+    this._preScoreList ??= [PreScoreVO(0, true)];
+    for(int i = 1 ; i <= this._stageList.length ; i++) {
+      if(this._stageList[i - 1].score != null) {
+        this._preScoreList?.add(PreScoreVO(i, true));
+      }else {
+        this._preScoreList?.add(PreScoreVO(i, false));
+      }
+    }
+  }
+
+  Future<void> setPreScore(list) async {
+    this._preScoreList = list;
+    notifyListeners();
   }
 
   void onSelectedLarge(int index) {
@@ -145,6 +161,13 @@ class CategoryProvider with ChangeNotifier {
     final sentenceItem = this.sentenceList.firstWhere((element) => element.id == (this.selectedSentence.id));
     sentenceItem.avgScore = this.stageAvgScore;
     setSentence(this.sentenceList);
+    notifyListeners();
+  }
+
+  void updatePreScore() {
+    final preScoreItem = this._preScoreList.firstWhere((element) => element.idx == this.selectStageIndex);
+    preScoreItem.isPreScoreExist = true;
+    setPreScore(this._preScoreList);
     notifyListeners();
   }
 
