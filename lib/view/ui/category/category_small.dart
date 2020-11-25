@@ -216,7 +216,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   }
 
   Widget _premiumTagWidget(int premium) {
-    if(userProviderModel.userVOForHttp.premium != premium) {
+    if(userProviderModel.userVOForHttp.premium == 0 && userProviderModel.userVOForHttp.premium < premium) {
       return Container(
           width: double.infinity,
           height: double.infinity,
