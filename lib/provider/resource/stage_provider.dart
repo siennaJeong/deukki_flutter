@@ -129,13 +129,13 @@ class StageProvider with ChangeNotifier{
     this.stageIdx = stageIdx;
   }
 
-  void startLearnTime() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+  void startLearnTime() async {
+    _timer ??= Timer.periodic(Duration(seconds: 1), (timer) {
       _learnTime++;
     });
   }
 
-  void stopLearnTime() {
+  void stopLearnTime() async {
     _timer?.cancel();
   }
 
