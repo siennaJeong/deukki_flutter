@@ -80,6 +80,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       categoryProvider.updateScore(acquiredStars, stageAvg);
+      categoryProvider.updatePreScore();
       if(Platform.isIOS) {
         Navigator.pop(context);
       }else {

@@ -23,3 +23,15 @@ class StageVO {
     return 'StageVO{stageIdx: $stageIdx, stage: $stage, score: $score}';
   }
 }
+
+class PreScoreVO{
+  int idx;
+  bool isPreScoreExist;
+
+  PreScoreVO(this.idx, this.isPreScoreExist);
+
+  @override
+  String toString() {
+    return 'PreScoreVO{stageIdx: $idx, isPreScoreExist: $isPreScoreExist}';
+  }
+}

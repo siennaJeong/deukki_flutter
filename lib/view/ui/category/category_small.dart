@@ -174,6 +174,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
             final stageResult = resourceProviderModel.value.getSentenceStages;
             if(stageResult.hasData) {
               categoryProvider.setStage(stageResult.result.asValue.value);
+              categoryProvider.setPreScore(null);
             }
             showDialog(
                 context: context,
