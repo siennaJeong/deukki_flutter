@@ -1,5 +1,7 @@
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -7,6 +9,7 @@ import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
@@ -26,7 +29,7 @@ class _SettingsState extends State<Settings> {
   var voiceControl;
 
   double deviceWidth, deviceHeight;
-  bool _kakaoNotification = false;
+  bool _kakaoNotification, _clickEnable;
 
   PackageInfo _packageInfo;
 
@@ -40,11 +43,32 @@ class _SettingsState extends State<Settings> {
   @override
   void initState() {
     getPackageInfo();
+    _clickEnable ??= true;
     super.initState();
   }
 
   Future<void> getPackageInfo() async {
     _packageInfo = await PackageInfo.fromPlatform();
+  }
+
+  void _setKakaoAlarm() {
+    _clickEnable = false;
+    if(!_kakaoNotification) {
+      _authServiceAdapter.changeKakaoNoti(false);
+      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , false).then((value) {
+        _clickEnable = true;
+      });
+    }else {
+      _authServiceAdapter.changeKakaoNoti(true);
+      if(_userProviderModel.userVOForHttp.loginMethod != LoginMethod.kakao) {
+        _authServiceAdapter.signInWithSNS(AuthServiceType.Kakao).then((value) {
+          //  번호 업데이트.
+        });
+      }
+      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true).then((value) {
+        _clickEnable = true;
+      });
+    }
   }
 
   Widget _emailWidget() {
@@ -213,8 +237,10 @@ class _SettingsState extends State<Settings> {
                     value: _kakaoNotification,
                     onChanged: (value) {
                       setState(() {
-                        _kakaoNotification = value;
-                        
+                        if(_clickEnable) {
+                          _kakaoNotification = value;
+                          _setKakaoAlarm();
+                        }
                       });
                     },
                   ),
@@ -313,10 +339,17 @@ class _SettingsState extends State<Settings> {
 
   @override
   Widget build(BuildContext context) {
+    KakaoContext.clientId = KAKAO_APP_KEY;
+    KakaoContext.javascriptClientId = KAKAO_JS_KEY;
+
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    _kakaoNotification = _userProviderModel.userVOForHttp.loginMethod == LoginMethod.kakao ? true : false;
+    if(_authServiceAdapter.kakaoNoti.isNotEmpty) {
+      _kakaoNotification ??= _authServiceAdapter.kakaoNoti == "true" ? true : false;
+    }else {
+      _kakaoNotification ??= _userProviderModel.userVOForHttp.loginMethod == LoginMethod.kakao ? true : false;
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,

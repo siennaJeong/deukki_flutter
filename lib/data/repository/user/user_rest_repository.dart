@@ -34,6 +34,11 @@ class UserRestRepository implements UserRepository {
     'phone': phone
   };
 
+  Map<String, dynamic> _marketingToJson(String marketingMethod, String agreement) => <String, dynamic> {
+    'marketingMethod': marketingMethod,
+    'agree': agreement,
+  };
+
   @override
   Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId, String fbUid) async {
     final checkSignUpJson = await _httpClient.getRequest("${HttpUrls.SIGN_UP_CHECK}/$authType?socialId=$authId&fbUid=$fbUid", HttpUrls.headers(""));
@@ -144,6 +149,16 @@ class UserRestRepository implements UserRepository {
       return Result.value((getProductList.asValue.value['result'] as List)
           .map((json) => ProductionVO.fromJson(json as Map<String, dynamic>))
           .toList());
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement) async {
+    final marketingAgreement = await _httpClient.patchRequest(HttpUrls.MARKETING_AGREEMENT, HttpUrls.postHeaders(authJWT), _marketingToJson(marketingMethod, agreement.toString()));
+    if(marketingAgreement.isValue) {
+      return Result.value(CommonResultVO.fromJson(marketingAgreement.asValue.value));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
