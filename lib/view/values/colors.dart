@@ -13,6 +13,7 @@ class MainColors {
   static const Color green_80 = const Color.fromRGBO(115,231,173,1);
   static const Color green_60 = const Color.fromRGBO(143,236,189,1);
   static const Color green_40 = const Color.fromRGBO(171,241,206,1);
+  static const Color green_30 = const Color.fromRGBO(170,233,217,1);
   static const Color green_20 = const Color.fromRGBO(199,245,222,1);
 
   static const Color blue_facebook = const Color.fromRGBO(24,119,242,1);
@@ -40,6 +41,7 @@ class MainColors {
   static const Color grey_40 = const Color.fromRGBO(229,229,229,1);
   static const Color grey_30 = const Color.fromRGBO(250,250,250,1);
   static const Color grey_google = const Color.fromRGBO(240,240,240,1);
+  static const Color grey_price = const Color.fromRGBO(158,158,158,1);
   
   static const Color black_50 = const Color.fromRGBO(0, 0, 0, 0.5);
   static const Color none_color = const Color.fromRGBO(255, 255, 255, 0);

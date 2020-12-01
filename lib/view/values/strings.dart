@@ -102,15 +102,17 @@ class Strings {
   static const String mypage_membership_title = '멤버십 가입시 모든 컨텐츠 이용 가능!';
   static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
   static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';
-  static const String mypage_membership_terms_script_3 = '· 6개월 / 12개월 멤버십 이용권은 구매 후 7일 이내 해지 요청시 전액 환불이 됩니다. 7일 이후 3개월까지는 일할 환불이 가능하며, 3개월 이유에는 환불이 불가능합니다.';
+  static const String mypage_membership_terms_script_3 = '· 6개월 / 12개월 멤버십 이용권은 구매 후 7일 이내 해지 요청시 전액 환불이 됩니다. 7일 이후 3개월까지는 일할 환불이 가능하며, 3개월 이후에는 환불이 불가능합니다.';
   static const String mypage_membership_terms_script_4 = '· 6개월 / 12개월 멤버십 이용권은 기한이 끝나도 자동 갱신되지 않습니다.';
   static const String mypage_membership_terms_script_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
   static const String mypage_membership_terms_script_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
   static const String mypage_membership_status_noMember = '미가입';
   static const String mypage_membership_status_yesMember = '가입';
   static const String mypage_membership_discount_rate = '% 할인';
-  static const String mypage_membership_won = '원';
+  static const String mypage_membership_won = '원/월';
+  static const String mypage_membership_annual_won = '원';
   static const String mypage_membership_join = '가입하기';
+  static const String mypage_membership_monthly_price = '월 환산 가격';
 
   static const String logout = '로그아웃';
   static const String mypage_setting = '설정';

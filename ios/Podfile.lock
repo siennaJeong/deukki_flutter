@@ -89,6 +89,8 @@ PODS:
     - GTMSessionFetcher/Core (= 1.5.0)
   - hardware_buttons (0.0.1):
     - Flutter
+  - in_app_purchase (0.0.1):
+    - Flutter
   - kakao_flutter_sdk (0.5.2):
     - Flutter
   - nanopb (1.30906.0):
@@ -125,6 +127,7 @@ DEPENDENCIES:
   - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - hardware_buttons (from `.symlinks/plugins/hardware_buttons/ios`)
+  - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
   - kakao_flutter_sdk (from `.symlinks/plugins/kakao_flutter_sdk/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -172,6 +175,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   hardware_buttons:
     :path: ".symlinks/plugins/hardware_buttons/ios"
+  in_app_purchase:
+    :path: ".symlinks/plugins/in_app_purchase/ios"
   kakao_flutter_sdk:
     :path: ".symlinks/plugins/kakao_flutter_sdk/ios"
   package_info:
@@ -214,6 +219,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   hardware_buttons: 014f502132c734dc391a47e2b708728b1dd8bf32
+  in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
   kakao_flutter_sdk: c314c15347e033a31279acaa3c5efb5cad1426eb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
