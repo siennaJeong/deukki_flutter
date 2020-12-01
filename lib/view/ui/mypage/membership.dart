@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -13,10 +16,18 @@ class MemberShip extends StatefulWidget {
 }
 
 class _MemberShipState extends State<MemberShip> {
+  final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
+  StreamSubscription<List<PurchaseDetails>> _subscription;
+
   UserProviderModel _userProviderModel;
+
+  List<ProductDetails> _products = [];
+
+  List<String> _productIds = ['monthly_renewal', 'annual_subscription'];
 
   double deviceWidth, deviceHeight;
   int premium;
+  bool _isAvailable = false;
 
   @override
   void didChangeDependencies() {
@@ -26,7 +37,30 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void initState() {
+    _initStore();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  void _initStore() async {
+    _isAvailable = await _connection.isAvailable();
+    if(_isAvailable) {
+      _getProducts();
+    }
+  }
+
+  Future<void> _getProducts() async {
+    ProductDetailsResponse response = await _connection.queryProductDetails(_productIds.toSet());
+
+    setState(() {
+      _products = response.productDetails;
+      print("${_products.first.price}");
+    });
   }
 
   Widget _listWidget() {
