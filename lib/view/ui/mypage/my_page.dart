@@ -21,7 +21,7 @@ class _MyPageState extends State<MyPage> {
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
 
-  List<String> tabButtons = [Strings.mypage_report, Strings.mypage_bookmark, /*Strings.mypage_membership,*/ Strings.mypage_setting, Strings.mypage_help];
+  List<String> tabButtons = [Strings.mypage_report, Strings.mypage_bookmark, Strings.mypage_membership, Strings.mypage_setting, Strings.mypage_help];
   List<BookmarkVO> bookmarks;
   double deviceWidth, deviceHeight;
 
@@ -79,7 +79,7 @@ class _MyPageState extends State<MyPage> {
           _buttons(tabButtons[1], 1),
           _buttons(tabButtons[2], 2),
           _buttons(tabButtons[3], 3),
-          //_buttons(tabButtons[4], 4),
+          _buttons(tabButtons[4], 4),
         ],
       )
     );
@@ -148,7 +148,7 @@ class _MyPageState extends State<MyPage> {
           children: <Widget>[
             Report(),
             BookMark(bookmarkList: bookmarks,),
-            //MemberShip(),
+            MemberShip(),
             Settings(),
             QnA()
           ],
