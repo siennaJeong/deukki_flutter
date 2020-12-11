@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
-import 'package:kakao_flutter_sdk/link.dart';
+import 'package:kakao_flutter_sdk/common.dart';
 import 'package:kakao_flutter_sdk/user.dart';
 
 const String KAKAO_APP_KEY = "33194ae01d0ccade0fffcd22f39f300a";
@@ -45,6 +46,8 @@ class KakaoAuthService {
       print(e);
     } on KakaoClientException catch (e) {
       print(e);
+    } on PlatformException catch (e) {
+      return "cancel";
     }
   }
 

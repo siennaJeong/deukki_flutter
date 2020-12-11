@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
     }
 
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-      if(value.isNotEmpty) {
+      if(value.isNotEmpty && value != "cancel") {
         signInProviderModel.checkSignUp(authType, value, authServiceAdapter.fbUid).then((val) {
           final isSignUp = signInProviderModel.value.checkSignUp;
           if(!isSignUp.hasData) {

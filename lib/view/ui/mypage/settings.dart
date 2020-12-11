@@ -62,12 +62,16 @@ class _SettingsState extends State<Settings> {
       _authServiceAdapter.changeKakaoNoti(true);
       if(_userProviderModel.userVOForHttp.loginMethod != LoginMethod.kakao) {
         _authServiceAdapter.signInWithSNS(AuthServiceType.Kakao).then((value) {
-          if(_authServiceAdapter.phone != "") {
+          if(value.isNotEmpty && value != "cancel") {
             _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true, _authServiceAdapter.phone).then((value) {
               _clickEnable = true;
             });
           }else {
-            _kakaoNotification = false;
+            print("kakao alarm login cancel");
+            setState(() {
+              _kakaoNotification = false;
+            });
+
             _authServiceAdapter.changeKakaoNoti(false);
           }
 
