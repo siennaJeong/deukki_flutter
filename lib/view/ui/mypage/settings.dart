@@ -55,19 +55,24 @@ class _SettingsState extends State<Settings> {
     _clickEnable = false;
     if(!_kakaoNotification) {
       _authServiceAdapter.changeKakaoNoti(false);
-      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , false).then((value) {
+      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , false, "").then((value) {
         _clickEnable = true;
       });
     }else {
       _authServiceAdapter.changeKakaoNoti(true);
       if(_userProviderModel.userVOForHttp.loginMethod != LoginMethod.kakao) {
         _authServiceAdapter.signInWithSNS(AuthServiceType.Kakao).then((value) {
-          //  번호 업데이트.
+          if(_authServiceAdapter.phone != "") {
+            _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true, _authServiceAdapter.phone).then((value) {
+              _clickEnable = true;
+            });
+          }else {
+            _kakaoNotification = false;
+            _authServiceAdapter.changeKakaoNoti(false);
+          }
+
         });
       }
-      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true).then((value) {
-        _clickEnable = true;
-      });
     }
   }
 

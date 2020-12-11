@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -23,7 +24,8 @@ class _MemberShipState extends State<MemberShip> {
 
   List<ProductDetails> _products = [];
 
-  List<String> _productIds = ['monthly_renewal', 'annual_subscription'];
+  List<String> _googleProductIds = ['monthly_renewal', 'annual_subscription'];
+  List<String> _iosProductIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
 
   double deviceWidth, deviceHeight;
   int premium;
@@ -43,7 +45,7 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -55,12 +57,8 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   Future<void> _getProducts() async {
-    ProductDetailsResponse response = await _connection.queryProductDetails(_productIds.toSet());
-
-    setState(() {
-      _products = response.productDetails;
-      print("${_products.first.price}");
-    });
+    ProductDetailsResponse response = Platform.isIOS ? await _connection.queryProductDetails(_iosProductIds.toSet()) : await _connection.queryProductDetails(_googleProductIds.toSet());
+    _products = response.productDetails;
   }
 
   Widget _listWidget() {

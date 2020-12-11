@@ -34,8 +34,9 @@ class UserRestRepository implements UserRepository {
     'phone': phone
   };
 
-  Map<String, dynamic> _marketingToJson(String marketingMethod, String agreement) => <String, dynamic> {
+  Map<String, dynamic> _marketingToJson(String marketingMethod, String agreement, String phone) => <String, dynamic> {
     'marketingMethod': marketingMethod,
+    'phone': phone,
     'agree': agreement,
   };
 
@@ -155,8 +156,8 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement) async {
-    final marketingAgreement = await _httpClient.patchRequest(HttpUrls.MARKETING_AGREEMENT, HttpUrls.postHeaders(authJWT), _marketingToJson(marketingMethod, agreement.toString()));
+  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement, String phone) async {
+    final marketingAgreement = await _httpClient.patchRequest(HttpUrls.MARKETING_AGREEMENT, HttpUrls.postHeaders(authJWT), _marketingToJson(marketingMethod, agreement.toString(), phone));
     if(marketingAgreement.isValue) {
       return Result.value(CommonResultVO.fromJson(marketingAgreement.asValue.value));
     }else {
