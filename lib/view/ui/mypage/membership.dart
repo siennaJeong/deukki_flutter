@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/payment/payment_provider_model.dart';
+import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -21,11 +24,13 @@ class _MemberShipState extends State<MemberShip> {
   StreamSubscription<List<PurchaseDetails>> _subscription;
 
   UserProviderModel _userProviderModel;
+  AuthServiceAdapter _authServiceAdapter;
+  PaymentProviderModel _paymentProviderModel;
+  MyPageProvider _myPageProvider;
 
   List<ProductDetails> _products = [];
 
-  List<String> _googleProductIds = ['monthly_renewal', 'annual_subscription'];
-  List<String> _iosProductIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
+  List<String> _productIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
 
   double deviceWidth, deviceHeight;
   int premium;
@@ -33,7 +38,10 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void didChangeDependencies() {
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    _paymentProviderModel = Provider.of<PaymentProviderModel>(context);
+    _myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -57,7 +65,7 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   Future<void> _getProducts() async {
-    ProductDetailsResponse response = Platform.isIOS ? await _connection.queryProductDetails(_iosProductIds.toSet()) : await _connection.queryProductDetails(_googleProductIds.toSet());
+    ProductDetailsResponse response = await _connection.queryProductDetails(_productIds.toSet());
     _products = response.productDetails;
   }
 
@@ -191,9 +199,21 @@ class _MemberShipState extends State<MemberShip> {
       ),
       onTap: () {
         //  멤버십 구매
-
+        _paymentPreRequest(productionVO);
       },
     );
+  }
+
+  void _paymentPreRequest(ProductionVO productionVO) {
+    _myPageProvider.setIsPaying(true);
+    _paymentProviderModel.paymentPreRequest(
+        _authServiceAdapter.authJWT,
+        productionVO.idx == 1 ? TYPE_SUBSCRIPTION : TYPE_OFFLINE,
+        productionVO.discountPrice,
+        CURRENCY_KRW,
+        true,
+        Platform.isIOS ? "Apple" : "Google",
+        productionVO.idx);
   }
 
   String _numberWithComma(int num) {
@@ -251,7 +271,7 @@ class _MemberShipState extends State<MemberShip> {
             Container(
               margin: EdgeInsets.only(left: 60, top: 8),
               child: Text(
-                Strings.mypage_membership_title,
+                premium == 0 ? Strings.mypage_membership_title : _userProviderModel.userVOForHttp.premiumEndAt,
                 style: TextStyle(
                     color: MainColors.grey_100,
                     fontSize: 16,
@@ -262,7 +282,7 @@ class _MemberShipState extends State<MemberShip> {
             ),
             SizedBox(height: 22),
             //  ListView,
-            SizedBox(child: _listWidget()),
+            premium == 0 ? SizedBox(child: _listWidget()) : SizedBox(width: 0),
             SizedBox(height: 24),
             Container(
               margin: EdgeInsets.only(left: 60, right: 60),

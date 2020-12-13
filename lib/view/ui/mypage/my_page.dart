@@ -1,4 +1,5 @@
 import 'package:deukki/data/model/bookmark_vo.dart';
+import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/mypage/bookmark.dart';
@@ -38,7 +39,7 @@ class _MyPageState extends State<MyPage> {
   @override
   void didChangeDependencies() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
+    myPageProvider = Provider.of<MyPageProvider>(context);
     bookmarks = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
   }
@@ -162,24 +163,36 @@ class _MyPageState extends State<MyPage> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        left: false,
-        right: false,
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _tabWidget(),
-              _pageViewWidget()
-            ],
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            left: false,
+            right: false,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  _tabWidget(),
+                  _pageViewWidget()
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        Visibility(
+          visible: myPageProvider.getIsPaying(),
+          child: Container(
+            color: Colors.black26,
+            alignment: AlignmentDirectional.center,
+            child: CupertinoActivityIndicator(),
+          ),
+        )
+      ],
     );
   }
 }

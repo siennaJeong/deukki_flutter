@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
@@ -49,6 +50,10 @@ void main() async {
               ),
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
+                lazy: true,
+              ),
+              ChangeNotifierProvider<PaymentProviderModel>(
+                create: (context) => PaymentProviderModel.build(),
                 lazy: true,
               ),
               ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
