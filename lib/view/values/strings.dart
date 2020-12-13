@@ -116,6 +116,14 @@ class Strings {
   static const String mypage_membership_monthly_price = '월 환산 가격';
   static const String payment_error_canceled = '결제가 취소되었습니다.';
   static const String payment_completed = '결제가 완료되었습니다.';
+  static const String coupon_registration = '쿠폰 둥록';
+  static const String coupone_input_hint = '쿠폰 번호를 입력해주세요.';
+  static const String coupon_error = '쿠폰 번호가 잘못되었습니다.';
+  static const String coupon_script1 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
+  static const String coupon_script2 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
+  static const String coupon_dialog_reg_ok = '쿠폰 등록이 완료되었습니다.';
+  static const String coupon_dialog_reg_fail = '등록 불가한 쿠폰입니다.';
+  static const String coupon_dialog_reg_dup = '이미 등록된 쿠폰입니다.';
 
   static const String logout = '로그아웃';
   static const String mypage_setting = '설정';

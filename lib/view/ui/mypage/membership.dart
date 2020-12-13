@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
@@ -303,6 +305,10 @@ class _MemberShipState extends State<MemberShip> {
     }
   }
 
+  void _couponRegistration() {
+    RouteNavigator().go(GetRoutesName.ROUTE_COUPON_REGISTRATION, context);
+  }
+
   String _numberWithComma(int num) {
     return NumberFormat('###,###,###,###').format(num).replaceAll(' ', '');
   }
@@ -315,6 +321,7 @@ class _MemberShipState extends State<MemberShip> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     if(_userProviderModel.userVOForHttp != null) {
+      print("membership build call");
       _premium ??= _userProviderModel.userVOForHttp.premium;
       _premiumEndAt ??= _userProviderModel.userVOForHttp.premiumEndAt;
     }
@@ -327,49 +334,72 @@ class _MemberShipState extends State<MemberShip> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(left: 60, top: 16),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                      "${Strings.mypage_membership_status}",
-                      style: TextStyle(
-                          color: MainColors.grey_100,
-                          fontSize: 24,
-                          fontFamily: "TmoneyRound",
-                          fontWeight: FontWeight.w700
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(left: 60, top: 16),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              "${Strings.mypage_membership_status}",
+                              style: TextStyle(
+                                  color: MainColors.grey_100,
+                                  fontSize: 24,
+                                  fontFamily: "TmoneyRound",
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 3),
+                          Container(
+                            child: Text(
+                              _premium == 0 ? Strings.mypage_membership_status_noMember : Strings.mypage_membership_status_yesMember,
+                              style: TextStyle(
+                                  color: MainColors.grey_100,
+                                  fontSize: 24,
+                                  fontFamily: "TmoneyRound",
+                                  fontWeight: FontWeight.w700
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(width: 3),
-                  Container(
-                    child: Text(
-                      _premium == 0 ? Strings.mypage_membership_status_noMember : Strings.mypage_membership_status_yesMember,
-                      style: TextStyle(
-                          color: MainColors.grey_100,
-                          fontSize: 24,
-                          fontFamily: "TmoneyRound",
-                          fontWeight: FontWeight.w700
+                    Container(
+                      margin: EdgeInsets.only(left: 60, top: 8),
+                      child: Text(
+                        _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",
+                        style: TextStyle(
+                            color: MainColors.grey_100,
+                            fontSize: 16,
+                            fontFamily: "NotoSansKR",
+                            fontWeight: FontWeight.w400
+                        ),
                       ),
                     ),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: 60, top: 8),
-              child: Text(
-                _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",
-                style: TextStyle(
-                    color: MainColors.grey_100,
-                    fontSize: 16,
-                    fontFamily: "NotoSansKR",
-                    fontWeight: FontWeight.w400
+                  ],
                 ),
-              ),
+                SizedBox(width: 0),
+                Container(
+                  margin: EdgeInsets.only(right: 60),
+                  child: CommonRaisedButton(                    //  쿠폰 등록
+                    textColor: MainColors.green_100,
+                    buttonColor: Colors.white,
+                    borderColor: MainColors.green_100,
+                    buttonText: Strings.coupon_registration,
+                    fontSize: 14,
+                    voidCallback: _couponRegistration
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 22),
+            SizedBox(height: _premium == 0 ? 22 : 0),
             //  ListView,
             _premium == 0 ? SizedBox(child: _listWidget()) : SizedBox(width: 0),
             SizedBox(height: 24),

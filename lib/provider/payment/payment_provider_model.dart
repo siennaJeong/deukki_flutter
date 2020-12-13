@@ -25,4 +25,9 @@ class PaymentProviderModel extends ProviderModel<PaymentProviderState> {
     await value.paymentPreRequest.set(paymentPreRequest, notifyListeners);
   }
 
+  Future<void> couponRegistration(String authJWT, String code) async {
+    final couponRegistration = _paymentRepository.couponRegistration(authJWT, code);
+    await value.couponRegistration.set(couponRegistration, notifyListeners);
+  }
+
 }

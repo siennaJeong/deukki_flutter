@@ -30,4 +30,15 @@ class PaymentRestRepository implements PaymentRepository {
     }
   }
 
+  @override
+  Future<Result<int>> couponRegistration(String authJWT, String code) async {
+    final couponRegistration = await _httpClient.couponRequest("${HttpUrls.COUPON}/$code", HttpUrls.headers(authJWT), null);
+    if(couponRegistration.isValue) {
+      //final result = couponRegistration.asValue.value['status'];
+      return Result.value(couponRegistration.asValue.value);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
 }
