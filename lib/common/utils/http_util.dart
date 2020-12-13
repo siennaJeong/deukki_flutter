@@ -40,6 +40,7 @@ class HttpUrls {
   static const String GET_PRODUCT = "$SERVER_URL/productions";
 
   static const String PRE_PAYMENT = "$SERVER_URL/payments";
+  static const String PAYMENT_COMPLETE = "$PRE_PAYMENT/complete";
 
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-type': 'application/json',

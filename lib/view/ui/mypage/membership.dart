@@ -11,6 +11,7 @@ import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:in_app_purchase/store_kit_wrappers.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -20,6 +21,7 @@ class MemberShip extends StatefulWidget {
 }
 
 class _MemberShipState extends State<MemberShip> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
 
@@ -28,13 +30,19 @@ class _MemberShipState extends State<MemberShip> {
   PaymentProviderModel _paymentProviderModel;
   MyPageProvider _myPageProvider;
 
+  Future<void> paymentPreRequestInit;
+  var initPaymentPreRequest;
+
   List<ProductDetails> _products = [];
 
   List<String> _productIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
 
   double deviceWidth, deviceHeight;
-  int premium;
+  int _premium;
+  String _paymentId, _premiumEndAt;
   bool _isAvailable = false;
+  bool _autoConsume = true;
+
 
   @override
   void didChangeDependencies() {
@@ -47,6 +55,7 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void initState() {
+    _initUpdateStream();
     _initStore();
     super.initState();
   }
@@ -61,6 +70,13 @@ class _MemberShipState extends State<MemberShip> {
     _isAvailable = await _connection.isAvailable();
     if(_isAvailable) {
       _getProducts();
+    }
+    if(Platform.isIOS) {
+      var paymentWrapper = SKPaymentQueueWrapper();
+      var transactions = await paymentWrapper.transactions();
+      transactions.forEach((transaction) async {
+        await paymentWrapper.finishTransaction(transaction);
+      });
     }
   }
 
@@ -200,13 +216,31 @@ class _MemberShipState extends State<MemberShip> {
       onTap: () {
         //  멤버십 구매
         _paymentPreRequest(productionVO);
+        if(productionVO.title.contains("월 정기")) {
+          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.monthly", orElse: () => null), false);
+        }else {
+          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.annual", orElse: () => null), true);
+        }
       },
     );
   }
 
+  void _initUpdateStream() {
+    Stream purchaseUpdated = InAppPurchaseConnection.instance.purchaseUpdatedStream;
+    _subscription = purchaseUpdated.listen((purchaseDetailsList) {
+      _listenToPurchaseUpdated(purchaseDetailsList);
+    }, onDone: () {
+      _subscription?.cancel();
+      print("init update stream done call");
+    }, onError: (error) {
+      // 결제 업데이트 에러
+      print("init update Stream error : ${error.toString()}");
+    });
+  }
+
   void _paymentPreRequest(ProductionVO productionVO) {
     _myPageProvider.setIsPaying(true);
-    _paymentProviderModel.paymentPreRequest(
+    paymentPreRequestInit ??= _paymentProviderModel.paymentPreRequest(
         _authServiceAdapter.authJWT,
         productionVO.idx == 1 ? TYPE_SUBSCRIPTION : TYPE_OFFLINE,
         productionVO.discountPrice,
@@ -214,6 +248,59 @@ class _MemberShipState extends State<MemberShip> {
         true,
         Platform.isIOS ? "Apple" : "Google",
         productionVO.idx);
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if(purchaseDetails.status != PurchaseStatus.pending) {
+        if(purchaseDetails.status == PurchaseStatus.error) {
+          //  구매 에러
+          print("purchase error : ${PurchaseStatus.error}");
+          _myPageProvider.setIsPaying(false);
+          scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(Strings.payment_error_canceled)));
+        }else if(purchaseDetails.status == PurchaseStatus.purchased) {
+          //  구매 완료
+          _deliverProduct();
+          print("puchase done : ${purchaseDetails.purchaseID}");
+        }
+      }else {
+        print("purchase pending...");
+      }
+      if(Platform.isAndroid) {
+        if(!_autoConsume && purchaseDetails.productID == "io.com.diction.deukki.annual") {
+          await InAppPurchaseConnection.instance.consumePurchase(purchaseDetails);
+        }
+      }
+      if(purchaseDetails.pendingCompletePurchase) {
+        await InAppPurchaseConnection.instance.completePurchase(purchaseDetails);
+      }
+    });
+  }
+
+  void _deliverProduct() {
+    //  TODO: 서버 결제 완료 api 콜
+    initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
+    if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
+      _paymentId ??= initPaymentPreRequest.result.asValue.value;
+      scaffoldKey.currentState.showSnackBar(
+          SnackBar(content: Text(Strings.payment_completed)));
+    }
+    setState(() {
+      _premium = 1;
+      _premiumEndAt = "20121213";
+      _userProviderModel.userVOForHttp.premium = 1;
+      _myPageProvider.setIsPaying(false);
+    });
+  }
+
+  void _buyProduct(ProductDetails productDetails, bool isConsumable) {
+    PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails, sandboxTesting: false);
+    if(isConsumable) {
+      _connection.buyConsumable(purchaseParam: purchaseParam, autoConsume: _autoConsume || Platform.isIOS);
+    }else {
+      _connection.buyNonConsumable(purchaseParam: purchaseParam);
+    }
   }
 
   String _numberWithComma(int num) {
@@ -228,10 +315,12 @@ class _MemberShipState extends State<MemberShip> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     if(_userProviderModel.userVOForHttp != null) {
-      premium = _userProviderModel.userVOForHttp.premium;
+      _premium ??= _userProviderModel.userVOForHttp.premium;
+      _premiumEndAt ??= _userProviderModel.userVOForHttp.premiumEndAt;
     }
 
     return Scaffold(
+      key: scaffoldKey,
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -256,7 +345,7 @@ class _MemberShipState extends State<MemberShip> {
                   SizedBox(width: 3),
                   Container(
                     child: Text(
-                      premium == 0 ? Strings.mypage_membership_status_noMember : Strings.mypage_membership_status_yesMember,
+                      _premium == 0 ? Strings.mypage_membership_status_noMember : Strings.mypage_membership_status_yesMember,
                       style: TextStyle(
                           color: MainColors.grey_100,
                           fontSize: 24,
@@ -271,7 +360,7 @@ class _MemberShipState extends State<MemberShip> {
             Container(
               margin: EdgeInsets.only(left: 60, top: 8),
               child: Text(
-                premium == 0 ? Strings.mypage_membership_title : _userProviderModel.userVOForHttp.premiumEndAt,
+                _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",
                 style: TextStyle(
                     color: MainColors.grey_100,
                     fontSize: 16,
@@ -282,7 +371,7 @@ class _MemberShipState extends State<MemberShip> {
             ),
             SizedBox(height: 22),
             //  ListView,
-            premium == 0 ? SizedBox(child: _listWidget()) : SizedBox(width: 0),
+            _premium == 0 ? SizedBox(child: _listWidget()) : SizedBox(width: 0),
             SizedBox(height: 24),
             Container(
               margin: EdgeInsets.only(left: 60, right: 60),

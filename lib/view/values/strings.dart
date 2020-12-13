@@ -99,6 +99,7 @@ class Strings {
 
   static const String mypage_membership = '멤버십';
   static const String mypage_membership_status = '멤버십 상태 : ';
+  static const String mypage_membership_end_at = '만료일 : ';
   static const String mypage_membership_title = '멤버십 가입시 모든 컨텐츠 이용 가능!';
   static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
   static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';
@@ -113,6 +114,8 @@ class Strings {
   static const String mypage_membership_annual_won = '원';
   static const String mypage_membership_join = '가입하기';
   static const String mypage_membership_monthly_price = '월 환산 가격';
+  static const String payment_error_canceled = '결제가 취소되었습니다.';
+  static const String payment_completed = '결제가 완료되었습니다.';
 
   static const String logout = '로그아웃';
   static const String mypage_setting = '설정';

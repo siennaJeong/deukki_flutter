@@ -22,7 +22,6 @@ class PaymentProviderModel extends ProviderModel<PaymentProviderState> {
 
   Future<void> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) async {
     final paymentPreRequest = _paymentRepository.paymentPreRequest(authJWT, type, amount, currency, iap, iapProvider, productionIdx);
-    print("payment pre request : ${paymentPreRequest.toString()}");
     await value.paymentPreRequest.set(paymentPreRequest, notifyListeners);
   }
 
