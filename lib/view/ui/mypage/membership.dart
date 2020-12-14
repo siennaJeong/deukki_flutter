@@ -290,7 +290,7 @@ class _MemberShipState extends State<MemberShip> {
     }
     setState(() {
       _premium = 1;
-      _premiumEndAt = "20121213";
+      _premiumEndAt = _dateFormat("2021-12-13");
       _userProviderModel.userVOForHttp.premium = 1;
       _myPageProvider.setIsPaying(false);
     });
@@ -313,6 +313,11 @@ class _MemberShipState extends State<MemberShip> {
     return NumberFormat('###,###,###,###').format(num).replaceAll(' ', '');
   }
 
+  String _dateFormat(String date) {
+    DateTime tempDate = DateFormat("yyyy-MM-dd").parse(date);
+    return DateFormat("yyyy년 MM월 dd일").format(tempDate);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +327,7 @@ class _MemberShipState extends State<MemberShip> {
 
     if(_userProviderModel.userVOForHttp != null) {
       _premium ??= _userProviderModel.userVOForHttp.premium;
-      _premiumEndAt ??= _userProviderModel.userVOForHttp.premiumEndAt;
+      _premiumEndAt ??= _dateFormat(_userProviderModel.userVOForHttp.premiumEndAt);
     }
 
     return Scaffold(

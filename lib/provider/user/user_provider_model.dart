@@ -106,7 +106,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> getReports(String authJWT) async {
     final getReports = _userRepository.getReports(authJWT);
     getReports.then((value) {
-      weeklyReports = value.asValue.value;
+      weeklyReports ??= value.asValue.value;
     });
     await value.getReports.set(getReports, notifyListeners);
   }

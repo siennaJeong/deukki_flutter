@@ -17,6 +17,7 @@ class _ReportState extends State<Report> {
   UserProviderModel userProviderModel;
 
   double deviceWidth, deviceHeight;
+  ReportVO weeklyReports;
 
   @override
   void didChangeDependencies() {
@@ -87,6 +88,12 @@ class _ReportState extends State<Report> {
   Widget build(BuildContext context) {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+    if(userProviderModel.weeklyReports != null) {
+      weeklyReports ??= userProviderModel.weeklyReports;
+    }else {
+      weeklyReports ??= ReportVO(0, 0, 0, null);
+    }
 
     return Container(
       margin: EdgeInsets.only(top: 16),
