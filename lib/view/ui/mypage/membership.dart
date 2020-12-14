@@ -378,7 +378,6 @@ class _MemberShipState extends State<MemberShip> {
                     Container(
                       margin: EdgeInsets.only(left: 60, top: 8),
                       child: Text(
-                        //  TODO: 멤버십 만료일 Format 변경하기
                         _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",  //  멤버십 만료일
                         style: TextStyle(
                             color: MainColors.grey_100,
@@ -414,32 +413,77 @@ class _MemberShipState extends State<MemberShip> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "${Strings.mypage_membership_terms_script_1}",
+                    "${Strings.membership_guide_title}",
+                    style: TextStyle(color: MainColors.grey_100, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    "${Strings.membership_guide_1}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${Strings.mypage_membership_terms_script_2}",
+                    "${Strings.membership_guide_2}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${Strings.mypage_membership_terms_script_3}",
+                    "${Strings.membership_guide_3}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${Strings.mypage_membership_terms_script_4}",
+                    "${Strings.membership_guide_4}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${Strings.mypage_membership_terms_script_5}",
+                    "${Strings.membership_guide_5}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                   SizedBox(height: 8),
                   Text(
-                    "${Strings.mypage_membership_terms_script_6}",
+                    "${Strings.membership_guide_6}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_title}" : "${Strings.payment_android_guide_title}",
+                    style: TextStyle(color: MainColors.grey_100, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w700),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_1}" : "${Strings.payment_android_guide_1}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_2}" : "${Strings.payment_android_guide_2}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_3}" : "${Strings.payment_android_guide_3}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_4}" : "${Strings.payment_android_guide_4}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_5}" : "${Strings.payment_android_guide_5}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_6}" : "${Strings.payment_android_guide_6}",
+                    style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    Platform.isIOS ? "${Strings.payment_iOS_guide_7}" : "${Strings.payment_android_guide_7}",
                     style: TextStyle(color: MainColors.grey_80, fontSize: 16, fontFamily: "NotoSansKR", fontWeight: FontWeight.w400),
                   ),
                 ],

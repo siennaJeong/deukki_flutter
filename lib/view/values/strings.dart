@@ -1,8 +1,8 @@
 class Strings {
   static const String firebase_apple_url = 'https://deukki-flutter.firebaseapp.com/__/auth/handler';
   static const String ios_bundle_name = 'io.com.diction.deukki';
-  static const String privacy_terms_url = 'https://deukki.com/policy1/index.html';
-  static const String privacy_info_url = 'https://deukki.com/policy2/index.html';
+  static const String privacy_terms_url = 'https://deukki.com/policy/terms.html';
+  static const String privacy_privacy_url = 'https://deukki.com/policy/privacy.html';
 
   static const String service_name = "바름드끼";
 
@@ -103,12 +103,39 @@ class Strings {
   static const String mypage_membership_status = '멤버십 상태 : ';
   static const String mypage_membership_end_at = '만료일 : ';
   static const String mypage_membership_title = '멤버십 가입시 모든 컨텐츠 이용 가능!';
-  static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
-  static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';
-  static const String mypage_membership_terms_script_3 = '· 6개월 / 12개월 멤버십 이용권은 구매 후 7일 이내 해지 요청시 전액 환불이 됩니다. 7일 이후 3개월까지는 일할 환불이 가능하며, 3개월 이후에는 환불이 불가능합니다.';
-  static const String mypage_membership_terms_script_4 = '· 6개월 / 12개월 멤버십 이용권은 기한이 끝나도 자동 갱신되지 않습니다.';
-  static const String mypage_membership_terms_script_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
-  static const String mypage_membership_terms_script_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
+
+  static const String membership_guide_title = '멤버십 구매 안내';
+  static const String membership_guide_1 = '· 구매 가격은 부가가치세(VAT)와 결제 수수료가 포함되어 있습니다.';
+  static const String membership_guide_2 = '· 이용 기간 중 스마트폰, PC, 모바일웹에서 이용 가능합니다.';
+  static const String membership_guide_3 = '· 콘텐츠 특성상 실사용 도중 해지 및 이에 따른 환불이 불가능합니다.';
+  static const String membership_guide_4 = '· 결제에 따른 개인정보는 ‘개인정보처리방침‘에 근거하여 관리됩니다.';
+  static const String membership_guide_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
+  static const String membership_guide_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
+
+  static const String payment_iOS_guide_title = 'App Store 결제 안내';
+  static const String payment_iOS_guide_1 = '· 결제는 현재 사용하고 있는 App Store 계정으로 진행됩니다.';
+  static const String payment_iOS_guide_2 = '· 결제 시 자동 결제 예정일 전 24시간 내에 금액 확인과 함께 결제가 진행됩니다.';
+  static const String payment_iOS_guide_3 = '· App Store 자동결제(정기권) 해지는 결제 예정일(만료시간 24시간 전)을 제외한 이용기간 중 언제든 가능합니다.';
+  static const String payment_iOS_guide_4 = '· 자동결제 예정일 24시간 전에 해지하지 않으면 결제 예정일에 결제가 자동으로 진행됩니다';
+  static const String payment_iOS_guide_5 = '· 자동결제 취소를 하고자 할 경우 ‘설정‘의 [iTunes 및 App Store-계정(Apple ID)-구독]에서 ‘구독 취소‘가 가능합니다.';
+  static const String payment_iOS_guide_6 = '· 취소가 완료되면 다음 결제가 되지 않고, 남은 기간 동안 서비스 이용이 가능합니다.';
+  static const String payment_iOS_guide_7 = '· 바름드끼 앱을 삭제하거나 회원탈퇴를 하더라도 자동으로 구독 취소가 되지 않으니, 서비스 이용을 원치 않으실 경우 ‘구독 취소’를 해야 이후 결제가 진행되지 않습니다.';
+
+  static const String payment_android_guide_title = 'Google Play Store 결제 안내';
+  static const String payment_android_guide_1 = '· 결제는 현재 사용하고 있는 Google Play Store 계정으로 진행됩니다.';
+  static const String payment_android_guide_2 = '· 결제 시 자동 결제 예정일 전 24시간 내에 금액 확인과 함께 결제가 진행됩니다.';
+  static const String payment_android_guide_3 = '· Google Play Store 자동결제(정기권) 해지는 결제 예정일(만료시간 24시간 전)을 제외한 이용기간 중 언제든 가능합니다.';
+  static const String payment_android_guide_4 = '· 자동결제 예정일 24시간 전에 해지하지 않으면 결제 예정일에 결제가 자동으로 진행됩니다';
+  static const String payment_android_guide_5 = '· 자동결제 취소를 하고자 할 경우 ‘설정‘의 [Google Play store-메뉴-구독]에서 ‘구독 취소‘가 가능합니다.';
+  static const String payment_android_guide_6 = '· 취소가 완료되면 다음 결제가 되지 않고, 남은 기간 동안 서비스 이용이 가능합니다.';
+  static const String payment_android_guide_7 = '· 바름드끼 앱을 삭제하거나 회원탈퇴를 하더라도 자동으로 구독 취소가 되지 않으니, 서비스 이용을 원치 않으실 경우 ‘구독 취소’를 해야 이후 결제가 진행되지 않습니다.';
+
+  //static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
+  //static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';
+  //static const String mypage_membership_terms_script_3 = '· 6개월 / 12개월 멤버십 이용권은 구매 후 7일 이내 해지 요청시 전액 환불이 됩니다. 7일 이후 3개월까지는 일할 환불이 가능하며, 3개월 이후에는 환불이 불가능합니다.';
+  //static const String mypage_membership_terms_script_4 = '· 6개월 / 12개월 멤버십 이용권은 기한이 끝나도 자동 갱신되지 않습니다.';
+  //static const String mypage_membership_terms_script_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
+  //static const String mypage_membership_terms_script_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
   static const String mypage_membership_status_noMember = '미가입';
   static const String mypage_membership_status_yesMember = '가입';
   static const String mypage_membership_discount_rate = '% 할인';
