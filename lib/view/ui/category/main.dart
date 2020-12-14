@@ -127,6 +127,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
+    //  TODO: weekly 리포트 정보 서버 api 콜
     RouteNavigator().go(GetRoutesName.ROUTE_MYPAGE, context);
   }
 

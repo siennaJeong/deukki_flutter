@@ -25,12 +25,12 @@ class _ReportState extends State<Report> {
 
   Widget _cardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
     return Card(
-      color: isAccuracy ? MainColors.grey_google : bgColor,
-      margin: EdgeInsets.only(top: 16, left: 60),
+      color: bgColor,
+      margin: EdgeInsets.only(top: 16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color: isAccuracy ? MainColors.grey_google : MainColors.yellow_40,
+          color: isAccuracy ? MainColors.yellow_60 : MainColors.yellow_40,
           width: 2,
         ),
       ),
@@ -54,16 +54,16 @@ class _ReportState extends State<Report> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    isAccuracy ? "$title -" : "${title}0 / 100",
+                    isAccuracy ? "${title}0%" : "${title}0 / 100",
                     style: TextStyle(
-                      color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
+                      color: MainColors.grey_100,
                       fontSize: 24,
                       fontFamily: "TmoneyRound",
                       fontWeight: FontWeight.w700
                     ),
                   ),
                   SizedBox(height: 8),
-                  Text(
+                  /*Text(
                     isAccuracy ? "준비중" : "${script}0 / 100",
                     style: TextStyle(
                       color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
@@ -71,7 +71,7 @@ class _ReportState extends State<Report> {
                       fontFamily: "NotoSansKR",
                       fontWeight: FontWeight.w400
                     ),
-                  )
+                  )*/
                 ],
               ),
             )
@@ -119,17 +119,17 @@ class _ReportState extends State<Report> {
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _cardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
-                  //SizedBox(width: 16),
-                  //_cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
+                  SizedBox(width: 16),
+                  _cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
                 ],
               ),
             ],
           ),
           //  리포트 보러가기 숨김처리.
-          /*Positioned(
+          Positioned(
             bottom: 0,
             right: 0,
             child: GestureDetector(
@@ -153,7 +153,7 @@ class _ReportState extends State<Report> {
                 ),
               ),
             ),
-          )*/
+          )
         ],
       )
 
