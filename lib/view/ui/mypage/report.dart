@@ -1,4 +1,5 @@
 
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -54,7 +55,7 @@ class _ReportState extends State<Report> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    isAccuracy ? "${title}0%" : "${title}0 / 100",
+                    isAccuracy ? "$title${userProviderModel.weeklyReports.speakingScore}%" : "$title${userProviderModel.weeklyReports.listeningScore} / 100",
                     style: TextStyle(
                       color: MainColors.grey_100,
                       fontSize: 24,
@@ -63,6 +64,7 @@ class _ReportState extends State<Report> {
                     ),
                   ),
                   SizedBox(height: 8),
+                  //  같은 레벨의 평균 점수 숨김 처리
                   /*Text(
                     isAccuracy ? "준비중" : "${script}0 / 100",
                     style: TextStyle(
@@ -133,6 +135,9 @@ class _ReportState extends State<Report> {
             bottom: 0,
             right: 0,
             child: GestureDetector(
+              onTap: () {
+                //  TODO: 웹뷰로 리포트 보기.
+              },
               child: Container(
                 margin: EdgeInsets.only(bottom: 40, right: 40),
                 child: Row(

@@ -1,6 +1,7 @@
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
@@ -20,6 +21,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   UserVOForHttp userVOForHttp;
+  ReportVO weeklyReports;
   int bookmarkScore = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
@@ -103,10 +105,10 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getReports(String authJWT) async {
     final getReports = _userRepository.getReports(authJWT);
-    //  리포트 점수 불러오기.
-    //  멤버십 만료일 form 다시.
-    //  결제 재테스트.
-
+    getReports.then((value) {
+      weeklyReports = value.asValue.value;
+    });
+    await value.getReports.set(getReports, notifyListeners);
   }
 
 }

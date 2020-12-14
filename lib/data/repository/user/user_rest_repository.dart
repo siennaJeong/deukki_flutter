@@ -9,6 +9,7 @@ import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 
@@ -166,10 +167,11 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> getReports(String authJWT) async {
+  Future<Result<ReportVO>> getReports(String authJWT) async {
     final getReports = await _httpClient.getRequest(HttpUrls.GET_REPORTS, HttpUrls.headers(authJWT));
     if(getReports.isValue) {
-      return Result.value(CommonResultVO.fromJson(getReports.asValue.value));
+      final reportResult = getReports.asValue.value['result'];
+      return Result.value(ReportVO.fromJson(reportResult as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

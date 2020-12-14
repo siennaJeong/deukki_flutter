@@ -281,7 +281,7 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _deliverProduct() {
-    //  TODO: 서버 결제 완료 api 콜
+    //  TODO: 서버 결제 완료 api 콜, 결제 재테스트
     initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
@@ -373,7 +373,8 @@ class _MemberShipState extends State<MemberShip> {
                     Container(
                       margin: EdgeInsets.only(left: 60, top: 8),
                       child: Text(
-                        _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",
+                        //  TODO: 멤버십 만료일 Format 변경하기
+                        _premium == 0 ? Strings.mypage_membership_title : "${Strings.mypage_membership_end_at}$_premiumEndAt",  //  멤버십 만료일
                         style: TextStyle(
                             color: MainColors.grey_100,
                             fontSize: 16,

@@ -25,6 +25,7 @@ class _MainCategoryState extends State<MainCategory> {
   Future<void> getAllBookmark;
   Future<void> getUserInfo;
   Future<void> getProductList;
+  Future<void> getReports;
 
   double deviceWidth, deviceHeight;
 
@@ -38,6 +39,7 @@ class _MainCategoryState extends State<MainCategory> {
     getAllBookmark ??= Provider.of<UserProviderModel>(context).getBookmark(authServiceAdapter.authJWT);
     getUserInfo ??= Provider.of<UserProviderModel>(context).getUserInfo(authServiceAdapter.authJWT);
     getProductList ??= Provider.of<UserProviderModel>(context).getProductList(authServiceAdapter.authJWT);
+    getReports ??= Provider.of<UserProviderModel>(context).getReports(authServiceAdapter.authJWT);
     super.didChangeDependencies();
   }
 
@@ -127,7 +129,6 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
-    //  TODO: weekly 리포트 정보 서버 api 콜
     RouteNavigator().go(GetRoutesName.ROUTE_MYPAGE, context);
   }
 
