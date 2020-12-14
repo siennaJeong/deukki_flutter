@@ -97,7 +97,7 @@ class _SettingsState extends State<Settings> {
 
   void _showSignOutAlert() {
     _userProviderModel.signOut(_authServiceAdapter.authJWT);
-    _authServiceAdapter.signOut();
+    _authServiceAdapter.logout();
     _dismissDialog();
     showDialog(
       context: context,
@@ -454,7 +454,7 @@ class _SettingsState extends State<Settings> {
                         ),
                         SizedBox(width: 8),
                         Container(
-                          width: !isConfirm ? (deviceWidth * 0.6) * 0.56 : (deviceWidth * 0.6) * 0.33,
+                          width: !isConfirm ? (deviceWidth * 0.6) * 0.56 : (deviceWidth * 0.6) * 0.38,
                           child: CommonRaisedButton(
                             textColor: Colors.white,
                             buttonColor: MainColors.purple_100,
