@@ -39,6 +39,20 @@ class HttpClient {
     }
   }
 
+  Future<Result<dynamic>> reportRequest(String path, Map<String, String> headers) async {
+    Response response;
+    try {
+      response = await get(path, headers: headers);
+      if(response.body.isEmpty) {
+        return Result.value(null);
+      }else {
+        return Result.value(jsonDecode(response.body));
+      }
+    }on SocketException {
+      throw Result.error(ConnectionException());
+    }
+  }
+
   Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
     try {

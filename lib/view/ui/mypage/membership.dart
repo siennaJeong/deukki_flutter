@@ -233,7 +233,6 @@ class _MemberShipState extends State<MemberShip> {
       _listenToPurchaseUpdated(purchaseDetailsList);
     }, onDone: () {
       _subscription?.cancel();
-      print("init update stream done call");
     }, onError: (error) {
       // 결제 업데이트 에러
       print("init update Stream error : ${error.toString()}");
@@ -256,15 +255,11 @@ class _MemberShipState extends State<MemberShip> {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
       if(purchaseDetails.status != PurchaseStatus.pending) {
         if(purchaseDetails.status == PurchaseStatus.error) {
-          //  구매 에러
-          print("purchase error : ${PurchaseStatus.error}");
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_error_canceled)));
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {
-          //  구매 완료
           _deliverProduct();
-          print("puchase done : ${purchaseDetails.purchaseID}");
         }
       }else {
         print("purchase pending...");
@@ -327,7 +322,9 @@ class _MemberShipState extends State<MemberShip> {
 
     if(_userProviderModel.userVOForHttp != null) {
       _premium ??= _userProviderModel.userVOForHttp.premium;
-      _premiumEndAt ??= _dateFormat(_userProviderModel.userVOForHttp.premiumEndAt);
+      if(_userProviderModel.userVOForHttp.premiumEndAt != null) {
+        _premiumEndAt ??= _dateFormat(_userProviderModel.userVOForHttp.premiumEndAt);
+      }
     }
 
     return Scaffold(

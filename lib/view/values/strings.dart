@@ -3,6 +3,7 @@ class Strings {
   static const String ios_bundle_name = 'io.com.diction.deukki';
   static const String privacy_terms_url = 'https://deukki.com/policy/terms.html';
   static const String privacy_privacy_url = 'https://deukki.com/policy/privacy.html';
+  static const String weekly_report_url = 'https://deukki.com/reports/index.html';
 
   static const String service_name = "바름드끼";
 
@@ -130,12 +131,6 @@ class Strings {
   static const String payment_android_guide_6 = '· 취소가 완료되면 다음 결제가 되지 않고, 남은 기간 동안 서비스 이용이 가능합니다.';
   static const String payment_android_guide_7 = '· 바름드끼 앱을 삭제하거나 회원탈퇴를 하더라도 자동으로 구독 취소가 되지 않으니, 서비스 이용을 원치 않으실 경우 ‘구독 취소’를 해야 이후 결제가 진행되지 않습니다.';
 
-  //static const String mypage_membership_terms_script_1 = '· 모든 멤버십 이용권의 결제는 App Store에서 결제됩니다.';
-  //static const String mypage_membership_terms_script_2 = '· 매월 자동 갱신되는 월 정기 구독 멤버십 이용권은 무약정 상품으로 App Store에서 언제든 해지할 수 있습니다.';
-  //static const String mypage_membership_terms_script_3 = '· 6개월 / 12개월 멤버십 이용권은 구매 후 7일 이내 해지 요청시 전액 환불이 됩니다. 7일 이후 3개월까지는 일할 환불이 가능하며, 3개월 이후에는 환불이 불가능합니다.';
-  //static const String mypage_membership_terms_script_4 = '· 6개월 / 12개월 멤버십 이용권은 기한이 끝나도 자동 갱신되지 않습니다.';
-  //static const String mypage_membership_terms_script_5 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';
-  //static const String mypage_membership_terms_script_6 = '· 월 정기 구독 멤버십 이용자의 경우 쿠폰 등록 시, 다음 결제일이 쿠폰 기간 만큼 자동으로 미뤄집니다.';
   static const String mypage_membership_status_noMember = '미가입';
   static const String mypage_membership_status_yesMember = '가입';
   static const String mypage_membership_discount_rate = '% 할인';
@@ -145,7 +140,7 @@ class Strings {
   static const String mypage_membership_monthly_price = '월 환산 가격';
   static const String payment_error_canceled = '결제가 취소되었습니다.';
   static const String payment_completed = '결제가 완료되었습니다.';
-  static const String coupon_registration = '쿠폰 둥록';
+  static const String coupon_registration = '쿠폰 등록';
   static const String coupone_input_hint = '쿠폰 번호를 입력해주세요.';
   static const String coupon_error = '쿠폰 번호가 잘못되었습니다.';
   static const String coupon_script1 = '· 쿠폰 등록 시, 기존 멤버십 기간에서 자동으로 합산되어 연장됩니다.';

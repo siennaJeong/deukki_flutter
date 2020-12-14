@@ -12,6 +12,7 @@ import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -191,7 +192,7 @@ class _MyPageState extends State<MyPage> {
             alignment: AlignmentDirectional.center,
             child: CupertinoActivityIndicator(),
           ),
-        )
+        ),
       ],
     );
   }

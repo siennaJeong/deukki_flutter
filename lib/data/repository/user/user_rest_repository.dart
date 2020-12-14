@@ -168,12 +168,20 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<ReportVO>> getReports(String authJWT) async {
-    final getReports = await _httpClient.getRequest(HttpUrls.GET_REPORTS, HttpUrls.headers(authJWT));
-    if(getReports.isValue) {
+    final getReports = await _httpClient.reportRequest(HttpUrls.GET_REPORTS, HttpUrls.headers(authJWT));
+    /*if(getReports.isValue) {
       final reportResult = getReports.asValue.value['result'];
       return Result.value(ReportVO.fromJson(reportResult as Map<String, dynamic>));
     }else {
-      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+      return Result.error(ReportVO(0, 0, 0, null));
+    }*/
+    if(getReports.isValue) {
+      final status = getReports.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(ReportVO.fromJson(getReports.asValue.value['result'] as Map<String, dynamic>));
+      }else if(status == 404) {
+        return Result.value(ReportVO(0, 0, 0, ""));
+      }
     }
   }
 

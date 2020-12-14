@@ -52,6 +52,7 @@ dependencies:
   crypto: ^2.1.5
   device_info: ^1.0.0
   intl: ^0.16.1
+  url_launcher: ^5.7.10
 
   # ======== In-App Purchase =========
   in_app_purchase: ^0.3.4+16
