@@ -25,6 +25,8 @@ class Strings {
   static const String common_btn_cancel = '취소';
   static const String common_btn_next = '다음';
   static const String common_btn_done = '완료';
+  static const String common_btn_yes = '네';
+  static const String common_btn_no = '아니오';
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
@@ -126,6 +128,7 @@ class Strings {
   static const String coupon_dialog_reg_dup = '이미 등록된 쿠폰입니다.';
 
   static const String logout = '로그아웃';
+  static const String signout = '회원탈퇴';
   static const String mypage_setting = '설정';
   static const String mypage_setting_kakao_alert = '카카오톡 학습 알림';
   static const String mypage_setting_version = '버전';
@@ -135,6 +138,8 @@ class Strings {
   static const String mypage_setting_sound_effect = '효과음';
   static const String mypage_setting_show_terms = '이용약관 보기';
   static const String mypage_setting_show_info = '개인정보 수집 및 이용 보기';
+  static const String signout_confirm = '탈퇴하시면 회원정보가 삭제됨과 동시에 지금까지 쌓인 개인 데이터가 삭제되어 청능/발음 분석을 통한 나만의 개인화 서비스가 불가능해집니다.되돌릴 수 없으니 유의하세요.\n정말 탈퇴하실 건가요?';
+  static const String signout_alert = '회원 탈퇴 처리가 완료되었습니다.';
 
   static const String mypage_help = '도움말';
   static const String mypage_help_title = '자주 묻는 질문 FAQ';

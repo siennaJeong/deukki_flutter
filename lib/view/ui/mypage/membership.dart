@@ -321,7 +321,6 @@ class _MemberShipState extends State<MemberShip> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     if(_userProviderModel.userVOForHttp != null) {
-      print("membership build call");
       _premium ??= _userProviderModel.userVOForHttp.premium;
       _premiumEndAt ??= _userProviderModel.userVOForHttp.premiumEndAt;
     }

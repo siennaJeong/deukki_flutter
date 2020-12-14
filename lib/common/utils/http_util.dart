@@ -44,6 +44,8 @@ class HttpUrls {
 
   static const String COUPON = "$SERVER_URL/coupons";
 
+  static const String GET_REPORTS = "$SERVER_URL/reports/weekly";
+
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-type': 'application/json',
     'authorization': 'Bearer ' + authJWT

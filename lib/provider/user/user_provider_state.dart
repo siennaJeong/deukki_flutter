@@ -17,4 +17,5 @@ class UserProviderState {
   final getUserInfo = ProviderModelResult<UserVOForHttp>();
   final getProductList = ProviderModelResult<List<ProductionVO>>();
   final updateMarketingAgree = ProviderModelResult<CommonResultVO>();
+  final getReports = ProviderModelResult<CommonResultVO>();
 }

@@ -18,4 +18,5 @@ abstract class UserRepository {
   Future<Result<CommonResultVO>> recordLearning(String authJWT, String sentenceId, LearningVO learningVO);
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT);
   Future<Result<List<ProductionVO>>> getProductList(String authJWT);
+  Future<Result<CommonResultVO>> getReports(String authJWT);
 }

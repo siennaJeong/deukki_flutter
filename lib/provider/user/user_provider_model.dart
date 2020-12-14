@@ -101,4 +101,12 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.updateMarketingAgree.set(updateMarketingAgree, notifyListeners);
   }
 
+  Future<void> getReports(String authJWT) async {
+    final getReports = _userRepository.getReports(authJWT);
+    //  리포트 점수 불러오기.
+    //  멤버십 만료일 form 다시.
+    //  결제 재테스트.
+
+  }
+
 }
