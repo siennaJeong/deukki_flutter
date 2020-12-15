@@ -258,6 +258,7 @@ class _MemberShipState extends State<MemberShip> {
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_error_canceled)));
+          print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {
           _deliverProduct();
           print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
@@ -388,6 +389,7 @@ class _MemberShipState extends State<MemberShip> {
                   ],
                 ),
                 SizedBox(width: 0),
+                Platform.isAndroid ?
                 Container(
                   margin: EdgeInsets.only(right: 60),
                   child: CommonRaisedButton(                    //  쿠폰 등록
@@ -398,7 +400,8 @@ class _MemberShipState extends State<MemberShip> {
                     fontSize: 14,
                     voidCallback: _couponRegistration
                   ),
-                ),
+                ) :
+                SizedBox(),
               ],
             ),
             SizedBox(height: _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4002 ? 22 : 0),
