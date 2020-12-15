@@ -149,7 +149,6 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
             child: GestureDetector(
               onTap: () {
                 _unFocused();
-                print("tap");
               },
               child: Container(
                 width: double.infinity,

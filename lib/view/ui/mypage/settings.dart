@@ -114,7 +114,11 @@ class _SettingsState extends State<Settings> {
 
   void _exitApp() {
     _dismissDialog();
-    SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    if(Platform.isIOS) {
+      RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+    }else {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
   }
 
   Widget _emailWidget() {
