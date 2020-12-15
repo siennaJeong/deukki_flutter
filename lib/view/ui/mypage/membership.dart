@@ -489,6 +489,51 @@ class _MemberShipState extends State<MemberShip> {
                 ],
               ),
             ),
+            SizedBox(height: 30),
+            Container(
+              margin: EdgeInsets.only(left: 60),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    child: InkWell(
+                      child: Text(
+                        Strings.mypage_setting_show_terms,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: MainColors.grey_70,
+                          color: MainColors.grey_70,
+                          fontSize: 14,
+                          fontFamily: "NotoSansKR",
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      onTap: () {
+                        RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Container(
+                    child: InkWell(
+                      child: Text(
+                        Strings.mypage_setting_show_info,
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          decorationColor: MainColors.grey_70,
+                          color: MainColors.grey_70,
+                          fontSize: 14,
+                          fontFamily: "NotoSansKR",
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      onTap: () {
+                        RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
             SizedBox(height: 24),
           ],
         ),

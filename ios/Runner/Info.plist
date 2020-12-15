@@ -71,7 +71,7 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Can We Use Your Media Library Please.</string>
+	<string>Use to store user&apos;s recording and voice files.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Can We Use Your Calendar Please.</string>
 	<key>NSContactsUsageDescription</key>
@@ -79,11 +79,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Can We Use Your Location When in usage</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Can We Use Your Microphone Please</string>
+	<string>Use to record the user&apos;s pronunciation.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Can We Use Your Motion Please</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Can We Use Your Speech Recognition Please.</string>
+	<string>Use to judge the user&apos;s pronunciation accuracy.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
