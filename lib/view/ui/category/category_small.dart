@@ -1,14 +1,18 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
 import 'package:deukki/view/ui/category/stage_dialog.dart';
+import 'package:deukki/view/ui/mypage/my_page.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -94,6 +98,25 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     });
   }
 
+  void _membershipDialog() {
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return _dialogWidget();
+      }
+    );
+  }
+
+  void _dismissDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _joinMembership() {
+    _dismissDialog();
+    Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 2);
+  }
+
   Widget _listWidget() {
     _setMainAxis();
     return Selector<CategoryProvider, List<SentenceVO>>(
@@ -165,7 +188,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           ),
         ),
       ),
-      onTap: () => {                //  ListView Item Click
+      onTap: () {                //  ListView Item Click
         if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
           resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
             categoryProvider.selectStageIndex = -1;
@@ -183,8 +206,11 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   return StageDialog(title: sentenceVO.content,);
                 }
             );
-          })
-        },
+          });
+        }else {
+          //  다이얼로그 띄우기
+          _membershipDialog();
+        }
       },
     );
   }
@@ -279,6 +305,63 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     }else {
       return Container();
     }
+  }
+
+  Widget _dialogWidget() {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+            child: Container(color: Colors.black.withOpacity(0.1)),
+          ),
+        ),
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          child: Container(
+            width: deviceWidth * 0.5,
+            height: deviceHeight * 0.43,
+            child: Column(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 32, bottom: 24),
+                      child: Text(Strings.only_membership, style: Theme.of(context).textTheme.bodyText2,),
+                    ),
+                    Container(
+                        width: (deviceWidth * 0.5) * 0.67,
+                        child: CommonRaisedButton(
+                          textColor: Colors.white,
+                          buttonColor: MainColors.purple_100,
+                          borderColor: MainColors.purple_100,
+                          buttonText: Strings.join_membership,
+                          fontSize: 16,
+                          voidCallback: _joinMembership,                 //  멤버십 가입
+                        )
+                    ),
+                    Container(
+                        width: (deviceWidth * 0.5) * 0.67,
+                        child: CommonRaisedButton(
+                          textColor: MainColors.purple_100,
+                          buttonColor: Colors.white,
+                          borderColor: MainColors.purple_100,
+                          buttonText: Strings.common_btn_close,
+                          fontSize: 16,
+                          voidCallback: _dismissDialog,       //  닫기
+                        )
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override

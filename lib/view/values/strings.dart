@@ -28,6 +28,7 @@ class Strings {
   static const String common_btn_done = '완료';
   static const String common_btn_yes = '네';
   static const String common_btn_no = '아니오';
+  static const String common_btn_close = '닫기';
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
@@ -67,6 +68,9 @@ class Strings {
   static const String category_new = 'new';
   static const String start_btn = 'Start';
   static const String play_btn = 'PLAY';
+
+  static const String only_membership = '멤버십 전용입니다.';
+  static const String join_membership = '멤버십 가입하기';
 
   static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
 

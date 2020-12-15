@@ -15,6 +15,9 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class MyPage extends StatefulWidget {
+  final initialPage;
+  MyPage({@required this.initialPage});
+
   @override
   _MyPageState createState() => _MyPageState();
 }
@@ -27,10 +30,8 @@ class _MyPageState extends State<MyPage> {
   List<BookmarkVO> bookmarks;
   double deviceWidth, deviceHeight;
 
-  PageController _pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  PageController _pageController;
+  int pages;
 
   @override
   void initState() {
@@ -163,6 +164,12 @@ class _MyPageState extends State<MyPage> {
   Widget build(BuildContext context) {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
+
+    pages ??= ModalRoute.of(context).settings.arguments;
+    if(pages != null) {
+      myPageProvider.setButtonIndex(pages);
+    }
+    _pageController = PageController(initialPage: pages == null ? 0 : pages, keepPage: true);
 
     return Stack(
       children: <Widget>[

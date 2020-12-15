@@ -155,14 +155,14 @@ class _ReportState extends State<Report> {
                     Text(
                       Strings.mypage_report_show,
                       style: TextStyle(
-                          color: MainColors.grey_100,
+                          color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,
                           fontSize: 16,
                           fontFamily: "NotoSansKR",
                           fontWeight: FontWeight.w700
                       ),
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.arrow_forward_ios, size: 17, )
+                    Icon(Icons.arrow_forward_ios, size: 17, color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,)
                   ],
                 ),
               ),
