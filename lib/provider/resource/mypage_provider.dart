@@ -19,8 +19,10 @@ class MyPageProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  initButtonIndex(int initIndex) {
+    this._selectButtonIndex = initIndex;
+  }
   getButtonIndex() => _selectButtonIndex;
-
   setButtonIndex(int selectButtonIndex) {
     this._selectButtonIndex = selectButtonIndex;
     notifyListeners();

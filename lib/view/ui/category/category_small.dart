@@ -6,6 +6,7 @@ import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
+import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
@@ -189,7 +190,29 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       ),
       onTap: () {                //  ListView Item Click
-        if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
+        if(userProviderModel.userVOForHttp.premium == 0) {
+          if(sentenceVO.premium == 0) {
+            resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+              categoryProvider.selectStageIndex = -1;
+              categoryProvider.stageAvgScore = 0;
+              categoryProvider.onSelectedSentence(sentenceVO);
+              final stageResult = resourceProviderModel.value.getSentenceStages;
+              if(stageResult.hasData) {
+                categoryProvider.setStage(stageResult.result.asValue.value);
+                categoryProvider.setPreScore(null);
+              }
+              showDialog(
+                  context: context,
+                  useSafeArea: false,
+                  builder: (BuildContext context) {
+                    return StageDialog(title: sentenceVO.content,);
+                  }
+              );
+            });
+          }else {
+            _membershipDialog();
+          }
+        }else {
           resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
             categoryProvider.selectStageIndex = -1;
             categoryProvider.stageAvgScore = 0;
@@ -207,9 +230,6 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 }
             );
           });
-        }else {
-          //  다이얼로그 띄우기
-          _membershipDialog();
         }
       },
     );

@@ -129,7 +129,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
-    RouteNavigator().go(GetRoutesName.ROUTE_MYPAGE, context);
+    Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 0);
   }
 
   @override

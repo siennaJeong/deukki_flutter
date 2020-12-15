@@ -260,6 +260,7 @@ class _MemberShipState extends State<MemberShip> {
               SnackBar(content: Text(Strings.payment_error_canceled)));
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {
           _deliverProduct();
+          print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
         }
       }else {
         print("purchase pending...");
@@ -400,9 +401,11 @@ class _MemberShipState extends State<MemberShip> {
                 ),
               ],
             ),
-            SizedBox(height: _premium == 0 ? 22 : 0),
+            SizedBox(height: _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4002 ? 22 : 0),
             //  ListView,
-            _premium == 0 ? SizedBox(child: _listWidget()) : SizedBox(width: 0),
+            _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4002
+                ? SizedBox(child: _listWidget())
+                : SizedBox(width: 0),
             SizedBox(height: 24),
             Container(
               margin: EdgeInsets.only(left: 60, right: 60),
