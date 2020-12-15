@@ -258,10 +258,8 @@ class _MemberShipState extends State<MemberShip> {
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_error_canceled)));
-          print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
-        }else if(purchaseDetails.status == PurchaseStatus.purchased) {
+        }else if(purchaseDetails.status == PurchaseStatus.purchased) {                //  결제 완료
           _deliverProduct(purchaseDetails.verificationData.localVerificationData);
-          print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
         }
       }else {
         print("purchase pending...");
@@ -278,20 +276,18 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _deliverProduct(String receipt) {
-    //  TODO: 서버 결제 완료 api 콜, 결제 재테스트
     initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
 
       _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
         final validation = _paymentProviderModel.value.paymentValidation;
-        final expireDate = validation.result.asValue.value.result['expiredDate'];
         if(validation.result.asValue.value.status == 200) {
+          final expireDate = validation.result.asValue.value.result['expiredDate'];
           setState(() {
             _premium = 1;
             _premiumEndAt = _dateFormat(expireDate);
             _userProviderModel.userVOForHttp.premium = 1;
-            _myPageProvider.setIsPaying(false);
           });
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
@@ -302,6 +298,7 @@ class _MemberShipState extends State<MemberShip> {
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_server_error)));
         }
+        _myPageProvider.setIsPaying(false);
       });
 
 
