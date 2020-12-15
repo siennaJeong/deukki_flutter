@@ -30,4 +30,9 @@ class PaymentProviderModel extends ProviderModel<PaymentProviderState> {
     await value.couponRegistration.set(couponRegistration, notifyListeners);
   }
 
+  Future<void> paymentValidation(String authJWT, String platform, String receipt, String paymentId) async {
+    final paymentValidation = _paymentRepository.paymentValidation(authJWT, platform, receipt, paymentId);
+    await value.paymentValidation.set(paymentValidation, notifyListeners);
+  }
+
 }

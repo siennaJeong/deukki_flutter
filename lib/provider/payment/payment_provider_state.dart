@@ -5,4 +5,5 @@ import 'package:deukki/provider/provider_model_result.dart';
 class PaymentProviderState {
   final paymentPreRequest = ProviderModelResult<String>();
   final couponRegistration = ProviderModelResult<int>();
+  final paymentValidation = ProviderModelResult<CommonResultVO>();
 }

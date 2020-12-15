@@ -144,6 +144,8 @@ class Strings {
   static const String mypage_membership_join = '가입하기';
   static const String mypage_membership_monthly_price = '월 환산 가격';
   static const String payment_error_canceled = '결제가 취소되었습니다.';
+  static const String payment_error = '결제 중 오류가 발생했습니다.';
+  static const String payment_server_error = '알 수 없는 오류가 발생했습니다.';
   static const String payment_completed = '결제가 완료되었습니다.';
   static const String coupon_registration = '쿠폰 등록';
   static const String coupone_input_hint = '쿠폰 번호를 입력해주세요.';

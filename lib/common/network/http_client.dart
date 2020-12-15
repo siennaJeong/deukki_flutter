@@ -83,6 +83,20 @@ class HttpClient {
     }
   }
 
+  Future<Result<dynamic>> paymentRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
+    Response response;
+    try {
+      response = await post(path, headers: headers, body: body);
+      if(response.body.isEmpty) {
+        return Result.value(null);
+      }else {
+        return Result.value(jsonDecode(response.body));
+      }
+    }on SocketException {
+      throw Result.error(ConnectionException());
+    }
+  }
+
   Future<Result<dynamic>> recordRequest(String path, Map<String, String> headers, Map<String, String> body) async {
     Response response;
     try {

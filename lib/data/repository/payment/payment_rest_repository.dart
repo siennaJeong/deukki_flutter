@@ -19,6 +19,12 @@ class PaymentRestRepository implements PaymentRepository {
     'productionIdx': "$productionIdx",
   };
 
+  Map<String, dynamic> validateToJson(String platform, String receipt, String paymentId) => <String, dynamic>{
+    'platform': platform,
+    'receipt': receipt,
+    'paymentId': paymentId
+  };
+
   @override
   Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) async {
     final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, productionIdx));
@@ -36,6 +42,17 @@ class PaymentRestRepository implements PaymentRepository {
     if(couponRegistration.isValue) {
       //final result = couponRegistration.asValue.value['status'];
       return Result.value(couponRegistration.asValue.value);
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<CommonResultVO>> paymentValidation(String authJWT, String platform, String receipt, String paymentId) async {
+    final paymentValidation = await _httpClient.paymentRequest(HttpUrls.PAYMENT_VALIDATION, HttpUrls.postHeaders(authJWT), validateToJson(platform, receipt, paymentId));
+    if(paymentValidation.isValue) {
+      print("valid value : ${paymentValidation.asValue.value}");
+      return Result.value(CommonResultVO.fromJson(paymentValidation.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

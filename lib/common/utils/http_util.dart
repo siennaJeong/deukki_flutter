@@ -40,7 +40,7 @@ class HttpUrls {
   static const String GET_PRODUCT = "$SERVER_URL/productions";
 
   static const String PRE_PAYMENT = "$SERVER_URL/payments";
-  static const String PAYMENT_COMPLETE = "$PRE_PAYMENT/complete";
+  static const String PAYMENT_VALIDATION = "$PRE_PAYMENT/validation";
 
   static const String COUPON = "$SERVER_URL/coupons";
 

@@ -260,7 +260,7 @@ class _MemberShipState extends State<MemberShip> {
               SnackBar(content: Text(Strings.payment_error_canceled)));
           print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {
-          _deliverProduct();
+          _deliverProduct(purchaseDetails.verificationData.localVerificationData);
           print("receipt : ${purchaseDetails.verificationData.localVerificationData}");
         }
       }else {
@@ -277,20 +277,36 @@ class _MemberShipState extends State<MemberShip> {
     });
   }
 
-  void _deliverProduct() {
+  void _deliverProduct(String receipt) {
     //  TODO: 서버 결제 완료 api 콜, 결제 재테스트
     initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
-      scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
+
+      _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
+        final validation = _paymentProviderModel.value.paymentValidation;
+        final expireDate = validation.result.asValue.value.result['expiredDate'];
+        if(validation.result.asValue.value.status == 200) {
+          setState(() {
+            _premium = 1;
+            _premiumEndAt = _dateFormat(expireDate);
+            _userProviderModel.userVOForHttp.premium = 1;
+            _myPageProvider.setIsPaying(false);
+          });
+          scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
+        }else if(validation.result.asValue.value.status == 400) {
+          scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(Strings.payment_error)));
+        }else {
+          scaffoldKey.currentState.showSnackBar(
+              SnackBar(content: Text(Strings.payment_server_error)));
+        }
+      });
+
+
     }
-    setState(() {
-      _premium = 1;
-      _premiumEndAt = _dateFormat("2021-12-13");
-      _userProviderModel.userVOForHttp.premium = 1;
-      _myPageProvider.setIsPaying(false);
-    });
+
   }
 
   void _buyProduct(ProductDetails productDetails, bool isConsumable) {
@@ -404,9 +420,9 @@ class _MemberShipState extends State<MemberShip> {
                 SizedBox(),
               ],
             ),
-            SizedBox(height: _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4002 ? 22 : 0),
+            SizedBox(height: _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4003 ? 22 : 0),
             //  ListView,
-            _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4002
+            _premium == 0 && _userProviderModel.userVOForHttp.premiumType == 4000 || _userProviderModel.userVOForHttp.premiumType == 4003
                 ? SizedBox(child: _listWidget())
                 : SizedBox(width: 0),
             SizedBox(height: 24),
