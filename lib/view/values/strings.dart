@@ -100,6 +100,7 @@ class Strings {
   static const String mypage_report_accuracy = '발음 정확도 : ';
   static const String mypage_report_show = '리포트 보러가기';
   static const String mypage_report_wait_update = '추후 업데이트 예정입니다.';
+  static const String mypage_report_not_yet = '지난 주 리포트에 대한 정보가 없습니다.';
 
   static const String mypage_bookmark = '내 북마크';
   static const String mypage_bookmark_nothing = '북마크한 단어/문장이 없습니다.';

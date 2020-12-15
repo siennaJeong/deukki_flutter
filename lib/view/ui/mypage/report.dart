@@ -16,6 +16,7 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
 
@@ -96,81 +97,87 @@ class _ReportState extends State<Report> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    return Container(
-      margin: EdgeInsets.only(top: 16),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 60),
-                child: Text(
-                  "${userProviderModel.userVOForHttp.name}${Strings.mypage_report_title}",
-                  style: TextStyle(
-                    color: MainColors.grey_100,
-                    fontSize: 16,
-                    fontFamily: "NotoSansKR",
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(top: 3, left: 60),
-                child: Text(
-                  "${Strings.mypage_report_script} ${userProviderModel.userVOForHttp.name}${Strings.mypage_report_script_2}",
-                  style: TextStyle(
-                      color: MainColors.grey_100,
-                      fontSize: 16,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.w400
-                  ),
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      key: scaffoldKey,
+      body: Container(
+          margin: EdgeInsets.only(top: 16),
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _cardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
-                  SizedBox(width: 16),
-                  _cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
-                ],
-              ),
-            ],
-          ),
-          Positioned(                   //  리포트 보러가기
-            bottom: 0,
-            right: 0,
-            child: GestureDetector(
-              onTap: () async {
-                if(weeklyReports.link != "") {
-                  await launch("${Strings.weekly_report_url}?link=${weeklyReports.link}");
-                }
-              },
-              child: Container(
-                margin: EdgeInsets.only(bottom: 40, right: 40),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      Strings.mypage_report_show,
+                  Container(
+                    margin: EdgeInsets.only(left: 60),
+                    child: Text(
+                      "${userProviderModel.userVOForHttp.name}${Strings.mypage_report_title}",
                       style: TextStyle(
-                          color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,
-                          fontSize: 16,
-                          fontFamily: "NotoSansKR",
-                          fontWeight: FontWeight.w700
+                        color: MainColors.grey_100,
+                        fontSize: 16,
+                        fontFamily: "NotoSansKR",
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Icon(Icons.arrow_forward_ios, size: 17, color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,)
-                  ],
-                ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 3, left: 60),
+                    child: Text(
+                      "${Strings.mypage_report_script} ${userProviderModel.userVOForHttp.name}${Strings.mypage_report_script_2}",
+                      style: TextStyle(
+                          color: MainColors.grey_100,
+                          fontSize: 16,
+                          fontFamily: "NotoSansKR",
+                          fontWeight: FontWeight.w400
+                      ),
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      _cardWidget(MainColors.yellow_40, AppImages.hearingIcon, Strings.mypage_report_listening_score, Strings.mypage_report_listening_average, false),
+                      SizedBox(width: 16),
+                      _cardWidget(MainColors.yellow_60, AppImages.micIcon, Strings.mypage_report_accuracy, null, true)
+                    ],
+                  ),
+                ],
               ),
-            ),
-          )
-        ],
-      )
-
+              Positioned(                   //  리포트 보러가기
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: () async {
+                    if(weeklyReports.link != "") {
+                      await launch("${Strings.weekly_report_url}?link=${weeklyReports.link}");
+                    }else {
+                      scaffoldKey.currentState.showSnackBar(
+                          SnackBar(content: Text(Strings.mypage_report_not_yet), duration: Duration(seconds: 2)));
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(bottom: 40, right: 40),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          Strings.mypage_report_show,
+                          style: TextStyle(
+                              color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,
+                              fontSize: 16,
+                              fontFamily: "NotoSansKR",
+                              fontWeight: FontWeight.w700
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                        Icon(Icons.arrow_forward_ios, size: 17, color: weeklyReports.link == "" ? MainColors.grey_70 : MainColors.grey_100,)
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+      ),
     );
   }
 }

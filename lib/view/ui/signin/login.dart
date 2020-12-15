@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.apple_sign_in_only_ios)));
+            SnackBar(content: Text(Strings.apple_sign_in_only_ios), duration: Duration(seconds: 2)));
         return;
       }
     }else {

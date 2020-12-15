@@ -281,7 +281,7 @@ class _MemberShipState extends State<MemberShip> {
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
       scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text(Strings.payment_completed)));
+          SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
     }
     setState(() {
       _premium = 1;

@@ -250,7 +250,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           alignment: AlignmentDirectional.center,
           decoration: BoxDecoration(
               color: MainColors.black_50,
-              borderRadius: BorderRadius.circular(24)
+              borderRadius: BorderRadius.circular(16)
           ),
           child: Icon(Icons.lock, size: 28, color: Colors.white,)
       );
@@ -322,7 +322,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           ),
           child: Container(
             width: deviceWidth * 0.5,
-            height: deviceHeight * 0.43,
+            height: deviceHeight * 0.5,
             child: Column(
               children: <Widget>[
                 Column(
@@ -343,6 +343,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           voidCallback: _joinMembership,                 //  멤버십 가입
                         )
                     ),
+                    SizedBox(height: 4),
                     Container(
                         width: (deviceWidth * 0.5) * 0.67,
                         child: CommonRaisedButton(
@@ -354,6 +355,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           voidCallback: _dismissDialog,       //  닫기
                         )
                     ),
+                    SizedBox(height: 20)
                   ],
                 ),
               ],
