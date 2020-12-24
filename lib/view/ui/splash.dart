@@ -31,7 +31,7 @@ void main() async {
     InAppPurchaseConnection.enablePendingPurchases();
   }
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
+  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight])
   .then((_) {
     runApp(
         MultiProvider(
