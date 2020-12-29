@@ -96,9 +96,9 @@ class _StageDialogState extends State<StageDialog> {
     double size;
     if(score != null) {
       if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
-        size = deviceWidth > 700 ? 32 : 24;
+        size = deviceHeight > 390 ? 32 : 24;
       }else {
-        size = deviceWidth > 700 ? 24 : 16;
+        size = deviceHeight > 390 ? 24 : 16;
       }
       switch(score) {
         case 1:
@@ -241,8 +241,6 @@ class _StageDialogState extends State<StageDialog> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
-
-    print("device height : $deviceHeight");
 
     categoryProvider.initPreScore();
 
