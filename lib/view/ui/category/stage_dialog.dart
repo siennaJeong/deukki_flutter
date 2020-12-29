@@ -57,7 +57,7 @@ class _StageDialogState extends State<StageDialog> {
       builder: (context, stages, child) {
         return Expanded(
           child: Container(
-            margin: EdgeInsets.only(top: 8, bottom: deviceHeight > 380 ? 30 : 20, left: 36),
+            margin: EdgeInsets.only(top: 8, bottom: deviceHeight > 390 ? 30 : 20, left: 36),
             alignment: AlignmentDirectional.bottomCenter,
             child: ListView.separated(
               shrinkWrap: false,
@@ -82,7 +82,7 @@ class _StageDialogState extends State<StageDialog> {
     return GestureDetector(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: deviceHeight > 700 ? MainAxisAlignment.center : MainAxisAlignment.end,
+        mainAxisAlignment: deviceWidth > 700 ? MainAxisAlignment.center : MainAxisAlignment.end,
         children: <Widget>[
           _scoreWidget(stageVO.score, index),
           _stageWidget(stageVO, index)
@@ -96,9 +96,9 @@ class _StageDialogState extends State<StageDialog> {
     double size;
     if(score != null) {
       if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
-        size = deviceHeight > 700 ? 32 : 24;
+        size = deviceWidth > 700 ? 32 : 24;
       }else {
-        size = deviceHeight > 700 ? 24 : 16;
+        size = deviceWidth > 700 ? 24 : 16;
       }
       switch(score) {
         case 1:
@@ -242,6 +242,8 @@ class _StageDialogState extends State<StageDialog> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
+    print("device height : $deviceHeight");
+
     categoryProvider.initPreScore();
 
     return Stack(
@@ -258,12 +260,12 @@ class _StageDialogState extends State<StageDialog> {
           ),
           child: Container(
             alignment: AlignmentDirectional.center,
-            margin: EdgeInsets.only(top: deviceHeight > 700 ? 40 : 0, bottom: deviceHeight > 700 ? 40 : 0),
+            //margin: EdgeInsets.only(top: deviceHeight > 700 ? 40 : 0, bottom: deviceHeight > 700 ? 40 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(top: deviceHeight > 380 ? 30 : 20, bottom: 4),
+                  margin: EdgeInsets.only(top: deviceHeight > 390 ? 30 : 20, bottom: 4),
                   child: Text(
                     '$_title',
                     style: Theme.of(context).textTheme.headline4,
