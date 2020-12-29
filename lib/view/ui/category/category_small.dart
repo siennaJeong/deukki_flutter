@@ -341,8 +341,8 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
             borderRadius: BorderRadius.circular(24.0),
           ),
           child: Container(
-            width: deviceWidth * 0.5,
-            height: deviceHeight * 0.5,
+            width: deviceHeight > 390 ? deviceWidth * 0.5 : deviceWidth * 0.52,
+            height: deviceHeight > 390 ? deviceHeight * 0.5 : deviceHeight * 0.52,
             child: Column(
               children: <Widget>[
                 Column(
