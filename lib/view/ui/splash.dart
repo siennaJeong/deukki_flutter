@@ -110,7 +110,7 @@ class _SplashState extends State<Splash> {
       return Container(
         alignment: AlignmentDirectional.center,
         color: MainColors.green_80,
-        child: CupertinoActivityIndicator(radius: 20)
+        child: CupertinoActivityIndicator(radius: 15)
       );
     }
     if(forceUpdateResult.result.asValue.value.requireInstall) {

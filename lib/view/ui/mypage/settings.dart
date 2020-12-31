@@ -28,11 +28,6 @@ class _SettingsState extends State<Settings> {
   AuthServiceAdapter _authServiceAdapter;
   UserProviderModel _userProviderModel;
 
-  AudioManager _audioManager;
-  int maxVoiceVol, currentVoiceVol;
-  int maxEffectVol, currentEffectVol;
-  var voiceControl;
-
   double deviceWidth, deviceHeight;
   bool _kakaoNotification, _clickEnable;
 

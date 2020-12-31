@@ -23,6 +23,8 @@ class _ReportState extends State<Report> {
   double deviceWidth, deviceHeight;
   ReportVO weeklyReports;
 
+  bool _isClick = false;
+
   @override
   void didChangeDependencies() {
     myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
@@ -147,15 +149,20 @@ class _ReportState extends State<Report> {
                 right: 0,
                 child: GestureDetector(
                   onTap: () async {
-                    if(weeklyReports.link != "") {
-                      await launch("${Strings.weekly_report_url}?link=${weeklyReports.link}");
-                    }else {
-                      scaffoldKey.currentState.showSnackBar(
-                          SnackBar(content: Text(Strings.mypage_report_not_yet), duration: Duration(seconds: 2)));
+                    if(!_isClick) {
+                      _isClick = true;
+                      if(weeklyReports.link != "") {
+                        await launch("${Strings.weekly_report_url}?link=${weeklyReports.link}");
+                        _isClick = false;
+                      }else {
+                        scaffoldKey.currentState.showSnackBar(
+                            SnackBar(content: Text(Strings.mypage_report_not_yet), duration: Duration(seconds: 2)));
+                        _isClick = false;
+                      }
                     }
                   },
                   child: Container(
-                    margin: EdgeInsets.only(bottom: 40, right: 40),
+                    margin: EdgeInsets.only(bottom: deviceHeight > 390 ? 40 : 20, right: 60),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[

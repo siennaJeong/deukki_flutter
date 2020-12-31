@@ -10,6 +10,7 @@ import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:device_info/device_info.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
@@ -66,11 +67,14 @@ class _LoginState extends State<Login> {
               _login(authType, value, authServiceAdapter.fbUid);
             }else {
               RouteNavigator().go(GetRoutesName.ROUTE_TERMS, context);
+              authServiceAdapter.setIsSigning(false);
             }
           }else if(isSignUp.result.isError) {
             print("isSignUp error : " + isSignUp.result.asError.error.toString());
           }
         });
+      }else if(value == "cancel") {
+        authServiceAdapter.setIsSigning(false);
       }
     });
   }
@@ -85,6 +89,7 @@ class _LoginState extends State<Login> {
         if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
+          authServiceAdapter.setIsSigning(false);
         }
       }
     });
@@ -128,7 +133,10 @@ class _LoginState extends State<Login> {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(70.0))
         ),
-        onPressed: () => _checkSignUp(serviceType, authServiceType),
+        onPressed: () {
+          authServiceAdapter.setIsSigning(true);
+          _checkSignUp(serviceType, authServiceType);
+        },
       ),
     );
   }
@@ -189,7 +197,10 @@ class _LoginState extends State<Login> {
           color: color,
           shape: CircleBorder(),
           padding: EdgeInsets.all(11.0),
-          onPressed: () => { _checkSignUp(authTypeString, authServiceType) }
+          onPressed: () {
+            authServiceAdapter.setIsSigning(true);
+            _checkSignUp(authTypeString, authServiceType);
+          }
       )
   );
 
@@ -213,31 +224,43 @@ class _LoginState extends State<Login> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      key: scaffoldKey,
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
-      body: Center(
-        child: SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget> [
-              Container(
-                  margin: EdgeInsets.only(top: 50),
-                  width: deviceWidth * 0.2,
-                  child: Image.asset(
-                    AppImages.appLogoMint,
-                  )
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          key: scaffoldKey,
+          backgroundColor: Colors.white,
+          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomPadding: false,
+          body: Center(
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget> [
+                  Container(
+                      margin: EdgeInsets.only(top: 50),
+                      width: deviceWidth * 0.2,
+                      child: Image.asset(
+                        AppImages.appLogoMint,
+                      )
+                  ),
+                  SizedBox(height: Platform.isIOS ? deviceHeight * 0.11 : deviceHeight * 0.16),
+                  Platform.isIOS ? _iosWidget() : _androidWidget(),
+                ],
               ),
-              SizedBox(height: Platform.isIOS ? deviceHeight * 0.11 : deviceHeight * 0.16),
-              Platform.isIOS ? _iosWidget() : _androidWidget(),
-            ],
+            ),
           ),
         ),
-      ),
+        Visibility(
+          visible: authServiceAdapter.getIsSigning(),
+          child: Container(
+            color: Colors.black26,
+            alignment: AlignmentDirectional.center,
+            child: CupertinoActivityIndicator(radius: 14),
+          ),
+        ),
+      ],
     );
   }
 }

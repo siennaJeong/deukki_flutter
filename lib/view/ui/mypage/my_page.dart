@@ -193,7 +193,7 @@ class _MyPageState extends State<MyPage> {
           child: Container(
             color: Colors.black26,
             alignment: AlignmentDirectional.center,
-            child: CupertinoActivityIndicator(),
+            child: CupertinoActivityIndicator(radius: 14),
           ),
         ),
       ],

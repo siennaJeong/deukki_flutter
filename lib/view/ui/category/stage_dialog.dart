@@ -35,6 +35,8 @@ class _StageDialogState extends State<StageDialog> {
   String _title;
   int _selectedStageIdx, _selectedIndex;
 
+  bool _isClick = false;
+
   @override
   void initState() {
     _title = widget.title;
@@ -96,9 +98,9 @@ class _StageDialogState extends State<StageDialog> {
     double size;
     if(score != null) {
       if(categoryProvider.selectStageIndex != null && categoryProvider.selectStageIndex == index) {
-        size = deviceHeight > 390 ? 32 : 24;
+        size = deviceHeight > 420 ? 32 : 24;
       }else {
-        size = deviceHeight > 390 ? 24 : 16;
+        size = deviceHeight > 420 ? 24 : 16;
       }
       switch(score) {
         case 1:
@@ -217,23 +219,27 @@ class _StageDialogState extends State<StageDialog> {
   }
 
   void _stageStart() {        //  Start Click
-    resourceProviderModel.getPronunciation(
-        authServiceAdapter.authJWT,
-        categoryProvider.selectedSentence.id,
-        categoryProvider.selectStageIdx,
-        categoryProvider.selectStageIndex == 0 ? true : false,
-        userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
-    ).then((value) {
-      final commonResult = resourceProviderModel.value.getPronunciation;
-      final pronunResult = commonResult.result.asValue.value.result;
-      categoryProvider.setPronunciationList(
-          pronunResult['wrongPronunciationList'],
-          PronunciationVO.fromJson(pronunResult['rightPronunciation'])
-      );
-      categoryProvider.initStepProgress();
-      categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
-      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
-    });
+    if(!_isClick) {
+      _isClick = true;
+      resourceProviderModel.getPronunciation(
+          authServiceAdapter.authJWT,
+          categoryProvider.selectedSentence.id,
+          categoryProvider.selectStageIdx,
+          categoryProvider.selectStageIndex == 0 ? true : false,
+          userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
+      ).then((value) {
+        final commonResult = resourceProviderModel.value.getPronunciation;
+        final pronunResult = commonResult.result.asValue.value.result;
+        categoryProvider.setPronunciationList(
+            pronunResult['wrongPronunciationList'],
+            PronunciationVO.fromJson(pronunResult['rightPronunciation'])
+        );
+        categoryProvider.initStepProgress();
+        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
+        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+        _isClick = false;
+      });
+    }
   }
 
   @override

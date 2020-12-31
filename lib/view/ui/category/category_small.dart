@@ -42,6 +42,8 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   List<num> mainAxis = [];
   List<SentenceVO> sentenceList = [];
 
+  bool _isClick = false;
+
   @override
   void initState() {
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
@@ -190,49 +192,59 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         ),
       ),
       onTap: () {                //  ListView Item Click
-        if(userProviderModel.userVOForHttp.premium == 0) {
-          if(sentenceVO.premium == 0) {
-            resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
-              categoryProvider.selectStageIndex = -1;
-              categoryProvider.stageAvgScore = 0;
-              categoryProvider.onSelectedSentence(sentenceVO);
-              final stageResult = resourceProviderModel.value.getSentenceStages;
-              if(stageResult.hasData) {
-                categoryProvider.setStage(stageResult.result.asValue.value);
-                categoryProvider.setPreScore(null);
-              }
-              showDialog(
-                  context: context,
-                  useSafeArea: false,
-                  builder: (BuildContext context) {
-                    return StageDialog(title: sentenceVO.content,);
-                  }
-              );
-            });
-          }else {
-            _membershipDialog();
-          }
-        }else {
-          resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
-            categoryProvider.selectStageIndex = -1;
-            categoryProvider.stageAvgScore = 0;
-            categoryProvider.onSelectedSentence(sentenceVO);
-            final stageResult = resourceProviderModel.value.getSentenceStages;
-            if(stageResult.hasData) {
-              categoryProvider.setStage(stageResult.result.asValue.value);
-              categoryProvider.setPreScore(null);
-            }
-            showDialog(
-                context: context,
-                useSafeArea: false,
-                builder: (BuildContext context) {
-                  return StageDialog(title: sentenceVO.content,);
-                }
-            );
-          });
+        if(!_isClick) {
+          _isClick = true;
+          _onItemClick(sentenceVO);
         }
       },
     );
+  }
+
+  void _onItemClick(SentenceVO sentenceVO) {
+    if(userProviderModel.userVOForHttp.premium == 0) {
+      if(sentenceVO.premium == 0) {
+        resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+          categoryProvider.selectStageIndex = -1;
+          categoryProvider.stageAvgScore = 0;
+          categoryProvider.onSelectedSentence(sentenceVO);
+          final stageResult = resourceProviderModel.value.getSentenceStages;
+          if(stageResult.hasData) {
+            categoryProvider.setStage(stageResult.result.asValue.value);
+            categoryProvider.setPreScore(null);
+          }
+          _isClick = false;
+          showDialog(
+              context: context,
+              useSafeArea: false,
+              builder: (BuildContext context) {
+                return StageDialog(title: sentenceVO.content,);
+              }
+          );
+        });
+      }else {
+        _isClick = false;
+        _membershipDialog();
+      }
+    }else {
+      resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+        categoryProvider.selectStageIndex = -1;
+        categoryProvider.stageAvgScore = 0;
+        categoryProvider.onSelectedSentence(sentenceVO);
+        final stageResult = resourceProviderModel.value.getSentenceStages;
+        if(stageResult.hasData) {
+          categoryProvider.setStage(stageResult.result.asValue.value);
+          categoryProvider.setPreScore(null);
+        }
+        _isClick = false;
+        showDialog(
+            context: context,
+            useSafeArea: false,
+            builder: (BuildContext context) {
+              return StageDialog(title: sentenceVO.content,);
+            }
+        );
+      });
+    }
   }
 
   Widget _newTagWidget(int isNew) {

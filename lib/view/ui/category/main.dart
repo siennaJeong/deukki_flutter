@@ -89,7 +89,7 @@ class _MainCategoryState extends State<MainCategory> {
                 ),
                 elevation: 0,
                 child: Container(
-                  width: deviceWidth * 0.19,
+                  width: deviceHeight > 390 ? deviceWidth * 0.19 : deviceWidth * 0.172,
                   child: Center(
                     child: Stack(
                       alignment: AlignmentDirectional.center,

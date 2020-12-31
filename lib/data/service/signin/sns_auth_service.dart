@@ -71,20 +71,24 @@ class SNSAuthService {
 
   Future<String> signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken
-    );
-    final UserCredential userCredential = await authExceptionHandler(googleCredential);
-    if(userCredential.user.email.isNotEmpty) {
-      _email = userCredential.user.email;
+    if(googleUser != null) {
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken
+      );
+      final UserCredential userCredential = await authExceptionHandler(googleCredential);
+      if(userCredential.user.email.isNotEmpty) {
+        _email = userCredential.user.email;
+      }else {
+        _email = "";
+      }
+      _name = userCredential.user.displayName;
+      _fbUid = userCredential.user.uid;
+      return googleUser.id;
     }else {
-      _email = "";
+      return "cancel";
     }
-    _name = userCredential.user.displayName;
-    _fbUid = userCredential.user.uid;
-    return googleUser.id;
   }
 
   Future<String> signInWithFacebook() async {

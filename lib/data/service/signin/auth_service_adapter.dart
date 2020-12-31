@@ -34,9 +34,12 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   String _kakaoNoti;
   String socialId, socialMethod, marketingMethod, phone, fbUid;
 
+  bool _isSigning = false;
+
   UserVO get userVO => _userVO;
   String get authJWT => _authJWT;
   String get kakaoNoti => _kakaoNoti;
+  getIsSigning() => _isSigning;
 
   set authJWT(String value) {
     _authJWT = value;
@@ -45,6 +48,11 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
 
   set kakaoNoti(String value) {
     this._kakaoNoti = value;
+  }
+
+  setIsSigning(bool isSigning) {
+    this._isSigning = isSigning;
+    notifyListeners();
   }
 
   AuthServiceAdapter(this._authJWT, {this.sharedHelper, this.dbHelper}) {
@@ -150,13 +158,13 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     return true;
   }
 
-  signInDone(String authJWT, String authType) async {
+  signInDone(String authJWT, String authType) async {     //  로그인
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, authType);
     _authJWT = authJWT;
   }
 
-  signUpDone(String authJWT) async {
+  signUpDone(String authJWT) async {        //  회원가입
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
     _authJWT = authJWT;
     dbHelper.insertUser(userVO);

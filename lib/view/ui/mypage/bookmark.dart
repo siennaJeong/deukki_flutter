@@ -29,6 +29,8 @@ class _BookMarkState extends State<BookMark> {
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
 
+  bool _isClick = false;
+
   @override
   void didChangeDependencies() {
     _bookmarkList = widget.bookmarkList;
@@ -127,26 +129,30 @@ class _BookMarkState extends State<BookMark> {
       ),
       onTap: () {
         //  stage quiz 화면으로
-        resourceProviderModel.getPronunciation(
-            authServiceAdapter.authJWT,
-            _bookmarkList[index].sentenceId,
-            _bookmarkList[index].stageIdx,
-            _bookmarkList[index].stage == 1 ? true : false,
-            userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
-        ).then((value) {
-          final commonResult = resourceProviderModel.value.getPronunciation;
-          final pronunResult = commonResult.result.asValue.value.result;
-          categoryProvider.setPronunciationList(
-              pronunResult['wrongPronunciationList'],
-              PronunciationVO.fromJson(pronunResult['rightPronunciation'])
-          );
-          categoryProvider.onSelectedStage(_bookmarkList[index].stage - 1, _bookmarkList[index].stageIdx);
-          categoryProvider.setSentenceTitle(_bookmarkList[index].content);
-          categoryProvider.initStepProgress();
-          categoryProvider.onBookMark(true);
-          categoryProvider.onRootBookmark(true);
-          RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
-        });
+        if(!_isClick) {
+          _isClick = true;
+          resourceProviderModel.getPronunciation(
+              authServiceAdapter.authJWT,
+              _bookmarkList[index].sentenceId,
+              _bookmarkList[index].stageIdx,
+              _bookmarkList[index].stage == 1 ? true : false,
+              userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
+          ).then((value) {
+            final commonResult = resourceProviderModel.value.getPronunciation;
+            final pronunResult = commonResult.result.asValue.value.result;
+            categoryProvider.setPronunciationList(
+                pronunResult['wrongPronunciationList'],
+                PronunciationVO.fromJson(pronunResult['rightPronunciation'])
+            );
+            categoryProvider.onSelectedStage(_bookmarkList[index].stage - 1, _bookmarkList[index].stageIdx);
+            categoryProvider.setSentenceTitle(_bookmarkList[index].content);
+            categoryProvider.initStepProgress();
+            categoryProvider.onBookMark(true);
+            categoryProvider.onRootBookmark(true);
+            RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+            _isClick = false;
+          });
+        }
       },
     );
   }
