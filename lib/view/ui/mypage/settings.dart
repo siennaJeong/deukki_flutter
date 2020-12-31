@@ -30,6 +30,8 @@ class _SettingsState extends State<Settings> {
 
   double deviceWidth, deviceHeight;
   bool _kakaoNotification, _clickEnable;
+  int _loginMethod;
+  String _email;
 
   PackageInfo _packageInfo;
 
@@ -130,7 +132,7 @@ class _SettingsState extends State<Settings> {
               child: Container(
                 alignment: AlignmentDirectional.center,
                 margin: EdgeInsets.only(right: 8, left: 16),
-                child: _snsLogo(_userProviderModel.userVOForHttp.loginMethod),
+                child: _snsLogo(_loginMethod),
               )
             ),
             Expanded(
@@ -138,7 +140,7 @@ class _SettingsState extends State<Settings> {
               child: Container(
                 padding: EdgeInsets.only(top: 16, bottom: 16),
                 child: Text(
-                 _userProviderModel.userVOForHttp.email,
+                 _email,
                   style: TextStyle(
                       color: MainColors.grey_100,
                       fontFamily: "NotoSansKR",
@@ -216,9 +218,9 @@ class _SettingsState extends State<Settings> {
       ),
       onTap: () {
         _authServiceAdapter.logout();                             //  Firebase 로그아웃
-        _userProviderModel.userVOForHttp = null;
         //_userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
         RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+        _userProviderModel.userVOForHttp = null;
       },
     );
   }
@@ -487,6 +489,11 @@ class _SettingsState extends State<Settings> {
       _kakaoNotification ??= _authServiceAdapter.kakaoNoti == "true" ? true : false;
     }else {
       _kakaoNotification ??= _userProviderModel.userVOForHttp.loginMethod == LoginMethod.kakao ? true : false;
+    }
+
+    if(_userProviderModel.userVOForHttp != null) {
+      _loginMethod = _userProviderModel.userVOForHttp.loginMethod;
+      _email = _userProviderModel.userVOForHttp.email;
     }
 
     return Scaffold(
