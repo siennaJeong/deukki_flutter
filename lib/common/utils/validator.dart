@@ -39,4 +39,13 @@ class Validator {
       return null;
     }
   }
+
+  String couponValidation(String value) {
+    final valid = RegExp(r"^[a-zA-Z0-9.-]+$");
+    if(value.length > 5 && valid.hasMatch(value)) {
+      return null;
+    }else {
+      return Strings.coupon_error;
+    }
+  }
 }

@@ -15,7 +15,7 @@ class PrivacyTerms extends StatelessWidget {
 class PrivacyInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return _privacyWidget(Strings.sign_up_terms_info, Strings.privacy_info_url, context);
+    return _privacyWidget(Strings.sign_up_terms_info, Strings.privacy_privacy_url, context);
   }
 }
 

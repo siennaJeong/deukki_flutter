@@ -3,6 +3,7 @@ import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 
 abstract class UserRepository {
@@ -11,11 +12,12 @@ abstract class UserRepository {
   Future<Result<CommonResultVO>> signOut(String authJWT);
   Future<Result<CommonResultVO>> login(String authType, String authId, String fbUid);
   Future<Result<CommonResultVO>> logout(String authJWT);
-  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement);
+  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement, String phone);
   Future<Result<CommonResultVO>> updateBookmark(String authJWT, String sentenceId, int stageIdx);
   Future<Result<List<BookmarkVO>>> getBookmark(String authJWT);
   Future<Result<CommonResultVO>> deleteBookmark(String authJWT, int bookmarkIdx);
   Future<Result<CommonResultVO>> recordLearning(String authJWT, String sentenceId, LearningVO learningVO);
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT);
   Future<Result<List<ProductionVO>>> getProductList(String authJWT);
+  Future<Result<ReportVO>> getReports(String authJWT);
 }

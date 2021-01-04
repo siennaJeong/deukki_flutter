@@ -1,5 +1,4 @@
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:async/async.dart';
@@ -7,13 +6,11 @@ import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
 import 'package:deukki/common/network/http_client.dart';
 import 'package:deukki/common/utils/http_util.dart';
-import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:deukki/data/repository/category/category_repository.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
 class CategoryRestRepository implements CategoryRepository {

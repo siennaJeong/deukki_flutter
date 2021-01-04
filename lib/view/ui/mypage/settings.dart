@@ -1,14 +1,19 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
@@ -55,19 +60,64 @@ class _SettingsState extends State<Settings> {
     _clickEnable = false;
     if(!_kakaoNotification) {
       _authServiceAdapter.changeKakaoNoti(false);
-      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , false).then((value) {
+      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , false, "").then((value) {
         _clickEnable = true;
       });
     }else {
       _authServiceAdapter.changeKakaoNoti(true);
       if(_userProviderModel.userVOForHttp.loginMethod != LoginMethod.kakao) {
         _authServiceAdapter.signInWithSNS(AuthServiceType.Kakao).then((value) {
-          //  번호 업데이트.
+          if(value.isNotEmpty && value != "cancel") {
+            _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true, _authServiceAdapter.phone).then((value) {
+              _clickEnable = true;
+            });
+          }else {
+            print("kakao alarm login cancel");
+            setState(() {
+              _kakaoNotification = false;
+            });
+
+            _authServiceAdapter.changeKakaoNoti(false);
+          }
+
         });
       }
-      _userProviderModel.updateMarketingAgree(_authServiceAdapter.authJWT, AuthService.KAKAO_NOTIFICATION , true).then((value) {
-        _clickEnable = true;
-      });
+    }
+  }
+
+  void _showSignOutConfirm() {
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return _confirmDialog(Strings.signout_confirm, true);
+      }
+    );
+  }
+
+  void _showSignOutAlert() {
+    _userProviderModel.signOut(_authServiceAdapter.authJWT);
+    _authServiceAdapter.logout();
+    _dismissDialog();
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return _confirmDialog(Strings.signout_alert, false);
+      }
+    );
+  }
+
+  void _dismissDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _exitApp() {
+    _dismissDialog();
+    if(Platform.isIOS) {
+      RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+    }else {
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
     }
   }
 
@@ -296,44 +346,137 @@ class _SettingsState extends State<Settings> {
 
   Widget _showTerms() {
     return Container(
-      margin: EdgeInsets.only(top: 16, left: 20),
-      child: Row(
+      margin: EdgeInsets.only(top: 16, left: 20, right: 20),
+      child: Stack(
         children: <Widget>[
-          Container(
-            child: InkWell(
-              child: Text(
-                Strings.mypage_setting_show_terms,
-                style: TextStyle(
+          Row(
+            children: <Widget>[
+              Container(
+                child: InkWell(
+                  child: Text(
+                    Strings.mypage_setting_show_terms,
+                    style: TextStyle(
+                        color: MainColors.grey_80,
+                        fontSize: 16,
+                        fontFamily: "NotoSansKR",
+                        fontWeight: FontWeight.w400
+                    ),
+                  ),
+                  onTap: () {
+                    RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
+                  },
+                ),
+              ),
+              SizedBox(width: 40),
+              Container(
+                child: InkWell(
+                  child: Text(
+                    Strings.mypage_setting_show_info,
+                    style: TextStyle(
+                        color: MainColors.grey_80,
+                        fontSize: 16,
+                        fontFamily: "NotoSansKR",
+                        fontWeight: FontWeight.w400
+                    ),
+                  ),
+                  onTap: () {
+                    RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
+                  },
+                ),
+              )
+            ],
+          ),
+          Positioned(
+            right: 0,
+            child: Container(
+              child: InkWell(
+                child: Text(
+                  Strings.signout,
+                  style: TextStyle(
                     color: MainColors.grey_80,
                     fontSize: 16,
                     fontFamily: "NotoSansKR",
-                    fontWeight: FontWeight.w400
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
+                onTap: () {
+                  _showSignOutConfirm();
+                },
               ),
-              onTap: () {
-                RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
-              },
             ),
           ),
-          SizedBox(width: 40),
-          Container(
-            child: InkWell(
-              child: Text(
-                Strings.mypage_setting_show_info,
-                style: TextStyle(
-                    color: MainColors.grey_80,
-                    fontSize: 16,
-                    fontFamily: "NotoSansKR",
-                    fontWeight: FontWeight.w400
-                ),
-              ),
-              onTap: () {
-                RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
-              },
-            ),
-          )
         ],
       ),
+    );
+  }
+
+  Widget _confirmDialog(String title, bool isConfirm) {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+            child: Container(color: Colors.black.withOpacity(0.1)),
+          ),
+        ),
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          child: Container(
+            width: deviceWidth * 0.6,
+            height: !isConfirm ? deviceHeight * 0.43 : deviceHeight * 0.64,
+            child: Column(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 32, bottom: 30, left: 60, right: 60),
+                      child: Text(
+                        title,
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.bodyText2,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        !isConfirm ?
+                        SizedBox() :
+                        Container(
+                          width: (deviceWidth * 0.6) * 0.38,
+                          child: CommonRaisedButton(
+                            textColor: MainColors.purple_100,
+                            buttonColor: Colors.white,
+                            borderColor: MainColors.purple_100,
+                            buttonText: Strings.common_btn_yes,
+                            fontSize: 16,
+                            voidCallback: _showSignOutAlert,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Container(
+                          width: !isConfirm ? (deviceWidth * 0.6) * 0.56 : (deviceWidth * 0.6) * 0.38,
+                          child: CommonRaisedButton(
+                            textColor: Colors.white,
+                            buttonColor: MainColors.purple_100,
+                            borderColor: MainColors.purple_100,
+                            buttonText: !isConfirm ? Strings.common_btn_ok : Strings.common_btn_no,
+                            fontSize: 16,
+                            voidCallback: !isConfirm ? _exitApp : _dismissDialog,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

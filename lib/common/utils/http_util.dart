@@ -39,6 +39,13 @@ class HttpUrls {
 
   static const String GET_PRODUCT = "$SERVER_URL/productions";
 
+  static const String PRE_PAYMENT = "$SERVER_URL/payments";
+  static const String PAYMENT_VALIDATION = "$PRE_PAYMENT/validation";
+
+  static const String COUPON = "$SERVER_URL/coupons";
+
+  static const String GET_REPORTS = "$SERVER_URL/reports/weekly";
+
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-type': 'application/json',
     'authorization': 'Bearer ' + authJWT

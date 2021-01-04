@@ -1,14 +1,19 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
+import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
+import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/ui/category/medium_category_list_dialog.dart';
 import 'package:deukki/view/ui/category/stage_dialog.dart';
+import 'package:deukki/view/ui/mypage/my_page.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -94,6 +99,25 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     });
   }
 
+  void _membershipDialog() {
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return _dialogWidget();
+      }
+    );
+  }
+
+  void _dismissDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _joinMembership() {
+    _dismissDialog();
+    Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 2);
+  }
+
   Widget _listWidget() {
     _setMainAxis();
     return Selector<CategoryProvider, List<SentenceVO>>(
@@ -165,8 +189,30 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           ),
         ),
       ),
-      onTap: () => {                //  ListView Item Click
-        if(userProviderModel.userVOForHttp.premium == sentenceVO.premium) {
+      onTap: () {                //  ListView Item Click
+        if(userProviderModel.userVOForHttp.premium == 0) {
+          if(sentenceVO.premium == 0) {
+            resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
+              categoryProvider.selectStageIndex = -1;
+              categoryProvider.stageAvgScore = 0;
+              categoryProvider.onSelectedSentence(sentenceVO);
+              final stageResult = resourceProviderModel.value.getSentenceStages;
+              if(stageResult.hasData) {
+                categoryProvider.setStage(stageResult.result.asValue.value);
+                categoryProvider.setPreScore(null);
+              }
+              showDialog(
+                  context: context,
+                  useSafeArea: false,
+                  builder: (BuildContext context) {
+                    return StageDialog(title: sentenceVO.content,);
+                  }
+              );
+            });
+          }else {
+            _membershipDialog();
+          }
+        }else {
           resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
             categoryProvider.selectStageIndex = -1;
             categoryProvider.stageAvgScore = 0;
@@ -183,8 +229,8 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                   return StageDialog(title: sentenceVO.content,);
                 }
             );
-          })
-        },
+          });
+        }
       },
     );
   }
@@ -224,7 +270,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           alignment: AlignmentDirectional.center,
           decoration: BoxDecoration(
               color: MainColors.black_50,
-              borderRadius: BorderRadius.circular(24)
+              borderRadius: BorderRadius.circular(16)
           ),
           child: Icon(Icons.lock, size: 28, color: Colors.white,)
       );
@@ -279,6 +325,65 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     }else {
       return Container();
     }
+  }
+
+  Widget _dialogWidget() {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+            child: Container(color: Colors.black.withOpacity(0.1)),
+          ),
+        ),
+        Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24.0),
+          ),
+          child: Container(
+            width: deviceWidth * 0.5,
+            height: deviceHeight * 0.5,
+            child: Column(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 32, bottom: 24),
+                      child: Text(Strings.only_membership, style: Theme.of(context).textTheme.bodyText2,),
+                    ),
+                    Container(
+                        width: (deviceWidth * 0.5) * 0.67,
+                        child: CommonRaisedButton(
+                          textColor: Colors.white,
+                          buttonColor: MainColors.purple_100,
+                          borderColor: MainColors.purple_100,
+                          buttonText: Strings.join_membership,
+                          fontSize: 16,
+                          voidCallback: _joinMembership,                 //  멤버십 가입
+                        )
+                    ),
+                    SizedBox(height: 4),
+                    Container(
+                        width: (deviceWidth * 0.5) * 0.67,
+                        child: CommonRaisedButton(
+                          textColor: MainColors.purple_100,
+                          buttonColor: Colors.white,
+                          borderColor: MainColors.purple_100,
+                          buttonText: Strings.common_btn_close,
+                          fontSize: 16,
+                          voidCallback: _dismissDialog,       //  닫기
+                        )
+                    ),
+                    SizedBox(height: 20)
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   @override

@@ -6,12 +6,23 @@ class MyPageProvider with ChangeNotifier {
   int _selectButtonIndex;
   List<BookmarkVO> _bookmarkList = [];
 
+  bool _isPaying;
+
   MyPageProvider() {
+    this._isPaying = false;
     this._selectButtonIndex = 0;
   }
 
-  getButtonIndex() => _selectButtonIndex;
+  getIsPaying() => _isPaying;
+  setIsPaying(bool isPaying) {
+    _isPaying = isPaying;
+    notifyListeners();
+  }
 
+  initButtonIndex(int initIndex) {
+    this._selectButtonIndex = initIndex;
+  }
+  getButtonIndex() => _selectButtonIndex;
   setButtonIndex(int selectButtonIndex) {
     this._selectButtonIndex = selectButtonIndex;
     notifyListeners();

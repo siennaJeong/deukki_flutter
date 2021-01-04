@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
+import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
@@ -10,7 +12,6 @@ import 'package:deukki/view/ui/app/app_theme.dart';
 import 'package:deukki/view/ui/base/base_button_dialog.dart';
 import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/m_scroll_behavior.dart';
-import 'package:deukki/view/ui/base/provider_widget.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -20,13 +21,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  if(!Platform.isIOS) {
+    InAppPurchaseConnection.enablePendingPurchases();
+  }
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft, DeviceOrientation.landscapeRight])
   .then((_) {
@@ -47,6 +50,10 @@ void main() async {
               ),
               ChangeNotifierProvider<ResourceProviderModel>(
                 create: (context) => ResourceProviderModel.build(),
+                lazy: true,
+              ),
+              ChangeNotifierProvider<PaymentProviderModel>(
+                create: (context) => PaymentProviderModel.build(),
                 lazy: true,
               ),
               ChangeNotifierProxyProvider2<SharedHelper, DBHelper, AuthServiceAdapter>(
@@ -103,7 +110,7 @@ class _SplashState extends State<Splash> {
       return Container(
         alignment: AlignmentDirectional.center,
         color: MainColors.green_80,
-        child: CupertinoActivityIndicator(radius: 35)
+        child: CupertinoActivityIndicator(radius: 20)
       );
     }
     if(forceUpdateResult.result.asValue.value.requireInstall) {

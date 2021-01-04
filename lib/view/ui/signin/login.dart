@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.apple_sign_in_only_ios)));
+            SnackBar(content: Text(Strings.apple_sign_in_only_ios), duration: Duration(seconds: 2)));
         return;
       }
     }else {
@@ -55,7 +55,7 @@ class _LoginState extends State<Login> {
     }
 
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-      if(value.isNotEmpty) {
+      if(value.isNotEmpty && value != "cancel") {
         signInProviderModel.checkSignUp(authType, value, authServiceAdapter.fbUid).then((val) {
           final isSignUp = signInProviderModel.value.checkSignUp;
           if(!isSignUp.hasData) {

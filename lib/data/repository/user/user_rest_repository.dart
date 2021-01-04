@@ -9,6 +9,7 @@ import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/common_result_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 
@@ -34,8 +35,9 @@ class UserRestRepository implements UserRepository {
     'phone': phone
   };
 
-  Map<String, dynamic> _marketingToJson(String marketingMethod, String agreement) => <String, dynamic> {
+  Map<String, dynamic> _marketingToJson(String marketingMethod, String agreement, String phone) => <String, dynamic> {
     'marketingMethod': marketingMethod,
+    'phone': phone,
     'agree': agreement,
   };
 
@@ -155,12 +157,31 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement) async {
-    final marketingAgreement = await _httpClient.patchRequest(HttpUrls.MARKETING_AGREEMENT, HttpUrls.postHeaders(authJWT), _marketingToJson(marketingMethod, agreement.toString()));
+  Future<Result<CommonResultVO>> marketingAgreement(String authJWT, String marketingMethod, bool agreement, String phone) async {
+    final marketingAgreement = await _httpClient.patchRequest(HttpUrls.MARKETING_AGREEMENT, HttpUrls.postHeaders(authJWT), _marketingToJson(marketingMethod, agreement.toString(), phone));
     if(marketingAgreement.isValue) {
       return Result.value(CommonResultVO.fromJson(marketingAgreement.asValue.value));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+  @override
+  Future<Result<ReportVO>> getReports(String authJWT) async {
+    final getReports = await _httpClient.reportRequest(HttpUrls.GET_REPORTS, HttpUrls.headers(authJWT));
+    /*if(getReports.isValue) {
+      final reportResult = getReports.asValue.value['result'];
+      return Result.value(ReportVO.fromJson(reportResult as Map<String, dynamic>));
+    }else {
+      return Result.error(ReportVO(0, 0, 0, null));
+    }*/
+    if(getReports.isValue) {
+      final status = getReports.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(ReportVO.fromJson(getReports.asValue.value['result'] as Map<String, dynamic>));
+      }else if(status == 404) {
+        return Result.value(ReportVO(0, 0, 0, ""));
+      }
     }
   }
 

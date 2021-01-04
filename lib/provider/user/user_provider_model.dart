@@ -1,6 +1,7 @@
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
+import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
@@ -20,6 +21,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   UserVOForHttp userVOForHttp;
+  ReportVO weeklyReports;
   int bookmarkScore = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
@@ -96,9 +98,17 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.getProductList.set(getProductList, notifyListeners);
   }
 
-  Future<void> updateMarketingAgree(String authJWT, String marketingMethod, bool agreement) async {
-    final updateMarketingAgree = _userRepository.marketingAgreement(authJWT, marketingMethod, agreement);
+  Future<void> updateMarketingAgree(String authJWT, String marketingMethod, bool agreement, String phone) async {
+    final updateMarketingAgree = _userRepository.marketingAgreement(authJWT, marketingMethod, agreement, phone);
     await value.updateMarketingAgree.set(updateMarketingAgree, notifyListeners);
+  }
+
+  Future<void> getReports(String authJWT) async {
+    final getReports = _userRepository.getReports(authJWT);
+    getReports.then((value) {
+      weeklyReports ??= value.asValue.value;
+    });
+    await value.getReports.set(getReports, notifyListeners);
   }
 
 }

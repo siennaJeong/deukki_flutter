@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MyPage extends StatefulWidget {
+
   @override
   _MyPageState createState() => _MyPageState();
 }
@@ -21,14 +22,12 @@ class _MyPageState extends State<MyPage> {
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
 
-  List<String> tabButtons = [Strings.mypage_report, Strings.mypage_bookmark, /*Strings.mypage_membership,*/ Strings.mypage_setting, Strings.mypage_help];
+  List<String> tabButtons = [Strings.mypage_report, Strings.mypage_bookmark, Strings.mypage_membership, Strings.mypage_setting, Strings.mypage_help];
   List<BookmarkVO> bookmarks;
   double deviceWidth, deviceHeight;
 
-  PageController _pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  PageController _pageController;
+  int pages = -1;
 
   @override
   void initState() {
@@ -38,7 +37,7 @@ class _MyPageState extends State<MyPage> {
   @override
   void didChangeDependencies() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
+    myPageProvider = Provider.of<MyPageProvider>(context);
     bookmarks = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
   }
@@ -79,7 +78,7 @@ class _MyPageState extends State<MyPage> {
           _buttons(tabButtons[1], 1),
           _buttons(tabButtons[2], 2),
           _buttons(tabButtons[3], 3),
-          //_buttons(tabButtons[4], 4),
+          _buttons(tabButtons[4], 4),
         ],
       )
     );
@@ -148,7 +147,7 @@ class _MyPageState extends State<MyPage> {
           children: <Widget>[
             Report(),
             BookMark(bookmarkList: bookmarks,),
-            //MemberShip(),
+            MemberShip(),
             Settings(),
             QnA()
           ],
@@ -162,24 +161,42 @@ class _MyPageState extends State<MyPage> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        left: false,
-        right: false,
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              _tabWidget(),
-              _pageViewWidget()
-            ],
+    if(pages == -1) {
+      pages = ModalRoute.of(context).settings.arguments;
+      myPageProvider.initButtonIndex(pages);
+      _pageController ??= PageController(initialPage: pages);
+    }
+
+    return Stack(
+      children: <Widget>[
+        Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            left: false,
+            right: false,
+            child: Container(
+              width: double.infinity,
+              height: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  _tabWidget(),
+                  _pageViewWidget()
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        Visibility(
+          visible: myPageProvider.getIsPaying(),
+          child: Container(
+            color: Colors.black26,
+            alignment: AlignmentDirectional.center,
+            child: CupertinoActivityIndicator(),
+          ),
+        ),
+      ],
     );
   }
 }
