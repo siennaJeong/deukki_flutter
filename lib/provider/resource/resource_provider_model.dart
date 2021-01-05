@@ -49,8 +49,9 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     final initData = _versionRepository.initData();
     initData.then((value) {
       final initResult = value.asValue.value.result;
+      final versions = initResult['versions'];
       _dbHelper.insertCategoryLarge(initResult['largeCategories']);
-      _dbHelper.insertFaq(initResult['faq']);
+      _dbHelper.insertFaq(versions['faq']);
       for(int i = 0 ; i < initResult['largeCategories'].length ; i++) {
         _dbHelper.insertCategoryMedium(initResult['mediumCategories'][i][0], initResult['mediumCategories'][i][1]);
       }
@@ -125,7 +126,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
             _dbHelper.delete(TABLE_FAQ).then((value) {
               _updateFaq();
             });
-            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.FAQ_VERSION]);
+            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultFaq[VersionRepository.VERSION]);
           }
         }
       }
