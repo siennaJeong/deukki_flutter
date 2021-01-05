@@ -3,7 +3,6 @@ import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +19,14 @@ class _QnAState extends State<QnA> {
   @override
   void didChangeDependencies() {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    faqs = resourceProviderModel.faqs;
+    if(resourceProviderModel.faqs.length <= 0) {
+      resourceProviderModel.getFaq().then((value) {
+        faqs = resourceProviderModel.faqs;
+      });
+    }else {
+      faqs = resourceProviderModel.faqs;
+    }
+
 
     faqs.forEach((element) {
       ExpandableFaq expandableFaq = ExpandableFaq(question: element.question);
