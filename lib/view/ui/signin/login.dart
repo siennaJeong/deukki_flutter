@@ -77,6 +77,9 @@ class _LoginState extends State<Login> {
       }else if(value == "invalid token") {
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.kakao_invalid_token)));
+      }else {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.no_email)));
       }
     });
   }

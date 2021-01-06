@@ -29,21 +29,16 @@ class KakaoAuthService {
     }
     kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
     token = await AccessTokenStore.instance.toStore(kakaoUserToken);
-    _requestMe().then((value) {
-      return value;
-    });
-  }
-
-  Future<String> _requestMe() async {
     try {
       final User user = await UserApi.instance.me();
-      if(user.kakaoAccount.emailNeedsAgreement || user.kakaoAccount.phoneNumberNeedsAgreement) {
-        _retryAfterUserAgrees(["account_email", "phone_number"]);
-      }else {
+      if(user.kakaoAccount.email != null) {
         _email = user.kakaoAccount.email;
         _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
         _name = user.kakaoAccount.profile.nickname;
         return user.id.toString();
+      }else {
+        _email = "";
+        return null;
       }
 
     } on KakaoAuthException catch (e) {
@@ -59,13 +54,6 @@ class KakaoAuthService {
       print("Kakao Platform Exception : $e");
       return "cancel";
     }
-  }
-
-  void _retryAfterUserAgrees(List<String> requiredScopes) async {
-    String authCode = await AuthCodeClient.instance.requestWithAgt(requiredScopes);
-    AccessTokenResponse token = await AuthApi.instance.issueAccessToken(authCode);
-    AccessTokenStore.instance.toStore(token);
-    await _requestMe();
   }
 
   String get email => _email;
