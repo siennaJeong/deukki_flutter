@@ -17,7 +17,9 @@ import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +29,17 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  if(kDebugMode) {
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+  }else {
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  }
+
   if(!Platform.isIOS) {
     InAppPurchaseConnection.enablePendingPurchases();
   }
+
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight])
   .then((_) {
