@@ -111,4 +111,9 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.getReports.set(getReports, notifyListeners);
   }
 
+  Future<void> verifyToken(String authJWT) async {
+    final verifyToken = _userRepository.verifyToken(authJWT);
+    await value.verifyToken.set(verifyToken, notifyListeners);
+  }
+
 }

@@ -40,6 +40,8 @@ class KakaoAuthService {
 
       _name = user.kakaoAccount.profile.nickname;
       _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
+      Gender gender = user.kakaoAccount.gender;
+      print("kakao gender : $gender, birth : ${user.kakaoAccount.birthday}-${user.kakaoAccount.birthyear}");
 
       return user.id.toString();
     } on KakaoAuthException catch (e) {

@@ -105,6 +105,7 @@ class _SplashState extends State<Splash> {
   AuthServiceAdapter authServiceAdapter;
   Future<void> checkAppVersion;
   Future<void> checkAllVersion;
+  Future<void> verifyToken;
 
   @override
   void didChangeDependencies() {
@@ -141,7 +142,20 @@ class _SplashState extends State<Splash> {
       );
     }else {
       if(authServiceAdapter.authJWT.isNotEmpty) {
-        return MainCategory();
+        verifyToken ??= Provider.of<UserProviderModel>(context).verifyToken(authServiceAdapter.authJWT);
+        final tokenStatusResult = context.select((UserProviderModel model) => model.value.verifyToken);
+        if(!tokenStatusResult.hasData) {
+          return Container(
+              alignment: AlignmentDirectional.center,
+              color: MainColors.green_80,
+              child: CupertinoActivityIndicator(radius: 15)
+          );
+        }
+        if(tokenStatusResult.result.asValue.value != -1) {
+          return MainCategory();
+        }else {
+          return Login();
+        }
       }else {
         return Login();
       }

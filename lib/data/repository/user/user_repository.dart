@@ -20,4 +20,5 @@ abstract class UserRepository {
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT);
   Future<Result<List<ProductionVO>>> getProductList(String authJWT);
   Future<Result<ReportVO>> getReports(String authJWT);
+  Future<Result<int>> verifyToken(String authJWT);
 }

@@ -6,9 +6,15 @@ import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SNSAuthService {
+  static const String _FB_KEY = "AIzaSyAcoY75Tg3ceoYkoOJF6RGX2r4AeVpqcM0";
+  static const String _GENDER_SCOPE = "https://www.googleapis.com/auth/user.gender.read";
+  static const String _BIRTH_SCOPE = "https://www.googleapis.com/auth/user.birthday.read";
+  static const String _GOOGLE_PEOPLE_API = "https://people.googleapis.com/v1/people/me?personFields=genders&personFields=birthdays&key=";
+
   String _email;
   String _fbUid;
   String _name;
@@ -70,7 +76,9 @@ class SNSAuthService {
   }
 
   Future<String> signInWithGoogle() async {
-    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount googleUser = await GoogleSignIn(
+      scopes: [_GENDER_SCOPE, _BIRTH_SCOPE]
+    ).signIn();
     if(googleUser != null) {
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final GoogleAuthCredential googleCredential = GoogleAuthProvider.credential(
@@ -78,6 +86,16 @@ class SNSAuthService {
           idToken: googleAuth.idToken
       );
       final UserCredential userCredential = await authExceptionHandler(googleCredential);
+
+      final headers = await googleUser.authHeaders;
+      final request = await get(
+          "$_GOOGLE_PEOPLE_API$_FB_KEY",
+          headers: {
+            "Authorization": headers["Authorization"]
+          }
+      );
+      final response = json.decode(request.body);
+
       if(userCredential.user.email.isNotEmpty) {
         _email = userCredential.user.email;
       }else {

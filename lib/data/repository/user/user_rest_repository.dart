@@ -137,7 +137,8 @@ class UserRestRepository implements UserRepository {
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT) async {
     final getUserInfo = await _httpClient.getRequest(HttpUrls.GET_USER_INFO, HttpUrls.headers(authJWT));
     if(getUserInfo.isValue) {
-      final value = getUserInfo.asValue.value['result'];
+      final value = getUserInfo.asValue.value['status'];
+      print("status $value");
       return Result.value(UserVOForHttp.fromJson(value.first as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
@@ -181,6 +182,20 @@ class UserRestRepository implements UserRepository {
         return Result.value(ReportVO.fromJson(getReports.asValue.value['result'] as Map<String, dynamic>));
       }else if(status == 404) {
         return Result.value(ReportVO(0, 0, 0, ""));
+      }
+    }
+  }
+
+  @override
+  Future<Result<int>> verifyToken(String authJWT) async {
+    final verifyToken = await _httpClient.getRequest(HttpUrls.VERIFY_TOKEN, HttpUrls.headers(authJWT));
+    if(verifyToken.isValue) {
+      final status = verifyToken.asValue.value['status'];
+      if(status == 200) {
+        final result = verifyToken.asValue.value['result'];
+        return Result.value(result['idx']);
+      }else {
+        return Result.value(-1);
       }
     }
   }

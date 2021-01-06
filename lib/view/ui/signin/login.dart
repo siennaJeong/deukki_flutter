@@ -39,6 +39,7 @@ class _LoginState extends State<Login> {
   void _checkSignUp(String authType, AuthServiceType authServiceType) async {
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
+        authServiceAdapter.setIsSigning(false);
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.apple_sign_in_only_ios), duration: Duration(seconds: 2)));
         return;
@@ -48,6 +49,7 @@ class _LoginState extends State<Login> {
       IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
       if(authServiceType == AuthServiceType.Apple) {
         if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
+          authServiceAdapter.setIsSigning(false);
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.ios_low_version_apple_login)));
           return;

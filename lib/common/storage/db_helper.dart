@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/faq_vo.dart';
@@ -33,29 +35,35 @@ class DBHelper{
   }
 
   initDB() async {
+    String directory = await getDatabasesPath();
+    final path = join(directory, DB_NAME);
     return await openDatabase(
-        join(await getDatabasesPath(), DB_NAME),
+        path,
         version: DB_VERSION,
-        onCreate: (db, version) {
-          db.execute (
-            "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version INTEGER)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, voice TEXT, enable INTEGER, premium INTEGER)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, achieve_star INTEGER, total_star INTEGER, large_id TEXT)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
-          );
-          db.execute(
-            "CREATE TABLE $TABLE_AUDIO_PATH(sentence_id TEXT, p_idx INTEGER, path TEXT)"
-          );
-        }
+        onCreate: (Database db, int version) async {
+          _onCreate(db, version);
+        },
+    );
+  }
+
+  void _onCreate(Database db, int version) {
+    db.execute (
+        "CREATE TABLE $TABLE_VERSION(idx INTEGER PRIMARY KEY AUTOINCREMENT, version_name TEXT, version INTEGER)"
+    );
+    db.execute(
+        "CREATE TABLE $TABLE_USER(idx INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT, name TEXT, birth_date TEXT, gender TEXT, voice TEXT, enable INTEGER, premium INTEGER)"
+    );
+    db.execute(
+        "CREATE TABLE $TABLE_CATEGORY_LARGE(id TEXT, title TEXT, sequence INTEGER)"
+    );
+    db.execute(
+        "CREATE TABLE $TABLE_CATEGORY_MEDIUM(id TEXT, title TEXT, sequence INTEGER, premium INTEGER, achieve_star INTEGER, total_star INTEGER, large_id TEXT)"
+    );
+    db.execute(
+        "CREATE TABLE $TABLE_FAQ(idx INTEGER PRIMARY KEY AUTOINCREMENT, question TEXT, answer TEXT, sequence INTEGER)"
+    );
+    db.execute(
+        "CREATE TABLE $TABLE_AUDIO_PATH(sentence_id TEXT, p_idx INTEGER, path TEXT)"
     );
   }
 
@@ -99,13 +107,13 @@ class DBHelper{
 
   getUser() async {
     final db = await database;
-    var res = await db.query(TABLE_USER, where: 'idx = 0');
+    var res = await db.query(TABLE_USER);
     return res.isNotEmpty ? _userFromJson(res.first) : new UserVO(0, '', '', '', '', '', 0, 0);
   }
 
-  updateUser(UserVO userVO) async {
+  updateUser(UserVO userVO, int idx) async {
     final db = await database;
-    await db.update(TABLE_USER, _userToJson(userVO), where: 'idx = 0');
+    await db.update(TABLE_USER, _userToJson(userVO), where: 'idx = $idx');
   }
 
   Map<String, dynamic> _userToJson(UserVO userVO) {

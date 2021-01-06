@@ -19,4 +19,5 @@ class UserProviderState {
   final getProductList = ProviderModelResult<List<ProductionVO>>();
   final updateMarketingAgree = ProviderModelResult<CommonResultVO>();
   final getReports = ProviderModelResult<ReportVO>();
+  final verifyToken = ProviderModelResult<int>();
 }
