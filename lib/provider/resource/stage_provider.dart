@@ -31,11 +31,7 @@ class StageProvider with ChangeNotifier{
   StageProvider() {
     this.isPlaying = false;
     this.playCount = 0;
-    if(Platform.isIOS) {
-      this.playRate = 1;
-    }else {
-      this.playRate = 0.8;
-    }
+    this.playRate = 0.8;
     this.selectAnswerIndex = [];
     this.selectedAnswer = [];
     this._learnTime = 0;
