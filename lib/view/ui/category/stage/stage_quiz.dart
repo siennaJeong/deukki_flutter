@@ -3,8 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-//import 'package:audioplayers/audio_cache.dart';
-//import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
@@ -19,7 +17,6 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
@@ -27,8 +24,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
-
-//void audiPlayerHandler(AudioPlayerState value) => print("state => $value");
+import 'package:hardware_buttons/hardware_buttons.dart';
 
 class StageQuiz extends StatefulWidget {
   @override
@@ -44,10 +40,9 @@ class _StageQuizState extends State<StageQuiz> {
 
   final random = Random();
 
-  //AudioPlayer _audioPlayer;
   AudioPlayer _audioPlayer;
   AudioManager _audioManager;
-  StreamSubscription _playCompleteSubs;
+  StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
   int maxVol, currentVol;
 
@@ -56,12 +51,26 @@ class _StageQuizState extends State<StageQuiz> {
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
-  //List<AudioFilePathVO> randomPathList = [];
-  //int randomIndex = 0;
 
   @override
   void initState() {
     _audioManager = AudioManager.STREAM_MUSIC;
+
+    _volumeButtonEvent = volumeButtonEvents.listen((event) {
+      switch(event) {
+        case VolumeButtonEvent.VOLUME_UP:
+          _setVolume(true);
+          break;
+        case VolumeButtonEvent.VOLUME_DOWN:
+          _setVolume(false);
+          break;
+      }
+    });
+
+    if(!Platform.isIOS) {
+      initVolume();
+    }
+
     _initAudioPlayer();
     super.initState();
   }
@@ -79,10 +88,34 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void dispose() {
-    //audioDispose();
     _audioPlayer.dispose();
+    if(!Platform.isIOS) {
+      _volumeButtonEvent?.cancel();
+    }
     stageProvider.stopLearnTime();
     super.dispose();
+  }
+
+  Future<void> initVolume() async {
+    await Volume.controlVolume(AudioManager.STREAM_MUSIC);
+    currentVol = await Volume.getVol;
+    maxVol = await Volume.getMaxVol;
+  }
+
+  _setVolume(bool isUp) async {
+    if(isUp) {
+      currentVol++;
+      if(currentVol >= maxVol) {
+        currentVol = maxVol;
+      }
+      Volume.setVol(currentVol);
+    }else {
+      currentVol--;
+      if(currentVol <= 0) {
+        currentVol = 0;
+      }
+      Volume.setVol(currentVol);
+    }
   }
 
   void _initAudioPlayer() {
@@ -115,32 +148,6 @@ class _StageQuizState extends State<StageQuiz> {
     await _audioPlayer.setSpeed(speed);
     await _audioPlayer.play();
   }
-
-  /*void _initAudioPlayer() {
-    _audioPlayer ??= AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-
-    if(!kIsWeb && Platform.isIOS) {
-      _audioPlayer.monitorNotificationStateChanges(audiPlayerHandler);
-    }
-
-    _playCompleteSubs = _audioPlayer.onPlayerCompletion.listen((event) {
-      _audioPlayer.stop();
-      stageProvider.setPlaying(false);
-      stageProvider.setPlayCount();
-    });
-  }
-
-  void _play(String filePath, double speed) async {
-    await _audioPlayer.play(filePath, isLocal: true);
-    print("speed : $speed");
-    _audioPlayer.setPlaybackRate(playbackRate: speed);
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  }
-
-  Future<void> audioDispose() async {
-    await _audioPlayer.dispose();
-    _playCompleteSubs?.cancel();
-  }*/
 
   Widget _header() {
     return Stack(
