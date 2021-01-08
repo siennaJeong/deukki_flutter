@@ -3,8 +3,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
@@ -19,16 +17,14 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hardware_buttons/hardware_buttons.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
-
-void audiPlayerHandler(AudioPlayerState value) => print("state => $value");
+import 'package:hardware_buttons/hardware_buttons.dart';
 
 class StageQuiz extends StatefulWidget {
   @override
@@ -44,7 +40,7 @@ class _StageQuizState extends State<StageQuiz> {
 
   final random = Random();
 
-  AudioPlayer _audioPlayer = new AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer _audioPlayer;
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -55,8 +51,6 @@ class _StageQuizState extends State<StageQuiz> {
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
-  //List<AudioFilePathVO> randomPathList = [];
-  //int randomIndex = 0;
 
   @override
   void initState() {
@@ -77,9 +71,7 @@ class _StageQuizState extends State<StageQuiz> {
       initVolume();
     }
 
-    if(!kIsWeb && Platform.isIOS) {
-      _audioPlayer.monitorNotificationStateChanges(audiPlayerHandler);
-    }
+    _initAudioPlayer();
     super.initState();
   }
 
@@ -96,10 +88,10 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void dispose() {
+    _audioPlayer.dispose();
     if(!Platform.isIOS) {
       _volumeButtonEvent?.cancel();
     }
-    audioDispose();
     stageProvider.stopLearnTime();
     super.dispose();
   }
@@ -126,25 +118,35 @@ class _StageQuizState extends State<StageQuiz> {
     }
   }
 
-  void _playLocal(String filePath, double speed) async {
-    await _audioPlayer.play(filePath);
-    _audioPlayer.setPlaybackRate(playbackRate: speed);
-    if(!Platform.isIOS) {
-      _audioPlayer.setVolume((currentVol / maxVol) * 10);
-    }
-    _playStateListener();
-    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  }
-
-  void _playStateListener() async {
-    _audioPlayer.onPlayerCompletion.listen((event) {
-      stageProvider.setPlaying(false);
-      stageProvider.setPlayCount();
+  void _initAudioPlayer() {
+    _audioPlayer ??= AudioPlayer();
+    _audioPlayer.playerStateStream.listen((event) {
+      switch(event.processingState) {
+        case ProcessingState.completed:
+          _audioPlayer.stop();
+          stageProvider.setPlaying(false);
+          stageProvider.setPlayCount();
+          break;
+        case ProcessingState.idle:
+          // TODO: Handle this case.
+          break;
+        case ProcessingState.loading:
+          // TODO: Handle this case.
+          break;
+        case ProcessingState.buffering:
+          // TODO: Handle this case.
+          break;
+        case ProcessingState.ready:
+          // TODO: Handle this case.
+          break;
+      }
     });
   }
 
-  Future<void> audioDispose() async {
-    await _audioPlayer.dispose();
+  void _play(String filePath, double speed) async {
+    await _audioPlayer.setFilePath(filePath);
+    await _audioPlayer.setSpeed(speed);
+    await _audioPlayer.play();
   }
 
   Widget _header() {
@@ -301,31 +303,17 @@ class _StageQuizState extends State<StageQuiz> {
 
   Widget _playButtonWidget(double width) {              //  Play button
     String playSpeed;
-    String soundIcons;    // iphone 1, 1.15, 1.3, 1.45, 1.6 / android 0.8, 0.95, 1.1, 1.25, 1.4
-    if(Platform.isIOS) {
-      if(stageProvider.playRate >= 1.15 && stageProvider.playRate < 1.3) {
-        playSpeed = Strings.play_speed_15;
-      }else if(stageProvider.playRate >= 1.3 && stageProvider.playRate < 1.45) {
-        playSpeed = Strings.play_speed_20;
-      }else if(stageProvider.playRate >= 1.45 && stageProvider.playRate < 1.6) {
-        playSpeed = Strings.play_speed_25;
-      }else if(stageProvider.playRate >= 1.6) {
-        playSpeed = Strings.play_speed_30;
-      }else {
-        playSpeed = "";
-      }
+    String soundIcons;    // speed : 0.8, 0.95, 1.1, 1.25, 1.4
+    if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
+      playSpeed = Strings.play_speed_15;
+    }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
+      playSpeed = Strings.play_speed_20;
+    }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
+      playSpeed = Strings.play_speed_25;
+    }else if(stageProvider.playRate >= 1.4) {
+      playSpeed = Strings.play_speed_30;
     }else {
-      if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
-        playSpeed = Strings.play_speed_15;
-      }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
-        playSpeed = Strings.play_speed_20;
-      }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
-        playSpeed = Strings.play_speed_25;
-      }else if(stageProvider.playRate >= 1.4) {
-        playSpeed = Strings.play_speed_30;
-      }else {
-        playSpeed = "";
-      }
+      playSpeed = "";
     }
 
     if(!stageProvider.isPlaying) {
@@ -355,7 +343,7 @@ class _StageQuizState extends State<StageQuiz> {
         child: _dataLoadingWidget(soundIcons, playSpeed),
         onPressed: () {               //  Play Button Click
           if(!stageProvider.isPlaying) {
-            _playLocal(randomPath.path, stageProvider.playRate);
+            _play(randomPath.path, stageProvider.playRate);
             stageProvider.setPlaying(true);
             stageProvider.setSoundRepeat();
           }

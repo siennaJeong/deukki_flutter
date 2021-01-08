@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
     }
 
     authServiceAdapter.signInWithSNS(authServiceType).then((value) {
-      if(value.isNotEmpty && value != "cancel") {
+      if(value.isNotEmpty && value != "cancel" && value != "invalid token") {
         signInProviderModel.checkSignUp(authType, value, authServiceAdapter.fbUid).then((val) {
           final isSignUp = signInProviderModel.value.checkSignUp;
           if(!isSignUp.hasData) {
@@ -77,6 +77,14 @@ class _LoginState extends State<Login> {
         });
       }else if(value == "cancel") {
         authServiceAdapter.setIsSigning(false);
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.log_in_cancel)));
+      }else if(value == "invalid token") {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.kakao_invalid_token)));
+      }else {
+        scaffoldKey.currentState.showSnackBar(
+            SnackBar(content: Text(Strings.no_email)));
       }
     });
   }

@@ -22,22 +22,24 @@ class KakaoAuthService {
 
   Future<String> signInWithKakao() async {
     var token;
+    if(isKakaoInstalled) {
+      kakaoAuthCode = await AuthCodeClient.instance.requestWithTalk();
+    }else {
+      kakaoAuthCode = await AuthCodeClient.instance.request();
+    }
+    kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
+    token = await AccessTokenStore.instance.toStore(kakaoUserToken);
     try {
-      if(isKakaoInstalled) {
-        kakaoAuthCode = await AuthCodeClient.instance.requestWithTalk();
-      }else {
-        kakaoAuthCode = await AuthCodeClient.instance.request();
-      }
-      kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
-      token = await AccessTokenStore.instance.toStore(kakaoUserToken);
-
       final User user = await UserApi.instance.me();
-      if(user.kakaoAccount.isEmailValid) {
+      if(user.kakaoAccount.email != null) {
         _email = user.kakaoAccount.email;
+        _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
+        _name = user.kakaoAccount.profile.nickname;
+        return user.id.toString();
       }else {
         _email = "";
+        return null;
       }
-
       _name = user.kakaoAccount.profile.nickname;
       _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
       Gender gender = user.kakaoAccount.gender;
@@ -45,10 +47,16 @@ class KakaoAuthService {
 
       return user.id.toString();
     } on KakaoAuthException catch (e) {
-      print(e);
+      print("Kakao Auth Exception : $e");
     } on KakaoClientException catch (e) {
-      print(e);
+      print("Kakao Client Exception : $e");
+    } on KakaoApiException catch (e) {
+      print("Kakao Api Exception : $e");
+      if(e.code == ApiErrorCause.INVALID_TOKEN) {
+        return "invalid token";
+      }
     } on PlatformException catch (e) {
+      print("Kakao Platform Exception : $e");
       return "cancel";
     }
   }

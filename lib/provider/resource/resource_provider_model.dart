@@ -103,29 +103,32 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         _initData();
       }else {
         for(int i = 1 ; i < dbVersion.length ; i++) {
-          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION &&
-          dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
-            print("large category update");
-           _dbHelper.delete(TABLE_CATEGORY_LARGE).then((value) {
-             _updateLargeCategory();
-           });
-           _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]);
+          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_LARGE_VERSION) {
+            if(dbVersion.elementAt(i).values.elementAt(2) == null || dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]) {
+              print("large category update");
+              _dbHelper.delete(TABLE_CATEGORY_LARGE).then((value) {
+                _updateLargeCategory();
+              });
+              _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_LARGE_VERSION]);
+            }
           }
-          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_MEDIUM_VERSION &&
-          dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]) {
-            print("medium category update");
-            _dbHelper.delete(TABLE_CATEGORY_MEDIUM).then((value) {
-              _updateMediumCategory();
-            });
-            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]);
+          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.CATEGORY_MEDIUM_VERSION) {
+            if(dbVersion.elementAt(i).values.elementAt(2) == null || dbVersion.elementAt(i).values.elementAt(2) < versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]) {
+              print("medium category update");
+              _dbHelper.delete(TABLE_CATEGORY_MEDIUM).then((value) {
+                _updateMediumCategory();
+              });
+              _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.CATEGORY_MEDIUM_VERSION]);
+            }
           }
-          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.FAQ_VERSION &&
-          dbVersion.elementAt(i).values.elementAt(2) < versionResultFaq[VersionRepository.VERSION]) {
-            print("faq update");
-            _dbHelper.delete(TABLE_FAQ).then((value) {
-              _updateFaq();
-            });
-            _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultCategory[VersionRepository.FAQ_VERSION]);
+          if(dbVersion.elementAt(i).values.elementAt(1) == VersionRepository.FAQ_VERSION) {
+            if(dbVersion.elementAt(i).values.elementAt(2) == null || dbVersion.elementAt(i).values.elementAt(2) < versionResultFaq[VersionRepository.VERSION]) {
+              print("faq update");
+              _dbHelper.delete(TABLE_FAQ).then((value) {
+                _updateFaq();
+              });
+              _updateVersion(dbVersion.elementAt(i).values.elementAt(0), dbVersion.elementAt(i).values.elementAt(1), versionResultFaq[VersionRepository.VERSION]);
+            }
           }
         }
       }

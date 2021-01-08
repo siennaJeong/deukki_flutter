@@ -86,11 +86,18 @@ class CategoryProvider with ChangeNotifier {
   Future<void> setStage(list) async {
     this._stageList = list;
     for(int i = 0 ; i < this._stageList.length ; i++) {
-      if(i + 1 < this._stageList.length &&
-      this._stageList[i].score == null && this._stageList[i + 1].score == null) {
-        this.selectStageIndex = i;
-        this.selectStageIdx = this._stageList[i].stageIdx;
-        break;
+      if(i - 1 == -1) {
+        if(this._stageList[i + 1].score == null) {
+          this.selectStageIndex = i;
+          this.selectStageIdx = this._stageList[i].stageIdx;
+          break;
+        }
+      }else {
+        if(this._stageList[i - 1].score != null && this._stageList[i].score == null) {
+          this.selectStageIndex = i;
+          this.selectStageIdx = this._stageList[i].stageIdx;
+          break;
+        }
       }
     }
   }

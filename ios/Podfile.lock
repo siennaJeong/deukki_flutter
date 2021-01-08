@@ -4,7 +4,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
-  - audioplayers (0.0.1):
+  - audio_session (0.0.1):
     - Flutter
   - device_info (0.0.1):
     - Flutter
@@ -138,6 +138,8 @@ PODS:
     - Flutter
   - in_app_purchase (0.0.1):
     - Flutter
+  - just_audio (0.0.1):
+    - Flutter
   - kakao_flutter_sdk (0.5.2):
     - Flutter
   - nanopb (1.30906.0):
@@ -167,7 +169,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -179,6 +181,7 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - hardware_buttons (from `.symlinks/plugins/hardware_buttons/ios`)
   - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - kakao_flutter_sdk (from `.symlinks/plugins/kakao_flutter_sdk/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -213,8 +216,8 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  audioplayers:
-    :path: ".symlinks/plugins/audioplayers/ios"
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   firebase_analytics:
@@ -237,6 +240,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/hardware_buttons/ios"
   in_app_purchase:
     :path: ".symlinks/plugins/in_app_purchase/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   kakao_flutter_sdk:
     :path: ".symlinks/plugins/kakao_flutter_sdk/ios"
   package_info:
@@ -260,7 +265,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
-  audioplayers: 53f0f30789b10ab2009771c6c79def00980945e4
+  audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
   FBSDKLoginKit: 1a61d79e2b25e2fc0d03dccab1e34b38bbdf2546
@@ -288,6 +293,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   hardware_buttons: 014f502132c734dc391a47e2b708728b1dd8bf32
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   kakao_flutter_sdk: c314c15347e033a31279acaa3c5efb5cad1426eb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
