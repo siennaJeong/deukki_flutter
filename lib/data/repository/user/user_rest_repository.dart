@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
@@ -137,8 +136,7 @@ class UserRestRepository implements UserRepository {
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT) async {
     final getUserInfo = await _httpClient.getRequest(HttpUrls.GET_USER_INFO, HttpUrls.headers(authJWT));
     if(getUserInfo.isValue) {
-      final value = getUserInfo.asValue.value['status'];
-      print("status $value");
+      final value = getUserInfo.asValue.value['result'];
       return Result.value(UserVOForHttp.fromJson(value.first as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
@@ -170,12 +168,6 @@ class UserRestRepository implements UserRepository {
   @override
   Future<Result<ReportVO>> getReports(String authJWT) async {
     final getReports = await _httpClient.reportRequest(HttpUrls.GET_REPORTS, HttpUrls.headers(authJWT));
-    /*if(getReports.isValue) {
-      final reportResult = getReports.asValue.value['result'];
-      return Result.value(ReportVO.fromJson(reportResult as Map<String, dynamic>));
-    }else {
-      return Result.error(ReportVO(0, 0, 0, null));
-    }*/
     if(getReports.isValue) {
       final status = getReports.asValue.value['status'];
       if(status == 200) {

@@ -90,7 +90,6 @@ class CategoryProvider with ChangeNotifier {
         if(this._stageList[i + 1].score == null) {
           this.selectStageIndex = i;
           this.selectStageIdx = this._stageList[i].stageIdx;
-          break;
         }
       }else {
         if(this._stageList[i - 1].score != null && this._stageList[i].score == null) {

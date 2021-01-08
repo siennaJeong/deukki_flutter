@@ -56,16 +56,18 @@ class _StageQuizState extends State<StageQuiz> {
   void initState() {
     _audioManager = AudioManager.STREAM_MUSIC;
 
-    _volumeButtonEvent = volumeButtonEvents.listen((event) {
-      switch(event) {
-        case VolumeButtonEvent.VOLUME_UP:
-          _setVolume(true);
-          break;
-        case VolumeButtonEvent.VOLUME_DOWN:
-          _setVolume(false);
-          break;
-      }
-    });
+    if(!Platform.isIOS) {
+      _volumeButtonEvent = volumeButtonEvents.listen((event) {
+        switch(event) {
+          case VolumeButtonEvent.VOLUME_UP:
+            _setVolume(true);
+            break;
+          case VolumeButtonEvent.VOLUME_DOWN:
+            _setVolume(false);
+            break;
+        }
+      });
+    }
 
     if(!Platform.isIOS) {
       initVolume();
