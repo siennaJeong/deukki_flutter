@@ -35,17 +35,25 @@ class KakaoAuthService {
         _email = user.kakaoAccount.email;
         _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
         _name = user.kakaoAccount.profile.nickname;
+
+        Gender gender = user.kakaoAccount.gender;
+        if(gender != null) {
+          if(gender.index == 0) {
+            _gender = "F";
+          }else {
+            _gender = "M";
+          }
+        }
+
+        if(user.kakaoAccount.birthyear != null && user.kakaoAccount.birthday != null) {
+          _birthDate = "${user.kakaoAccount.birthyear}-${user.kakaoAccount.birthday.substring(0, 2)}-${user.kakaoAccount.birthday.substring(2)}";
+        }
+
         return user.id.toString();
       }else {
         _email = "";
         return null;
       }
-      _name = user.kakaoAccount.profile.nickname;
-      _phone = "0${user.kakaoAccount.phoneNumber.substring(4)}";
-      Gender gender = user.kakaoAccount.gender;
-      print("kakao gender : $gender, birth : ${user.kakaoAccount.birthday}-${user.kakaoAccount.birthyear}");
-
-      return user.id.toString();
     } on KakaoAuthException catch (e) {
       print("Kakao Auth Exception : $e");
     } on KakaoClientException catch (e) {

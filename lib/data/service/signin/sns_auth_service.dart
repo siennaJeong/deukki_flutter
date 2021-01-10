@@ -4,13 +4,13 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SNSAuthService {
-  static const String _FB_KEY = "AIzaSyAcoY75Tg3ceoYkoOJF6RGX2r4AeVpqcM0";
   static const String _GENDER_SCOPE = "https://www.googleapis.com/auth/user.gender.read";
   static const String _BIRTH_SCOPE = "https://www.googleapis.com/auth/user.birthday.read";
   static const String _GOOGLE_PEOPLE_API = "https://people.googleapis.com/v1/people/me?personFields=genders&personFields=birthdays&key=";
@@ -18,10 +18,14 @@ class SNSAuthService {
   String _email;
   String _fbUid;
   String _name;
+  String _gender;
+  String _birthDay;
 
   String get email => _email;
   String get fbUid => _fbUid;
   String get name => _name;
+  String get birthDay => _birthDay;
+  String get gender => _gender;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
@@ -89,7 +93,7 @@ class SNSAuthService {
 
       final headers = await googleUser.authHeaders;
       final request = await get(
-          "$_GOOGLE_PEOPLE_API$_FB_KEY",
+          "$_GOOGLE_PEOPLE_API${FirebaseAuth.instance.app.options.apiKey}",
           headers: {
             "Authorization": headers["Authorization"]
           }
@@ -103,6 +107,21 @@ class SNSAuthService {
       }
       _name = userCredential.user.displayName;
       _fbUid = userCredential.user.uid;
+
+      if(response['genders'][0]['value'] == "female") {
+        _gender = "F";
+      }else if(response['genders'][0]['value'] == "male") {
+        _gender = "M";
+      }else {
+        _gender = "";
+      }
+
+      if(response['birthdays'][0]['date'] != null) {
+        var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
+        var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
+        _birthDay = "${response['birthdays'][0]['date']['year']}-$month-$day";
+      }
+
       return googleUser.id;
     }else {
       return "cancel";
