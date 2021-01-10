@@ -88,6 +88,8 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           fbUid = _snsAuthService.fbUid;
           userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
+          userVO.gender = _snsAuthService.gender;
+          userVO.birthDate = _snsAuthService.birthDate;
         });
         changeKakaoNoti(false);
         return socialId;
@@ -124,6 +126,8 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
           phone = _kakaoAuthService.phone;
           userVO.name = _kakaoAuthService.name;
           userVO.email = _kakaoAuthService.email;
+          userVO.gender = _kakaoAuthService.gender;
+          userVO.birthDate = _kakaoAuthService.birthDate;
           changeKakaoNoti(true);
         });
         return socialId;

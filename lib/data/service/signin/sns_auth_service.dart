@@ -19,12 +19,12 @@ class SNSAuthService {
   String _fbUid;
   String _name;
   String _gender;
-  String _birthDay;
+  String _birthDate;
 
   String get email => _email;
   String get fbUid => _fbUid;
   String get name => _name;
-  String get birthDay => _birthDay;
+  String get birthDate => _birthDate;
   String get gender => _gender;
 
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
@@ -119,7 +119,7 @@ class SNSAuthService {
       if(response['birthdays'][0]['date'] != null) {
         var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
         var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
-        _birthDay = "${response['birthdays'][0]['date']['year']}-$month-$day";
+        _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
       }
 
       return googleUser.id;

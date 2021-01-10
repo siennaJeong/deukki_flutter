@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -31,13 +33,16 @@ class _SignUpTermsState extends State<SignUpTerms> {
     setState(() {
       authServiceAdapter.marketingAgree = marketingAgree;
       authServiceAdapter.marketingMethod = "email";
-      /*if(authServiceAdapter.userVO != null && authServiceAdapter.userVO.email.isEmpty) {
-        RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL, context);
-      }else {
-        RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_NAME, context);
-      }*/
       if(authServiceAdapter.userVO != null) {
-        _signUpDone();
+        if(!Platform.isIOS) {
+          if(authServiceAdapter.userVO.gender.isEmpty || authServiceAdapter.userVO.birthDate.isEmpty) {
+            RouteNavigator().go(GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH, context);
+          }else {
+            _signUpDone();
+          }
+        }else {
+          _signUpDone();
+        }
       }
     });
   }
