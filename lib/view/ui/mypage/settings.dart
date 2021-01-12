@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -25,6 +26,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  static const String PAGE_MY_SETTINGS = "mypage_settings";
   AuthServiceAdapter _authServiceAdapter;
   UserProviderModel _userProviderModel;
 
@@ -37,15 +39,18 @@ class _SettingsState extends State<Settings> {
 
   @override
   void didChangeDependencies() {
-    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
     super.didChangeDependencies();
   }
 
   @override
   void initState() {
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     getPackageInfo();
     _clickEnable ??= true;
+
+    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "", "", "");
     super.initState();
   }
 
@@ -217,6 +222,7 @@ class _SettingsState extends State<Settings> {
         ),
       ),
       onTap: () {
+        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "logout", "", "");
         _authServiceAdapter.logout();                             //  Firebase 로그아웃
         //_userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
         RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
@@ -285,6 +291,7 @@ class _SettingsState extends State<Settings> {
                     onChanged: (value) {
                       setState(() {
                         if(_clickEnable) {
+                          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "alert", "", "");
                           _kakaoNotification = value;
                           _setKakaoAlarm();
                         }
@@ -360,6 +367,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   onTap: () {
+                    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "terms", "", "");
                     RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
                   },
                 ),
@@ -377,6 +385,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   onTap: () {
+                    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "privacy", "", "");
                     RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
                   },
                 ),
@@ -397,6 +406,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 onTap: () {
+                  AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "sign_out", "", "");
                   _showSignOutConfirm();
                 },
               ),

@@ -1,3 +1,4 @@
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -19,6 +20,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+  static const String PAGE_MY = "mypage";
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
 
@@ -31,12 +33,12 @@ class _MyPageState extends State<MyPage> {
 
   @override
   void initState() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     myPageProvider = Provider.of<MyPageProvider>(context);
     bookmarks = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
@@ -101,6 +103,24 @@ class _MyPageState extends State<MyPage> {
       onTap: () {
         myPageProvider.setButtonIndex(index);
         _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.ease);
+
+        switch(index) {
+          case 0:
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "report", "mypage_tab", "");
+            break;
+          case 1:
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "bookmark", "mypage_tab", "");
+            break;
+          case 2:
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "membership", "mypage_tab", "");
+            break;
+          case 3:
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "settings", "mypage_tab", "");
+            break;
+          case 4:
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "help", "mypage_tab", "");
+            break;
+        }
       },
     );
   }
@@ -121,7 +141,10 @@ class _MyPageState extends State<MyPage> {
             padding: EdgeInsets.all(8),
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
-          onTap: () => { Navigator.of(context).pop() },
+          onTap: () {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "back", "", "");
+            Navigator.of(context).pop();
+          },
         ),
       ),
     );

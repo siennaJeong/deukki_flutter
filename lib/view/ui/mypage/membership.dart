@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -23,6 +24,7 @@ class MemberShip extends StatefulWidget {
 }
 
 class _MemberShipState extends State<MemberShip> {
+  static const String PAGE_MY_MEMBERSHIP = "mypage_membership";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
@@ -45,11 +47,8 @@ class _MemberShipState extends State<MemberShip> {
   bool _isAvailable = false;
   bool _autoConsume = true;
 
-
   @override
   void didChangeDependencies() {
-    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     _paymentProviderModel = Provider.of<PaymentProviderModel>(context);
     _myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
     super.didChangeDependencies();
@@ -59,6 +58,11 @@ class _MemberShipState extends State<MemberShip> {
   void initState() {
     _initUpdateStream();
     _initStore();
+
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "", "", "");
     super.initState();
   }
 
@@ -219,8 +223,10 @@ class _MemberShipState extends State<MemberShip> {
         //  멤버십 구매
         _paymentPreRequest(productionVO);
         if(productionVO.title.contains("월 정기")) {
+          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "monthly", "", "");
           _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.monthly", orElse: () => null), false);
         }else {
+          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "yearly", "", "");
           _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.annual", orElse: () => null), true);
         }
       },
@@ -316,6 +322,7 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _couponRegistration() {
+    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "coupon_registration", "", "");
     RouteNavigator().go(GetRoutesName.ROUTE_COUPON_REGISTRATION, context);
   }
 
@@ -524,6 +531,7 @@ class _MemberShipState extends State<MemberShip> {
                         ),
                       ),
                       onTap: () {
+                        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "terms", "", "");
                         RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
                       },
                     ),
@@ -543,6 +551,7 @@ class _MemberShipState extends State<MemberShip> {
                         ),
                       ),
                       onTap: () {
+                        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "privacy", "", "");
                         RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
                       },
                     ),

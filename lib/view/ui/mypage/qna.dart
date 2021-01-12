@@ -1,5 +1,7 @@
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/model/faq_vo.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
+import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,9 +14,18 @@ class QnA extends StatefulWidget {
 }
 
 class _QnAState extends State<QnA> {
+  static const String PAGE_MY_HELP = "mypage_help";
   ResourceProviderModel resourceProviderModel;
+  UserProviderModel userProviderModel;
   List<FaqVO> faqs = [];
   List<ExpandableFaq> expandableFaqs = [];
+
+  @override
+  void initState() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_HELP, "", "", "");
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -27,7 +38,6 @@ class _QnAState extends State<QnA> {
       faqs = resourceProviderModel.faqs;
     }
 
-
     faqs.forEach((element) {
       ExpandableFaq expandableFaq = ExpandableFaq(question: element.question);
       expandableFaq.addAnswer(element.answer);
@@ -37,23 +47,28 @@ class _QnAState extends State<QnA> {
     super.didChangeDependencies();
   }
 
-  Widget _listTitleWidget(String title) {
-    return Container(
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: MainColors.grey_100,
-                fontSize: 16,
-                fontFamily: "NotoSansKR",
-                fontWeight: FontWeight.w700
+  Widget _listTitleWidget(String title, int faqIdx) {
+    return GestureDetector(
+      child: Container(
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              child: Text(
+                title,
+                style: TextStyle(
+                    color: MainColors.grey_100,
+                    fontSize: 16,
+                    fontFamily: "NotoSansKR",
+                    fontWeight: FontWeight.w700
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
+      onTap: () {
+        AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_HELP, "faq", "", "faq_idx : $faqIdx");
+      },
     );
   }
 
@@ -103,11 +118,11 @@ class _QnAState extends State<QnA> {
                   itemCount: expandableFaqs.length,
                   itemBuilder: (context, index) {
                     return ExpansionTile(
-                      title: _listTitleWidget(expandableFaqs[index].question),
+                      title: _listTitleWidget(expandableFaqs[index].question, faqs[index].idx),
                       children: <Widget>[
                         Column(
                           children: _buildExpandableContent(expandableFaqs[index]),
-                        )
+                        ),
                       ],
                     );
                   },

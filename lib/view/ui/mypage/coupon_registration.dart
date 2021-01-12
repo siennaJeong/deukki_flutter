@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -20,6 +21,7 @@ class CouponRegistration extends BaseWidget {
 }
 
 class _CouponRegistrationState extends State<CouponRegistration> with Validator {
+  static const String PAGE_COUPON = "coupon_registration";
   final _couponFormKey = GlobalKey<FormState>();
   FocusNode _focusNode;
 
@@ -33,15 +35,18 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
 
   @override
   void initState() {
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    _paymentProviderModel = Provider.of<PaymentProviderModel>(context, listen: false);
+    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "", "", "");
     super.initState();
     _focusNode = FocusNode();
   }
 
   @override
   void didChangeDependencies() {
-    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    _paymentProviderModel = Provider.of<PaymentProviderModel>(context, listen: false);
-    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
     super.didChangeDependencies();
   }
 
@@ -60,6 +65,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
 
   void _couponRegistration() {
     _unFocused();
+    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "registration", "", "");
     if(_couponFormKey.currentState.validate()) {
       _couponFormKey.currentState.save();
       //  서버 api 콜
@@ -181,6 +187,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
                             ),
                             onTap: () {
                               _unFocused();
+                              AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "close", "", "");
                               Navigator.pop(context);
                             },
                           ),

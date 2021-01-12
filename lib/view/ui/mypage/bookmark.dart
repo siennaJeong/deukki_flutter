@@ -1,3 +1,4 @@
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
@@ -22,6 +23,8 @@ class BookMark extends StatefulWidget {
 }
 
 class _BookMarkState extends State<BookMark> {
+  static const String PAGE_MY_BOOKMARK = "mypage_bookmark";
+
   List<BookmarkVO> _bookmarkList;
   double deviceWidth, deviceHeight;
   ResourceProviderModel resourceProviderModel;
@@ -32,12 +35,20 @@ class _BookMarkState extends State<BookMark> {
   bool _isClick = false;
 
   @override
-  void didChangeDependencies() {
-    _bookmarkList = widget.bookmarkList;
+  void initState() {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_BOOKMARK, "", "", "");
+
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _bookmarkList = widget.bookmarkList;
     super.didChangeDependencies();
   }
 
@@ -130,6 +141,7 @@ class _BookMarkState extends State<BookMark> {
       onTap: () {
         //  stage quiz 화면으로
         if(!_isClick) {
+          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_BOOKMARK, "bookmark", "", "bookmark_idx : ${_bookmarkList[index].bookmarkIdx}");
           _isClick = true;
           resourceProviderModel.getPronunciation(
               authServiceAdapter.authJWT,

@@ -1,4 +1,5 @@
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/provider/resource/mypage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -16,6 +17,7 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
+  static const String PAGE_MY_REPORT = "mypage_report";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
@@ -26,9 +28,17 @@ class _ReportState extends State<Report> {
   bool _isClick = false;
 
   @override
+  void initState() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, "", "", "");
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     myPageProvider = Provider.of<MyPageProvider>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
     if(userProviderModel.weeklyReports != null) {
       weeklyReports ??= userProviderModel.weeklyReports;
     }
@@ -36,47 +46,48 @@ class _ReportState extends State<Report> {
   }
 
   Widget _cardWidget(Color bgColor, String icons, String title, String script, bool isAccuracy) {
-    return Card(
-      color: bgColor,
-      margin: EdgeInsets.only(top: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(
-          color: isAccuracy ? MainColors.yellow_60 : MainColors.yellow_40,
-          width: 2,
+    return GestureDetector(
+      child: Card(
+        color: bgColor,
+        margin: EdgeInsets.only(top: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: isAccuracy ? MainColors.yellow_60 : MainColors.yellow_40,
+            width: 2,
+          ),
         ),
-      ),
-      elevation: 0,
-      child: Container(
-        width: deviceWidth * 0.42,
-        height: deviceHeight * 0.36,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              right: 0,
-              bottom: 0,
-              child: Container(
-                margin: EdgeInsets.only(right: 8, bottom: 8),
-                child: Image.asset(icons, width: 80, height: 80,),
-              )
-            ),
-            Container(
-              margin: EdgeInsets.only(top: 24, left: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    isAccuracy ? "$title${weeklyReports.speakingScore}%" : "$title${weeklyReports.listeningScore} / 100",
-                    style: TextStyle(
-                      color: MainColors.grey_100,
-                      fontSize: 24,
-                      fontFamily: "TmoneyRound",
-                      fontWeight: FontWeight.w700
+        elevation: 0,
+        child: Container(
+          width: deviceWidth * 0.42,
+          height: deviceHeight * 0.36,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    margin: EdgeInsets.only(right: 8, bottom: 8),
+                    child: Image.asset(icons, width: 80, height: 80,),
+                  )
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 24, left: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      isAccuracy ? "$title${weeklyReports.speakingScore}%" : "$title${weeklyReports.listeningScore} / 100",
+                      style: TextStyle(
+                          color: MainColors.grey_100,
+                          fontSize: 24,
+                          fontFamily: "TmoneyRound",
+                          fontWeight: FontWeight.w700
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  //  같은 레벨의 평균 점수 숨김 처리
-                  /*Text(
+                    SizedBox(height: 8),
+                    //  같은 레벨의 평균 점수 숨김 처리
+                    /*Text(
                     isAccuracy ? "준비중" : "${script}0 / 100",
                     style: TextStyle(
                       color: isAccuracy ? MainColors.grey_90 : MainColors.grey_100,
@@ -85,12 +96,16 @@ class _ReportState extends State<Report> {
                       fontWeight: FontWeight.w400
                     ),
                   )*/
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
+      onTap: () {
+        AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, isAccuracy ? "speaking" : "listening", "", "");
+      },
     );
   }
 
@@ -150,6 +165,8 @@ class _ReportState extends State<Report> {
                 child: GestureDetector(
                   onTap: () async {
                     if(!_isClick) {
+                      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, "report_link", "", "");
+
                       _isClick = true;
                       if(weeklyReports.link != "") {
                         await launch("${Strings.weekly_report_url}?link=${weeklyReports.link}");
