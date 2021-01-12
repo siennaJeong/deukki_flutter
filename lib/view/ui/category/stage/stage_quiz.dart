@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/audio_file_path_vo.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
@@ -32,6 +33,7 @@ class StageQuiz extends StatefulWidget {
 }
 
 class _StageQuizState extends State<StageQuiz> {
+  static const String PAGE_LEARNING = "learning";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -54,6 +56,12 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void initState() {
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "", "", "");
+
     _audioManager = AudioManager.STREAM_MUSIC;
 
     if(!Platform.isIOS) {
@@ -80,9 +88,6 @@ class _StageQuizState extends State<StageQuiz> {
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     stageProvider = Provider.of<StageProvider>(context);
 
     super.didChangeDependencies();
@@ -187,8 +192,9 @@ class _StageQuizState extends State<StageQuiz> {
             padding: EdgeInsets.all(8),
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
-          onTap: () => {
-            Navigator.of(context).pop()
+          onTap: () {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "back", "", "");
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -205,6 +211,8 @@ class _StageQuizState extends State<StageQuiz> {
           height: 50,
         ),
         onTap: () {
+          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "bookmark", "", "stage_idx : ${categoryProvider.selectStageIdx}");
+
           if(categoryProvider.isBookmark) {
             categoryProvider.onBookMark(false);
             BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
@@ -344,6 +352,8 @@ class _StageQuizState extends State<StageQuiz> {
         ),
         child: _dataLoadingWidget(soundIcons, playSpeed),
         onPressed: () {               //  Play Button Click
+          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "play", "", "");
+
           if(!stageProvider.isPlaying) {
             _play(randomPath.path, stageProvider.playRate);
             stageProvider.setPlaying(true);
@@ -490,11 +500,13 @@ class _StageQuizState extends State<StageQuiz> {
             && (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) == null) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "right", "", "pronunciation_id : ${pronunciationVO.pIdx}");
             _answerResultDialog(pronunciationVO.pIdx);
             stageProvider.historyInit(randomPath.stageIdx);
             stageProvider.setRound();
             categoryProvider.setStepProgress();
           }else {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "wrong", "", "pronunciation_id : ${pronunciationVO.pIdx}");
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
             stageProvider.setOneTimeAnswerCount();

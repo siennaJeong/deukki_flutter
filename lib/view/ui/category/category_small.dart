@@ -206,9 +206,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           _onItemClick(sentenceVO);
 
           if(sentenceVO.premium == 0) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "enable_content", "", sentenceVO.id);
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "enable_content", "", "sentence_id : ${sentenceVO.id}");
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "disable_content", "", sentenceVO.id);
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "disable_content", "", "sentence_id : ${sentenceVO.id}");
           }
         }
       },
