@@ -1,4 +1,5 @@
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
@@ -13,8 +14,16 @@ class Welcome extends StatefulWidget {
 }
 
 class _WelcomeState extends State<Welcome> {
+  static const String PAGE_WELCOME = "welcome";
+
+  @override
+  void initState() {
+    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_WELCOME, "", "", "");
+    super.initState();
+  }
 
   void getRoute() {
+    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_WELCOME, "confirm", "", "");
     setState(() {
       RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
     });
