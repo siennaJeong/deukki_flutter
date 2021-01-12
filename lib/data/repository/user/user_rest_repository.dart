@@ -10,6 +10,7 @@ import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
+import 'package:deukki/data/model/verify_token_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 
 class UserRestRepository implements UserRepository {
@@ -179,15 +180,15 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<int>> verifyToken(String authJWT) async {
+  Future<Result<VerifyTokenVO>> verifyToken(String authJWT) async {
     final verifyToken = await _httpClient.getRequest(HttpUrls.VERIFY_TOKEN, HttpUrls.headers(authJWT));
     if(verifyToken.isValue) {
       final status = verifyToken.asValue.value['status'];
       if(status == 200) {
         final result = verifyToken.asValue.value['result'];
-        return Result.value(result['idx']);
+        return Result.value(VerifyTokenVO.fromJson(result as Map<String, dynamic>));
       }else {
-        return Result.value(-1);
+        return Result.value(null);
       }
     }
   }

@@ -1,3 +1,4 @@
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -19,6 +20,7 @@ class MainCategory extends BaseWidget {
 }
 
 class _MainCategoryState extends State<MainCategory> {
+  static const String PAGE_MAIN = "main";
   AuthServiceAdapter authServiceAdapter;
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
@@ -32,18 +34,26 @@ class _MainCategoryState extends State<MainCategory> {
   bool isClick = false;
 
   @override
-  void didChangeDependencies() {
-    categoryProvider = Provider.of<CategoryProvider>(context);
+  void initState() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    getAllBookmark ??= Provider.of<UserProviderModel>(context).getBookmark(authServiceAdapter.authJWT);
-    getUserInfo ??= Provider.of<UserProviderModel>(context).getUserInfo(authServiceAdapter.authJWT);
-    getProductList ??= Provider.of<UserProviderModel>(context).getProductList(authServiceAdapter.authJWT);
-    getReports ??= Provider.of<UserProviderModel>(context).getReports(authServiceAdapter.authJWT);
+    getUserInfo ??= Provider.of<UserProviderModel>(context, listen: false).getUserInfo(authServiceAdapter.authJWT, authServiceAdapter);
+    getAllBookmark ??= Provider.of<UserProviderModel>(context, listen: false).getBookmark(authServiceAdapter.authJWT);
+    getProductList ??= Provider.of<UserProviderModel>(context, listen: false).getProductList(authServiceAdapter.authJWT);
+    getReports ??= Provider.of<UserProviderModel>(context, listen: false).getReports(authServiceAdapter.authJWT);
+
+    AnalyticsService().sendAnalyticsEvent(true, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "", "", "");
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    categoryProvider = Provider.of<CategoryProvider>(context);
     super.didChangeDependencies();
   }
 
   Widget _categoryLargeList() {
+
     void _onSelectedLarge(int index, String largeId) {
       categoryProvider.onSelectedLarge(index);
       resourceProviderModel.getCategoryMediumStar(authServiceAdapter.authJWT, largeId);
@@ -58,6 +68,7 @@ class _MainCategoryState extends State<MainCategory> {
         });
       });
     }
+
     return Selector<CategoryProvider, List<CategoryLargeVO>>(
       selector: (context, categoryProvider) => categoryProvider.categoryLargeList,
       builder: (context, largeList, child) {
@@ -119,6 +130,21 @@ class _MainCategoryState extends State<MainCategory> {
                 if(!isClick) {
                   isClick = true;
                   _onSelectedLarge(index, largeVO.id);
+
+                  switch(index) {
+                    case 0:
+                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "word", "", "");
+                      break;
+                    case 1:
+                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "sentence", "", "");
+                      break;
+                    case 2:
+                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "field_sentence", "", "");
+                      break;
+                    case 3:
+                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "business_sentence", "", "");
+                      break;
+                  }
                 }
               },
             );
@@ -129,6 +155,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
+    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, "main", "my", "", "");
     Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 0);
   }
 

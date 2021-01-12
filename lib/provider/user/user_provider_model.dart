@@ -1,3 +1,4 @@
+import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
@@ -5,18 +6,22 @@ import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/repository/user/user_repository.dart';
 import 'package:deukki/data/repository/user/user_rest_repository.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/provider_model.dart';
 import 'package:deukki/provider/user/user_provider_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserProviderModel extends ProviderModel<UserProviderState> {
-  UserProviderModel({@required UserRepository userRepository})
+  DBHelper _dbHelper;
+
+  UserProviderModel({@required UserRepository userRepository, @required DBHelper dbHelper})
       : assert(userRepository != null),
         _userRepository = userRepository,
+        _dbHelper = dbHelper,
         super(UserProviderState());
 
-  factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository());
+  factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper());
   final UserRepository _userRepository;
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
@@ -82,10 +87,14 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   }
 
-  Future<void> getUserInfo(String authJWT) async {
+  Future<void> getUserInfo(String authJWT, AuthServiceAdapter authServiceAdapter) async {
     final getUserInfo = _userRepository.getUserInfo(authJWT);
     getUserInfo.then((value) {
       userVOForHttp ??= value.asValue.value;
+      if(authServiceAdapter.userVO.premium != userVOForHttp.premium) {
+        authServiceAdapter.userVO.premium = userVOForHttp.premium;
+        authServiceAdapter.dbHelper.updateUser(authServiceAdapter.userVO, 0);
+      }
     });
     await value.getUserInfo.set(getUserInfo, notifyListeners);
   }

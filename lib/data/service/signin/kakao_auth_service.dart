@@ -21,15 +21,16 @@ class KakaoAuthService {
   }
 
   Future<String> signInWithKakao() async {
-    var token;
-    if(isKakaoInstalled) {
-      kakaoAuthCode = await AuthCodeClient.instance.requestWithTalk();
-    }else {
-      kakaoAuthCode = await AuthCodeClient.instance.request();
-    }
-    kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
-    token = await AccessTokenStore.instance.toStore(kakaoUserToken);
     try {
+      var token;
+      if(isKakaoInstalled) {
+        kakaoAuthCode = await AuthCodeClient.instance.requestWithTalk();
+      }else {
+        kakaoAuthCode = await AuthCodeClient.instance.request();
+      }
+      kakaoUserToken = await AuthApi.instance.issueAccessToken(kakaoAuthCode);
+      token = await AccessTokenStore.instance.toStore(kakaoUserToken);
+
       final User user = await UserApi.instance.me();
       if(user.kakaoAccount.email != null) {
         _email = user.kakaoAccount.email;
@@ -43,10 +44,14 @@ class KakaoAuthService {
           }else {
             _gender = "M";
           }
+        }else {
+          _gender = "N";
         }
 
         if(user.kakaoAccount.birthyear != null && user.kakaoAccount.birthday != null) {
           _birthDate = "${user.kakaoAccount.birthyear}-${user.kakaoAccount.birthday.substring(0, 2)}-${user.kakaoAccount.birthday.substring(2)}";
+        }else {
+          _birthDate = "0000-00-00";
         }
 
         return user.id.toString();

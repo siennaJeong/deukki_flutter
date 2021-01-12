@@ -5,6 +5,7 @@ import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/model/report_vo.dart';
 import 'package:deukki/data/model/user_vo.dart';
+import 'package:deukki/data/model/verify_token_vo.dart';
 
 abstract class UserRepository {
   Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId, String fbUid);
@@ -20,5 +21,5 @@ abstract class UserRepository {
   Future<Result<UserVOForHttp>> getUserInfo(String authJWT);
   Future<Result<List<ProductionVO>>> getProductList(String authJWT);
   Future<Result<ReportVO>> getReports(String authJWT);
-  Future<Result<int>> verifyToken(String authJWT);
+  Future<Result<VerifyTokenVO>> verifyToken(String authJWT);
 }

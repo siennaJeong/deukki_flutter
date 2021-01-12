@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>890185520334-8p7ap2b9avp6i13aev9ciedppcfq5or3.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA94T4JPV9hxo1YzbswkF24KXd_EpxIc5o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>890185520334</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>io.com.diction.deukki</string>
+	<key>PROJECT_ID</key>
+	<string>deukki-flutter</string>
+	<key>STORAGE_BUCKET</key>
+	<string>deukki-flutter.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:890185520334:ios:1c1b12a3e897eedf6aec9f</string>
+	<key>DATABASE_URL</key>
+	<string>https://deukki-flutter.firebaseio.com</string>
+</dict>
+</plist>

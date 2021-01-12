@@ -22,6 +22,11 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
   CategoryRepository _categoryRepository;
   DBHelper _dbHelper;
   AppVersionVO appVersionVO;
+  PackageInfo _packageInfo;
+  bool requireInstall = false;
+  List<FaqVO> faqs = [];
+  List<AudioFilePathVO> _audioFilePath = [];
+  Directory directory;
 
   ResourceProviderModel({
     @required VersionRepository versionRepository,
@@ -38,12 +43,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
           versionRepository: VersionRestRepository(),
           categoryRepository: CategoryRestRepository(),
           dbHelper: DBHelper());
-
-  PackageInfo _packageInfo;
-  bool requireInstall = false;
-  List<FaqVO> faqs = [];
-  List<AudioFilePathVO> _audioFilePath = [];
-  Directory directory;
 
   Future<void> _initData() async {
     final initData = _versionRepository.initData();

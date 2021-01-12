@@ -113,13 +113,15 @@ class SNSAuthService {
       }else if(response['genders'][0]['value'] == "male") {
         _gender = "M";
       }else {
-        _gender = "";
+        _gender = "N";
       }
 
       if(response['birthdays'][0]['date'] != null) {
         var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
         var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
         _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
+      }else {
+        _birthDate = "0000-00-00";
       }
 
       return googleUser.id;

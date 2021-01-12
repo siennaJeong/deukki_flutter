@@ -66,7 +66,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
       _paymentProviderModel.couponRegistration(_authServiceAdapter.authJWT, couponCode).then((value) {
         final status = _paymentProviderModel.value.couponRegistration;
         if(status.result.asValue.value == 200) {
-          _userProviderModel.getUserInfo(_authServiceAdapter.authJWT);
+          _userProviderModel.getUserInfo(_authServiceAdapter.authJWT, _authServiceAdapter);
           _title = Strings.coupon_dialog_reg_ok;
         }else if(status.result.asValue.value == 404) {
           _title = Strings.coupon_dialog_reg_fail;

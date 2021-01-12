@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -151,7 +152,13 @@ class _SplashState extends State<Splash> {
               child: CupertinoActivityIndicator(radius: 15)
           );
         }
-        if(tokenStatusResult.result.asValue.value != -1) {
+        if(tokenStatusResult.result.asValue.value != null) {
+          if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
+            AnalyticsService().setUserProperties(
+                "${tokenStatusResult.result.asValue.value.idx}",
+                authServiceAdapter.userVO.gender,
+                authServiceAdapter.userVO.birthDate);
+          }
           return MainCategory();
         }else {
           return Login();

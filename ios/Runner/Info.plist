@@ -27,6 +27,13 @@
 			<array>
 				<string>kakao33194ae01d0ccade0fffcd22f39f300a</string>
 				<string>fb639456823354844</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<string>com.googleusercontent.apps.890185520334-v6g5gtqjgn500li2u2n2lbmj0c848fum</string>
 			</array>
 		</dict>
@@ -71,7 +78,7 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Use to store user&apos;s recording and voice files.</string>
+	<string>Use to store user's recording and voice files.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Can We Use Your Calendar Please.</string>
 	<key>NSContactsUsageDescription</key>
@@ -79,11 +86,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Can We Use Your Location When in usage</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Use to record the user&apos;s pronunciation.</string>
+	<string>Use to record the user's pronunciation.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Can We Use Your Motion Please</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Use to judge the user&apos;s pronunciation accuracy.</string>
+	<string>Use to judge the user's pronunciation accuracy.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
