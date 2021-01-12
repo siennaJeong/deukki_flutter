@@ -14,6 +14,7 @@ class CategoryProvider with ChangeNotifier {
   int selectLargeIndex;
   int selectStageIndex;
   int selectStageIdx;
+  int currentStageIndex;
   double stepProgress;
   double stageAvgScore;
   String _largeId;
@@ -33,6 +34,7 @@ class CategoryProvider with ChangeNotifier {
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
     this.selectStageIdx = -1;
+    this.currentStageIndex = -1;
     this.isBookmark = false;
     this.stepProgress = 0.2;
     this.stageAvgScore = 0;
@@ -89,11 +91,13 @@ class CategoryProvider with ChangeNotifier {
       if(i - 1 == -1) {
         if(this._stageList[i + 1].score == null) {
           this.selectStageIndex = i;
+          this.currentStageIndex = i;
           this.selectStageIdx = this._stageList[i].stageIdx;
         }
       }else {
         if(this._stageList[i - 1].score != null && this._stageList[i].score == null) {
           this.selectStageIndex = i;
+          this.currentStageIndex = i;
           this.selectStageIdx = this._stageList[i].stageIdx;
           break;
         }

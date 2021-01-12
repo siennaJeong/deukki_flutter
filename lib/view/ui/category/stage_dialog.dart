@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
@@ -27,6 +28,7 @@ class StageDialog extends StatefulWidget {
 }
 
 class _StageDialogState extends State<StageDialog> {
+  static const String PAGE_LEARNING_STAGE = "learning_stage";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -40,15 +42,18 @@ class _StageDialogState extends State<StageDialog> {
   @override
   void initState() {
     _title = widget.title;
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "", "", "");
+
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     categoryProvider.setSentenceTitle(_title);
     super.didChangeDependencies();
   }
@@ -181,6 +186,14 @@ class _StageDialogState extends State<StageDialog> {
           _selectedIndex = index;
           _selectedStageIdx = stageVO.stageIdx;
           _onSelectedStage();
+
+          if(index == categoryProvider.currentStageIndex) {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "current_stage", "", "");
+          }else {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "completed_stage", "", "");
+          }
+        }else {
+          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "next_stage", "", "");
         }
       },
     );
@@ -201,6 +214,7 @@ class _StageDialogState extends State<StageDialog> {
             child: Icon(Icons.arrow_back, color: MainColors.purple_100, size: 30),
           ),
           onTap: () {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "back", "", "");
             categoryProvider.selectStageIndex = -1;
             categoryProvider.selectStageIdx = -1;
             if(categoryProvider.stageAvgScore != 0) {
@@ -220,6 +234,7 @@ class _StageDialogState extends State<StageDialog> {
 
   void _stageStart() {        //  Start Click
     if(!_isClick) {
+      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "start", "", "");
       _isClick = true;
       resourceProviderModel.getPronunciation(
           authServiceAdapter.authJWT,
