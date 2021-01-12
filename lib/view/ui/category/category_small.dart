@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -29,6 +30,7 @@ class CategorySmall extends BaseWidget {
 }
 
 class _CategorySmallState extends State<CategorySmall> with SingleTickerProviderStateMixin {
+  static const String PAGE_CONTENT_LIST = "content_list";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -46,17 +48,20 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   @override
   void initState() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.repeat(reverse: true);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "", "", "");
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
     final isSetData = resourceProviderModel.value.getSentence;
     if(isSetData.hasData) {
@@ -195,6 +200,12 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         if(!_isClick) {
           _isClick = true;
           _onItemClick(sentenceVO);
+
+          if(sentenceVO.premium == 0) {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "enable_content", "", sentenceVO.id);
+          }else {
+            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "disable_content", "", sentenceVO.id);
+          }
         }
       },
     );
@@ -437,6 +448,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           onTap: () {
                             categoryProvider.onSelectedLarge(-1);
                             Navigator.of(context).pop();
+                            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "back", "", "");
                           },
                         ),
                       ),
@@ -462,6 +474,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                         ],
                       ),
                       onTap: () => {                      //  More List Button
+                      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "category", "", ""),
                         showDialog(
                             context: context,
                             barrierDismissible: true,

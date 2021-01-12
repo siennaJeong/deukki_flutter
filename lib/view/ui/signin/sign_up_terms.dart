@@ -17,7 +17,7 @@ class SignUpTerms extends BaseWidget {
 }
 
 class _SignUpTermsState extends State<SignUpTerms> {
-  static const String PAGE_SIGNUP_TERMS = "sign up terms";
+  static const String PAGE_SIGNUP_TERMS = "sign_up_terms";
   bool marketingAgree = false;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;

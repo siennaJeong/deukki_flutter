@@ -21,7 +21,7 @@ class SignUpInputBirth extends BaseWidget {
 }
 
 class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
-  static const String PAGE_SIGNUP_INFO = "sign up info";
+  static const String PAGE_SIGNUP_INFO = "sign_up_info";
   final _formKey = GlobalKey<FormState>();
   FocusScopeNode _focusNode;
   AuthServiceAdapter authServiceAdapter;
@@ -73,6 +73,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
         }
         if(signUpResult.result.isValue) {
           authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
+          AnalyticsService().setUserProperties("-1", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
         }else if(signUpResult.result.isError) {
           print("sign up error : " + signUpResult.result.asError.error.toString());
         }
