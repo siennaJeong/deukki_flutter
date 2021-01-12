@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -10,22 +11,27 @@ import 'package:flutter/material.dart';
 class MediumCategoryListDialog extends StatefulWidget {
   final String title;
   final List<CategoryMediumVO> list;
+  final int premium;
 
-  MediumCategoryListDialog({@required this.title, @required this.list});
+  MediumCategoryListDialog({@required this.title, @required this.list, @required this.premium});
 
   @override
   _MediumCategoryListDialogState createState() => _MediumCategoryListDialogState();
 }
 
 class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
+  static const String PAGE_LEARNING_CATEGORY = "learning_category";
   String _title;
   List<CategoryMediumVO> _list;
   List<double> scores = [];   //  test
+  int _premium;
 
   @override
   void initState() {
     _title = widget.title;
     _list = widget.list;
+    _premium = widget.premium;
+    AnalyticsService().sendAnalyticsEvent(true, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "", "", "");
     super.initState();
   }
 
@@ -99,7 +105,10 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
           _divider(index, length),
         ],
       ),
-      onTap: () => { Navigator.of(context).pop([mediumVO.title, mediumVO.id]) },    //  List Item Button
+      onTap: () {                                               //  List Item Button
+        AnalyticsService().sendAnalyticsEvent(false, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
+        Navigator.of(context).pop([mediumVO.title, mediumVO.id]);
+      },
     );
   }
 
@@ -121,6 +130,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             child: GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.1)),
               onTap: () {
+                AnalyticsService().sendAnalyticsEvent(false, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "outside", "", "");
                 Navigator.of(context).pop();
               },
             ),

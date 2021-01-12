@@ -31,6 +31,7 @@ class CategorySmall extends BaseWidget {
 
 class _CategorySmallState extends State<CategorySmall> with SingleTickerProviderStateMixin {
   static const String PAGE_CONTENT_LIST = "content_list";
+  static const String DIALOG_UPGRADE = "upgrade_popup";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -111,16 +112,19 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       context: context,
       useSafeArea: false,
       builder: (BuildContext context) {
+        AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "", "", "");
         return _dialogWidget();
       }
     );
   }
 
   void _dismissDialog() {
+    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "close", "", "");
     Navigator.of(context).pop();
   }
 
   void _joinMembership() {
+    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "enrollment", "", "");
     _dismissDialog();
     Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 2);
   }
@@ -483,6 +487,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                               return MediumCategoryListDialog(
                                 title: categoryProvider.getMediumTitle(),
                                 list: categoryProvider.categoryMediumList,
+                                premium: userProviderModel.userVOForHttp.premium,
                               );
                             }
                         ).then((value) => {
