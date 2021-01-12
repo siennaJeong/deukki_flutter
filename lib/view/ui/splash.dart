@@ -107,7 +107,6 @@ class _SplashState extends State<Splash> {
   Future<void> checkAppVersion;
   Future<void> checkAllVersion;
   Future<void> verifyToken;
-  Future<void> getUserInfo;
 
   @override
   void didChangeDependencies() {
@@ -145,7 +144,6 @@ class _SplashState extends State<Splash> {
     }else {
       if(authServiceAdapter.authJWT.isNotEmpty) {
         verifyToken ??= Provider.of<UserProviderModel>(context).verifyToken(authServiceAdapter.authJWT);
-        getUserInfo ??= Provider.of<UserProviderModel>(context, listen: false).getUserInfo(authServiceAdapter.authJWT, authServiceAdapter);
         final tokenStatusResult = context.select((UserProviderModel model) => model.value.verifyToken);
         if(!tokenStatusResult.hasData) {
           return Container(

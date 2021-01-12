@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -16,11 +17,18 @@ class SignUpTerms extends BaseWidget {
 }
 
 class _SignUpTermsState extends State<SignUpTerms> {
+  static const String PAGE_SIGNUP_TERMS = "sign up terms";
   bool marketingAgree = false;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
 
   double deviceWidth, deviceHeight;
+
+  @override
+  void initState() {
+    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_SIGNUP_TERMS, "", "", "");
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -30,6 +38,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
   }
 
   void _isEmailExist() {
+    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "confirm", "", "");
     setState(() {
       authServiceAdapter.marketingAgree = marketingAgree;
       authServiceAdapter.marketingMethod = "email";
@@ -71,6 +80,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
   }
 
   void _onBackPressed() {
+    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "cancel", "", "");
     setState(() {
       Navigator.of(context).pop();
     });
@@ -132,6 +142,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                               activeColor: MainColors.purple_100,
                               value: marketingAgree,
                               onChanged: (bool value) {
+                                AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "marketing_agree", "", "$value");
                                 setState(() {
                                   marketingAgree = value;
                                 });
@@ -190,9 +201,11 @@ class _SignUpTermsState extends State<SignUpTerms> {
       onTap: () {
         switch(str) {
           case Strings.sign_up_terms_terms:         //  이용약관
+            AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "terms", "", "");
             RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
             break;
           case Strings.sign_up_terms_info:          //  개인정보처리
+            AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "privacy", "", "");
             RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
             break;
         }

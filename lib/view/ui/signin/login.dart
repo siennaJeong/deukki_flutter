@@ -34,11 +34,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    if(signInProviderModel.userVOForHttp != null) {
-      AnalyticsService().sendAnalyticsEvent(true, signInProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LOGIN, "", "", "");
-    }else {
-      AnalyticsService().sendAnalyticsEvent(true, false, PAGE_LOGIN, "", "", "");
-    }
+    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_LOGIN, "", "", "");
     super.initState();
   }
 
@@ -49,12 +45,7 @@ class _LoginState extends State<Login> {
   }
 
   void _checkSignUp(String authType, AuthServiceType authServiceType) async {
-
-    if(signInProviderModel.userVOForHttp != null) {
-      AnalyticsService().sendAnalyticsEvent(false, signInProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LOGIN, authType, "", "");
-    }else {
-      AnalyticsService().sendAnalyticsEvent(false, false, PAGE_LOGIN, authType, "", "");
-    }
+    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_LOGIN, authType, "", "");
 
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
@@ -119,8 +110,11 @@ class _LoginState extends State<Login> {
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           authServiceAdapter.setIsSigning(false);
-
-          AnalyticsService().setUserProperties("${signInProviderModel.userVOForHttp.idx}", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+          if(signInProviderModel.userVOForHttp != null) {
+            AnalyticsService().setUserProperties("${signInProviderModel.userVOForHttp.idx}", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+          }else {
+            AnalyticsService().setUserProperties("-1", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+          }
         }
       }
     });
