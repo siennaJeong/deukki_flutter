@@ -25,7 +25,6 @@ class _MainCategoryState extends State<MainCategory> {
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   Future<void> getAllBookmark;
-  Future<void> getUserInfo;
   Future<void> getProductList;
   Future<void> getReports;
 
@@ -37,7 +36,6 @@ class _MainCategoryState extends State<MainCategory> {
   void initState() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
-    getUserInfo ??= Provider.of<UserProviderModel>(context, listen: false).getUserInfo(authServiceAdapter.authJWT, authServiceAdapter);
     getAllBookmark ??= Provider.of<UserProviderModel>(context, listen: false).getBookmark(authServiceAdapter.authJWT);
     getProductList ??= Provider.of<UserProviderModel>(context, listen: false).getProductList(authServiceAdapter.authJWT);
     getReports ??= Provider.of<UserProviderModel>(context, listen: false).getReports(authServiceAdapter.authJWT);
@@ -155,7 +153,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
-    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, "main", "my", "", "");
+    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "my", "", "");
     Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 0);
   }
 

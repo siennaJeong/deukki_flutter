@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
@@ -22,6 +23,7 @@ class Login extends BaseWidget {
 }
 
 class _LoginState extends State<Login> {
+  static const String PAGE_LOGIN = "login";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel signInProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -30,13 +32,30 @@ class _LoginState extends State<Login> {
   double deviceWidth, deviceHeight;
 
   @override
+  void initState() {
+    signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    if(signInProviderModel.userVOForHttp != null) {
+      AnalyticsService().sendAnalyticsEvent(true, signInProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LOGIN, "", "", "");
+    }else {
+      AnalyticsService().sendAnalyticsEvent(true, false, PAGE_LOGIN, "", "", "");
+    }
+    super.initState();
+  }
+
+  @override
   void didChangeDependencies() {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context);
-    signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     super.didChangeDependencies();
   }
 
   void _checkSignUp(String authType, AuthServiceType authServiceType) async {
+
+    if(signInProviderModel.userVOForHttp != null) {
+      AnalyticsService().sendAnalyticsEvent(false, signInProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LOGIN, authType, "", "");
+    }else {
+      AnalyticsService().sendAnalyticsEvent(false, false, PAGE_LOGIN, authType, "", "");
+    }
+
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         authServiceAdapter.setIsSigning(false);
@@ -100,6 +119,8 @@ class _LoginState extends State<Login> {
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           authServiceAdapter.setIsSigning(false);
+
+          AnalyticsService().setUserProperties("${signInProviderModel.userVOForHttp.idx}", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
         }
       }
     });
