@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -19,6 +20,7 @@ class StageCompleteDialog extends StatefulWidget {
 }
 
 class _StageCompleteDialogState extends State<StageCompleteDialog> {
+  static const String PAGE_LEARN_COMPLETE = "learning_complete";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
 
@@ -26,13 +28,17 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   void initState() {
+    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "", "", "");
+
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
     categoryProvider = Provider.of<CategoryProvider>(context);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
     super.didChangeDependencies();
   }
 
@@ -79,6 +85,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
+      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "ok", "", "");
       if((categoryProvider.selectStageIndex + 1) % 3 != 0) {
         Navigator.pop(context);
       }else {
