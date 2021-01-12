@@ -1,3 +1,4 @@
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/common/utils/validator.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -20,6 +21,7 @@ class SignUpInputBirth extends BaseWidget {
 }
 
 class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
+  static const String PAGE_SIGNUP_INFO = "sign up info";
   final _formKey = GlobalKey<FormState>();
   FocusScopeNode _focusNode;
   AuthServiceAdapter authServiceAdapter;
@@ -28,6 +30,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
 
   @override
   void initState() {
+    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_SIGNUP_INFO, "", "", "");
     super.initState();
     _focusNode = FocusScopeNode();
   }
@@ -46,6 +49,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
   }
 
   void _signUpDone() {
+    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_INFO, "done", "", "");
     if(_focusNode.hasFocus) {
       _focusNode.unfocus();
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
@@ -255,6 +259,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
                                     value: Strings.sign_up_gender_male,
                                     groupValue: selectGender,
                                     onChanged: (String val) {
+                                      AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_INFO, "gender", "", val);
                                       setState(() {
                                         selectGender = val;
                                         authServiceAdapter.userVO.gender = "M";
