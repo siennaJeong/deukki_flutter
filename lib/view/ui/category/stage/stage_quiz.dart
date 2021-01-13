@@ -25,7 +25,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
-import 'package:hardware_buttons/hardware_buttons.dart';
 
 class StageQuiz extends StatefulWidget {
   @override
@@ -64,23 +63,6 @@ class _StageQuizState extends State<StageQuiz> {
 
     _audioManager = AudioManager.STREAM_MUSIC;
 
-    if(!Platform.isIOS) {
-      _volumeButtonEvent = volumeButtonEvents.listen((event) {
-        switch(event) {
-          case VolumeButtonEvent.VOLUME_UP:
-            _setVolume(true);
-            break;
-          case VolumeButtonEvent.VOLUME_DOWN:
-            _setVolume(false);
-            break;
-        }
-      });
-    }
-
-    if(!Platform.isIOS) {
-      initVolume();
-    }
-
     _initAudioPlayer();
     super.initState();
   }
@@ -101,28 +83,6 @@ class _StageQuizState extends State<StageQuiz> {
     }
     stageProvider.stopLearnTime();
     super.dispose();
-  }
-
-  Future<void> initVolume() async {
-    await Volume.controlVolume(AudioManager.STREAM_MUSIC);
-    currentVol = await Volume.getVol;
-    maxVol = await Volume.getMaxVol;
-  }
-
-  _setVolume(bool isUp) async {
-    if(isUp) {
-      currentVol++;
-      if(currentVol >= maxVol) {
-        currentVol = maxVol;
-      }
-      Volume.setVol(currentVol);
-    }else {
-      currentVol--;
-      if(currentVol <= 0) {
-        currentVol = 0;
-      }
-      Volume.setVol(currentVol);
-    }
   }
 
   void _initAudioPlayer() {
