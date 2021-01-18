@@ -23,6 +23,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
 import 'package:hardware_buttons/hardware_buttons.dart';
@@ -501,18 +502,18 @@ class _StageQuizState extends State<StageQuiz> {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "right", "", "pronunciation_id : ${pronunciationVO.pIdx}");
-            _answerResultDialog(pronunciationVO.pIdx);
             stageProvider.historyInit(randomPath.stageIdx);
-            stageProvider.setRound();
-            categoryProvider.setStepProgress();
           }else {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "wrong", "", "pronunciation_id : ${pronunciationVO.pIdx}");
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
             stageProvider.setOneTimeAnswerCount();
-            resultBgImage = AppImages.greenBgImage;
-            resultText = Strings.quiz_result_good;
+            resultBgImage = AppImages.incorrectAnimation;
+            resultText = Strings.quiz_answer_incorrect;
           }
+          _answerResultDialog(pronunciationVO.pIdx);
+          stageProvider.setRound();
+          categoryProvider.setStepProgress();
         }
       },
     );
@@ -590,8 +591,8 @@ class _StageQuizState extends State<StageQuiz> {
 
   void _answerResultDialog(int pIdx) {
     if(stageProvider.oneTimeAnswerCount <= 0) {
-      resultBgImage = AppImages.blueBgImage;
-      resultText = Strings.quiz_result_great;
+      resultBgImage = AppImages.correctAnimation;
+      resultText = Strings.quiz_answer_correct;
       stageProvider.setSelectPIdx(pIdx);
       stageProvider.setCorrect(true);
       stageProvider.setCountCorrectAnswer();
@@ -616,7 +617,7 @@ class _StageQuizState extends State<StageQuiz> {
           context: context,
           useSafeArea: false,
           builder: (BuildContext context) {
-            Future.delayed(Duration(seconds: 1), () {
+            Future.delayed(Duration(seconds: 2), () {
               Navigator.pop(context);
               stageProvider.onSelectedAnswer(-1, "");
             });
@@ -629,23 +630,26 @@ class _StageQuizState extends State<StageQuiz> {
                     child: Container(color: Colors.black.withOpacity(0.1)),
                   ),
                 ),
-                Stack(
-                  alignment: AlignmentDirectional.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Positioned(
-                        child: Container(
-                          width: deviceWidth * 0.35,
-                          child: Image.asset(bgImages),
-                        )
-                    ),
-                    Positioned(
-                      child: Container(
-                        child: Text(
-                          answerResult,
-                          style: Theme.of(context).textTheme.headline3,
-                        ),
+                    Container(
+                      width: deviceWidth * 0.35,
+                      child: Lottie.asset(
+                        bgImages,
+                        repeat: false,
+                        width: (deviceWidth * 0.35) * 0.85,
+                        height: (deviceWidth * 0.35) * 0.85,
                       ),
-                    )
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Text(
+                        answerResult,
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
                   ],
                 ),
               ],

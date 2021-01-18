@@ -132,6 +132,8 @@ flutter:
     - images/yellow_bg_shape.png
     - images/icon_drop_down.png
     - assets/lottie/sound_effect.json
+    - assets/lottie/correct_answer.json
+    - assets/lottie/incorrect_answer.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

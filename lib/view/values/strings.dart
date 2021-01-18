@@ -84,6 +84,8 @@ class Strings {
   static const String right_pronunciation = '올바른 발음';
   static const String quiz_result_good = 'GOOD!';
   static const String quiz_result_great = 'GREAT!!';
+  static const String quiz_answer_correct = '맞혔습니다!!';
+  static const String quiz_answer_incorrect = '틀렸습니다!';
   static const String thank_you = 'Thank\nYou!';
   static const String record_again = '다시 발음하기';
   static const String star = '별 ';
