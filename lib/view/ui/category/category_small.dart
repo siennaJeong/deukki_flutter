@@ -40,6 +40,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
 
   double deviceWidth, deviceHeight;
 
+  final ScrollController _scrollController = ScrollController();
   final random = Random();
   final List<Color> cellColor = [];
   List<num> mainAxis = [];
@@ -141,6 +142,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                 margin: EdgeInsets.only(bottom: 25, left: 40),
                 child: StaggeredGridView.countBuilder(
                     shrinkWrap: false,
+                    controller: _scrollController,
                     padding: EdgeInsets.only(left: 0),
                     physics: BouncingScrollPhysics(),
                     crossAxisCount: deviceHeight > 700 ? 3 : 2,
@@ -499,6 +501,11 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                               if(sentenceResult.hasData) {
                                 categoryProvider.setSentence(sentenceResult.result.asValue.value);
                                 _setMainAxis();
+                                _scrollController.animateTo(
+                                    _scrollController.position.minScrollExtent,
+                                    duration: Duration(milliseconds: 500),
+                                    curve: Curves.fastOutSlowIn
+                                );
                               }
                             })
                           }
