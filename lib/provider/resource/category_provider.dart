@@ -1,5 +1,6 @@
 
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 
 class CategoryProvider with ChangeNotifier {
   final DBHelper dbHelper;
+  final SharedHelper sharedHelper;
   bool isBookmark;
   bool isRootBookmark;
   int selectLargeIndex;
@@ -30,7 +32,7 @@ class CategoryProvider with ChangeNotifier {
   List<PronunciationVO> _pronunciationList = [];
   List<PreScoreVO> _preScoreList;
 
-  CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
+  CategoryProvider(this._categoryLargeList, {this.dbHelper, this.sharedHelper}) {
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
     this.selectStageIdx = -1;

@@ -73,9 +73,9 @@ void main() async {
                     AuthServiceAdapter(previous.authJWT, sharedHelper: sharedHelper, dbHelper: dbHelper),
                 lazy: true,
               ),
-              ChangeNotifierProxyProvider<DBHelper, CategoryProvider>(
-                create: (context) => CategoryProvider([], dbHelper: null),
-                update: (context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
+              ChangeNotifierProxyProvider2<DBHelper, SharedHelper, CategoryProvider>(
+                create: (context) => CategoryProvider([], dbHelper: null, sharedHelper: null),
+                update: (context, dbHelper, sharedHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper, sharedHelper: sharedHelper),
                 lazy: true,
               ),
             ],
