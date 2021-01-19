@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
@@ -220,6 +222,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
   void _onItemClick(SentenceVO sentenceVO) {
     if(userProviderModel.userVOForHttp.premium == 0) {
       if(sentenceVO.premium == 0) {
+        categoryProvider.setCurrentMedium(categoryProvider.getCurrentMedium());
         resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
           categoryProvider.selectStageIndex = -1;
           categoryProvider.stageAvgScore = 0;
@@ -243,6 +246,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
         _membershipDialog();
       }
     }else {
+      categoryProvider.setCurrentMedium(categoryProvider.getCurrentMedium());
       resourceProviderModel.getSentenceStages(authServiceAdapter.authJWT, sentenceVO.id).then((value) {
         categoryProvider.selectStageIndex = -1;
         categoryProvider.stageAvgScore = 0;
@@ -466,7 +470,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           Container(
                             margin: EdgeInsets.only(top: 19, bottom: 20),
                             child: Text(
-                              '${categoryProvider.getMediumTitle()}',
+                              '${categoryProvider.getCurrentMedium().title}',
                               style: deviceHeight > 700 ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
@@ -487,16 +491,17 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                             useSafeArea: false,
                             builder: (BuildContext context) {
                               return MediumCategoryListDialog(
-                                title: categoryProvider.getMediumTitle(),
+                                title: categoryProvider.getCurrentMedium().title,
                                 list: categoryProvider.categoryMediumList,
                                 premium: userProviderModel.userVOForHttp.premium,
                               );
                             }
-                        ).then((value) => {
+                        ).then((value) {
                           if(value != null) {
-                            resourceProviderModel.getSentence(authServiceAdapter.authJWT, value[1]).then((val) {
-                              categoryProvider.setMediumTitle(value[0]);
-                              categoryProvider.setMediumId(value[1]);
+                            CategoryMediumVO mediumVO = CategoryMediumVO.fromJson(json.decode(value));
+                            resourceProviderModel.getSentence(authServiceAdapter.authJWT, mediumVO.id).then((val) {
+                              categoryProvider.saveCategory(mediumVO);
+                              categoryProvider.setCurrentMedium(mediumVO);
                               final sentenceResult = resourceProviderModel.value.getSentence;
                               if(sentenceResult.hasData) {
                                 categoryProvider.setSentence(sentenceResult.result.asValue.value);
@@ -507,7 +512,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                                     curve: Curves.fastOutSlowIn
                                 );
                               }
-                            })
+                            });
                           }
                         }),
                       },

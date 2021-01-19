@@ -41,7 +41,6 @@ class AnalyticsService {
   }
 
   Future<void> sendAnalyticsEvent(bool isVisited, bool isPremium, String page, String click, String subPage, String value) async {
-    print("send analytics call");
     var now = DateTime.now();
     packageInfo ??= await PackageInfo.fromPlatform();
 

@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CategoryProvider with ChangeNotifier {
+  static const String MEDIUM_KEY = "mediumCategory";
   final DBHelper dbHelper;
   final SharedHelper sharedHelper;
   bool isBookmark;
@@ -20,9 +23,8 @@ class CategoryProvider with ChangeNotifier {
   double stepProgress;
   double stageAvgScore;
   String _largeId;
-  String _mediumId;
-  String _mediumTitle;
   String _sentenceTitle;
+  CategoryMediumVO _categoryMediumVO;
   SentenceVO selectedSentence;
   PronunciationVO _rightPronunciation;
   List<CategoryLargeVO> _categoryLargeList = [];
@@ -54,15 +56,13 @@ class CategoryProvider with ChangeNotifier {
   List<PreScoreVO> get preScoreList => [..._preScoreList];
 
   getLargeId() => _largeId;
-  getMediumId() => _mediumId;
-  getMediumTitle() => _mediumTitle;
   getSentenceTitle() => _sentenceTitle;
+  CategoryMediumVO getCurrentMedium() => _categoryMediumVO;
   PronunciationVO getRightPronun() => _rightPronunciation;
 
   setLargeId(String largeId) => _largeId = largeId;
-  setMediumId(String mediumId) => _mediumId = mediumId;
-  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
   setSentenceTitle(String sentenceTitle) => _sentenceTitle = sentenceTitle;
+  setCurrentMedium(CategoryMediumVO categoryMediumVO) => _categoryMediumVO = categoryMediumVO;
   setRightPronun(PronunciationVO rightPronun) => _rightPronunciation = rightPronun;
 
   Future<void> fetchAndSetLargeCategory() async {
@@ -77,8 +77,14 @@ class CategoryProvider with ChangeNotifier {
     setLargeId(largeId);
     final mediumList = await dbHelper.getCategoryMedium(largeId);
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
-    setMediumId(_categoryMediumList[0].id);
-    setMediumTitle(_categoryMediumList[0].title);
+    if(sharedHelper.sharedPreference != null) {
+      final sharedCategory = await sharedHelper.getStringSharedPref(MEDIUM_KEY);
+      if(sharedCategory.isNotEmpty) {
+        setCurrentMedium(CategoryMediumVO.fromJson(json.decode(sharedCategory)));
+      }else {
+        setCurrentMedium(_categoryMediumList[0]);
+      }
+    }
     notifyListeners();
   }
 
@@ -194,6 +200,10 @@ class CategoryProvider with ChangeNotifier {
       this._pronunciationList.add(pronunciationVO);
     });
     notifyListeners();
+  }
+
+  Future<void> saveCategory(CategoryMediumVO mediumVO) async {
+    sharedHelper.setStringSharedPref(MEDIUM_KEY, json.encode(mediumVO));
   }
 
 }
