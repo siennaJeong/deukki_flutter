@@ -78,7 +78,7 @@ class CategoryProvider with ChangeNotifier {
     final mediumList = await dbHelper.getCategoryMedium(largeId);
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
     if(sharedHelper.sharedPreference != null) {
-      final sharedCategory = await sharedHelper.getStringSharedPref(MEDIUM_KEY);
+      final sharedCategory = await sharedHelper.getStringSharedPref("${MEDIUM_KEY}_$selectLargeIndex");
       if(sharedCategory.isNotEmpty) {
         setCurrentMedium(CategoryMediumVO.fromJson(json.decode(sharedCategory)));
       }else {
@@ -203,7 +203,7 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<void> saveCategory(CategoryMediumVO mediumVO) async {
-    sharedHelper.setStringSharedPref(MEDIUM_KEY, json.encode(mediumVO));
+    sharedHelper.setStringSharedPref("${MEDIUM_KEY}_$selectLargeIndex", json.encode(mediumVO));
   }
 
 }

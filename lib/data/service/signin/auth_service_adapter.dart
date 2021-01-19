@@ -157,10 +157,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await FirebaseAuth.instance.signOut();
         break;
     }
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
-    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
-    sharedHelper.setStringSharedPref(CategoryProvider.MEDIUM_KEY, null);
+    sharedHelper.removeAllShared();
     return true;
   }
 
@@ -183,10 +180,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   @override
   Future<void> signOut() async {
     await FirebaseAuth.instance.currentUser.delete();
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
-    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
-    sharedHelper.setStringSharedPref(CategoryProvider.MEDIUM_KEY, null);
+    sharedHelper.removeAllShared();
   }
 
   @override
