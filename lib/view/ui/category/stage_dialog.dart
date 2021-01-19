@@ -279,12 +279,10 @@ class _StageDialogState extends State<StageDialog> {
     categoryProvider.initPreScore();
 
     setState(() {
-      if(categoryProvider.selectStageIndex > 3) {
-        _autoScrollController.scrollToIndex(
-            categoryProvider.selectStageIndex,
-            preferPosition: AutoScrollPosition.middle,
-            duration: Duration(milliseconds: 500));
-      }
+      _autoScrollController.scrollToIndex(
+          categoryProvider.selectStageIndex,
+          preferPosition: AutoScrollPosition.middle,
+          duration: Duration(milliseconds: 500));
     });
 
     return Stack(
