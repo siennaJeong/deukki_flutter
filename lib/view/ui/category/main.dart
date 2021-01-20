@@ -57,7 +57,7 @@ class _MainCategoryState extends State<MainCategory> {
       categoryProvider.onSelectedLarge(index);
       resourceProviderModel.getCategoryMediumStar(authServiceAdapter.authJWT, largeId);
       categoryProvider.setMediumCategory(largeId).then((value) {
-        resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getMediumId()).then((value) {
+        resourceProviderModel.getSentence(authServiceAdapter.authJWT, categoryProvider.getCurrentMedium().id).then((value) {
           final sentenceResult = resourceProviderModel.value.getSentence;
           if(sentenceResult.hasData) {
             categoryProvider.setSentence(sentenceResult.result.asValue.value);

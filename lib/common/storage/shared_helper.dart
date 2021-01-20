@@ -39,4 +39,9 @@ class SharedHelper{
     final shared = await sharedPreference;
     return shared.getString(key) ?? defValue ?? "";
   }
+
+  removeAllShared() async {
+    final shared = await sharedPreference;
+    await shared.clear();
+  }
 }

@@ -6,8 +6,6 @@ import 'package:deukki/data/model/learning_vo.dart';
 import 'package:flutter/material.dart';
 
 class StageProvider with ChangeNotifier{
-  bool isPlaying;
-  int playCount;
   List<int> selectAnswerIndex;
   List<String> selectedAnswer;
   double playRate;
@@ -29,8 +27,6 @@ class StageProvider with ChangeNotifier{
   List<Map> historyList;
 
   StageProvider() {
-    this.isPlaying = false;
-    this.playCount = 0;
     this.playRate = 0.8;
     this.selectAnswerIndex = [];
     this.selectedAnswer = [];
@@ -47,19 +43,9 @@ class StageProvider with ChangeNotifier{
     this.oneTimeAnswerCount = 0;
   }
 
-  void setPlaying(bool isPlaying) {
-    this.isPlaying = isPlaying;
-    notifyListeners();
-  }
-
   void onSelectedAnswer(int index, String selectedAnswer) {
     this.selectAnswerIndex.add(index);
     this.selectedAnswer.add(selectedAnswer);
-    notifyListeners();
-  }
-
-  void setPlayCount() {
-    this.playCount ++;
     notifyListeners();
   }
 

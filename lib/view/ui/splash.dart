@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:flutter/material.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -55,6 +56,10 @@ void main() async {
                 create: (context) => SharedHelper(),
                 lazy: true,
               ),
+              Provider<AudioPlayer>(
+                create: (context) => AudioPlayer(),
+                lazy: true,
+              ),
               ChangeNotifierProvider<UserProviderModel>(
                 create: (context) => UserProviderModel.build(),
                 lazy: true,
@@ -73,9 +78,10 @@ void main() async {
                     AuthServiceAdapter(previous.authJWT, sharedHelper: sharedHelper, dbHelper: dbHelper),
                 lazy: true,
               ),
-              ChangeNotifierProxyProvider<DBHelper, CategoryProvider>(
-                create: (context) => CategoryProvider([], dbHelper: null),
-                update: (context, dbHelper, previous) => CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper),
+              ChangeNotifierProxyProvider3<DBHelper, SharedHelper, AudioPlayer, CategoryProvider>(
+                create: (context) => CategoryProvider([], dbHelper: null, sharedHelper: null, audioPlayer: null),
+                update: (context, dbHelper, sharedHelper, audioPlayer, previous) =>
+                    CategoryProvider(previous.categoryLargeList, dbHelper: dbHelper, sharedHelper: sharedHelper, audioPlayer: audioPlayer),
                 lazy: true,
               ),
             ],

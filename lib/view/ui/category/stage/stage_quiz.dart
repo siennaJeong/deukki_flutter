@@ -23,6 +23,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
 
@@ -41,7 +42,7 @@ class _StageQuizState extends State<StageQuiz> {
 
   final random = Random();
 
-  AudioPlayer _audioPlayer;
+  //AudioPlayer _audioPlayer;
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -62,8 +63,6 @@ class _StageQuizState extends State<StageQuiz> {
     AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "", "", "");
 
     _audioManager = AudioManager.STREAM_MUSIC;
-
-    _initAudioPlayer();
     super.initState();
   }
 
@@ -77,43 +76,11 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void dispose() {
-    _audioPlayer.dispose();
     if(!Platform.isIOS) {
       _volumeButtonEvent?.cancel();
     }
     stageProvider.stopLearnTime();
     super.dispose();
-  }
-
-  void _initAudioPlayer() {
-    _audioPlayer ??= AudioPlayer();
-    _audioPlayer.playerStateStream.listen((event) {
-      switch(event.processingState) {
-        case ProcessingState.completed:
-          _audioPlayer.stop();
-          stageProvider.setPlaying(false);
-          stageProvider.setPlayCount();
-          break;
-        case ProcessingState.idle:
-          // TODO: Handle this case.
-          break;
-        case ProcessingState.loading:
-          // TODO: Handle this case.
-          break;
-        case ProcessingState.buffering:
-          // TODO: Handle this case.
-          break;
-        case ProcessingState.ready:
-          // TODO: Handle this case.
-          break;
-      }
-    });
-  }
-
-  void _play(String filePath, double speed) async {
-    await _audioPlayer.setFilePath(filePath);
-    await _audioPlayer.setSpeed(speed);
-    await _audioPlayer.play();
   }
 
   Widget _header() {
@@ -286,7 +253,7 @@ class _StageQuizState extends State<StageQuiz> {
       playSpeed = "";
     }
 
-    if(!stageProvider.isPlaying) {
+    if(!categoryProvider.isPlaying) {
       if(stageProvider.playRate > 1.0) {
         soundIcons = AppImages.playFast;
       }else {
@@ -301,7 +268,7 @@ class _StageQuizState extends State<StageQuiz> {
       margin: EdgeInsets.only(top: 32),
       child: RaisedButton(
         padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
-        color: !stageProvider.isPlaying ? MainColors.purple_80 : Colors.white,
+        color: !categoryProvider.isPlaying ? MainColors.purple_80 : Colors.white,
         elevation: 0,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -314,9 +281,9 @@ class _StageQuizState extends State<StageQuiz> {
         onPressed: () {               //  Play Button Click
           AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "play", "", "");
 
-          if(!stageProvider.isPlaying) {
-            _play(randomPath.path, stageProvider.playRate);
-            stageProvider.setPlaying(true);
+          if(!categoryProvider.isPlaying) {
+            categoryProvider.play(randomPath.path, stageProvider.playRate);
+            categoryProvider.setPlaying(true);
             stageProvider.setSoundRepeat();
           }
         },
@@ -330,7 +297,7 @@ class _StageQuizState extends State<StageQuiz> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            !stageProvider.isPlaying ? Strings.play_btn : "",
+            !categoryProvider.isPlaying ? Strings.play_btn : "",
             style: TextStyle(
               fontSize: 16,
               fontFamily: "TmoneyRound",
@@ -352,7 +319,7 @@ class _StageQuizState extends State<StageQuiz> {
             child: Text(
               playSpeed,
               style: TextStyle(
-                  fontSize: !stageProvider.isPlaying ? 12 : 0,
+                  fontSize: !categoryProvider.isPlaying ? 12 : 0,
                   fontFamily: "NotoSansKR",
                   fontWeight: FontWeight.w400,
                   color: Colors.white
@@ -412,7 +379,7 @@ class _StageQuizState extends State<StageQuiz> {
 
   Widget _listItemWidget(PronunciationVO pronunciationVO, String rightPronunciation, int index) {
     Color cardColor, textColor;
-    if(stageProvider.isPlaying) {
+    if(categoryProvider.isPlaying) {
       if(stageProvider.selectAnswerIndex.contains(index)) {
         cardColor = Colors.white;
         textColor = Colors.white;
@@ -421,7 +388,7 @@ class _StageQuizState extends State<StageQuiz> {
         textColor = MainColors.grey_70;
       }
     }else {
-      if(stageProvider.playCount > 0) {
+      if(categoryProvider.playCount > 0) {
         if(stageProvider.selectAnswerIndex.contains(index)) {
           cardColor = Colors.white;
           textColor = Colors.white;
@@ -455,24 +422,24 @@ class _StageQuizState extends State<StageQuiz> {
         ),
       ),
       onTap: () {                   // List Item Click (Quiz answer click)
-        if(!stageProvider.isPlaying
-            && stageProvider.playCount > 0
+        if(!categoryProvider.isPlaying
+            && categoryProvider.playCount > 0
             && (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) == null) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "right", "", "pronunciation_id : ${pronunciationVO.pIdx}");
-            _answerResultDialog(pronunciationVO.pIdx);
             stageProvider.historyInit(randomPath.stageIdx);
-            stageProvider.setRound();
-            categoryProvider.setStepProgress();
           }else {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "wrong", "", "pronunciation_id : ${pronunciationVO.pIdx}");
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
             stageProvider.setOneTimeAnswerCount();
-            resultBgImage = AppImages.greenBgImage;
-            resultText = Strings.quiz_result_good;
+            resultBgImage = AppImages.incorrectAnimation;
+            resultText = Strings.quiz_answer_incorrect;
           }
+          _answerResultDialog(pronunciationVO.pIdx);
+          stageProvider.setRound();
+          categoryProvider.setStepProgress();
         }
       },
     );
@@ -527,7 +494,7 @@ class _StageQuizState extends State<StageQuiz> {
         margin: EdgeInsets.only(top: 6, left: 6),
         padding: EdgeInsets.only(top: 3, bottom: 3, left: 6, right: 6),
         decoration: BoxDecoration(
-            color: !stageProvider.isPlaying && stageProvider.playCount > 0 ? Colors.white : MainColors.blue_100,
+            color: !categoryProvider.isPlaying && categoryProvider.playCount > 0 ? Colors.white : MainColors.blue_100,
             borderRadius: BorderRadius.circular(12)
         ),
         child: Center(
@@ -538,7 +505,7 @@ class _StageQuizState extends State<StageQuiz> {
                 fontSize: 16,
                 fontFamily: "NotoSansKR",
                 fontWeight: FontWeight.w400,
-                color: !stageProvider.isPlaying && stageProvider.playCount > 0 ? MainColors.blue_opacity50 : Colors.white
+                color: !categoryProvider.isPlaying && categoryProvider.playCount > 0 ? MainColors.blue_opacity50 : Colors.white
             ),
           ),
         ),
@@ -550,8 +517,8 @@ class _StageQuizState extends State<StageQuiz> {
 
   void _answerResultDialog(int pIdx) {
     if(stageProvider.oneTimeAnswerCount <= 0) {
-      resultBgImage = AppImages.blueBgImage;
-      resultText = Strings.quiz_result_great;
+      resultBgImage = AppImages.correctAnimation;
+      resultText = Strings.quiz_answer_correct;
       stageProvider.setSelectPIdx(pIdx);
       stageProvider.setCorrect(true);
       stageProvider.setCountCorrectAnswer();
@@ -576,7 +543,7 @@ class _StageQuizState extends State<StageQuiz> {
           context: context,
           useSafeArea: false,
           builder: (BuildContext context) {
-            Future.delayed(Duration(seconds: 1), () {
+            Future.delayed(Duration(seconds: 2), () {
               Navigator.pop(context);
               stageProvider.onSelectedAnswer(-1, "");
             });
@@ -589,23 +556,26 @@ class _StageQuizState extends State<StageQuiz> {
                     child: Container(color: Colors.black.withOpacity(0.1)),
                   ),
                 ),
-                Stack(
-                  alignment: AlignmentDirectional.center,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Positioned(
-                        child: Container(
-                          width: deviceWidth * 0.35,
-                          child: Image.asset(bgImages),
-                        )
-                    ),
-                    Positioned(
-                      child: Container(
-                        child: Text(
-                          answerResult,
-                          style: Theme.of(context).textTheme.headline3,
-                        ),
+                    Container(
+                      width: deviceWidth * 0.35,
+                      child: Lottie.asset(
+                        bgImages,
+                        repeat: false,
+                        width: (deviceWidth * 0.35) * 0.85,
+                        height: (deviceWidth * 0.35) * 0.85,
                       ),
-                    )
+                    ),
+                    SizedBox(height: 15),
+                    Container(
+                      child: Text(
+                        answerResult,
+                        style: Theme.of(context).textTheme.headline3,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -621,7 +591,7 @@ class _StageQuizState extends State<StageQuiz> {
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
       });
     }
-    stageProvider.playCount = 0;
+    categoryProvider.playCount = 0;
   }
 
   @override
