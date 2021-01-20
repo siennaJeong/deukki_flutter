@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:volume/volume.dart';
@@ -43,7 +42,6 @@ class _StageQuizState extends State<StageQuiz> {
 
   final random = Random();
 
-  //AudioPlayer _audioPlayer;
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
@@ -82,7 +80,6 @@ class _StageQuizState extends State<StageQuiz> {
       initVolume();
     }
 
-    //_initAudioPlayer();
     super.initState();
   }
 
@@ -96,7 +93,6 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void dispose() {
-    //_audioPlayer.dispose();
     if(!Platform.isIOS) {
       _volumeButtonEvent?.cancel();
     }
@@ -125,46 +121,6 @@ class _StageQuizState extends State<StageQuiz> {
       Volume.setVol(currentVol);
     }
   }
-
-  /*void _initAudioPlayer() async {
-
-    //_audioPlayer ??= AudioPlayer();
-    print("audio player null ? ${categoryProvider.audioPlayer.toString()}");
-    _audioPlayer = categoryProvider.audioPlayer;
-
-    _audioPlayer.playerStateStream.listen((event) async {
-      switch(event.processingState) {
-        case ProcessingState.completed:
-          await _audioPlayer.pause();
-          stageProvider.setPlaying(false);
-          stageProvider.setPlayCount();
-          break;
-        case ProcessingState.idle:
-        // TODO: Handle this case.
-          print("audio player state => idle");
-          break;
-        case ProcessingState.loading:
-        // TODO: Handle this case.
-          print("audio player state => loading");
-          break;
-        case ProcessingState.buffering:
-        // TODO: Handle this case.
-          print("audio player state => buffering");
-          break;
-        case ProcessingState.ready:
-        // TODO: Handle this case.
-          print("audio player state => ready");
-          break;
-      }
-    });
-
-  }
-
-  void _play(String filePath, double speed) async {
-    await _audioPlayer.setFilePath(filePath);
-    await _audioPlayer.setSpeed(speed);
-    await _audioPlayer.play();
-  }*/
 
   Widget _header() {
     return Stack(
@@ -621,57 +577,59 @@ class _StageQuizState extends State<StageQuiz> {
   }
 
   _showDialog(String bgImages, String answerResult) {
-    if(stageProvider.round < 5) {
-      showDialog(
-          context: context,
-          useSafeArea: false,
-          builder: (BuildContext context) {
-            Future.delayed(Duration(seconds: 2), () {
-              Navigator.pop(context);
-              stageProvider.onSelectedAnswer(-1, "");
-            });
-            return Stack(
-              alignment: AlignmentDirectional.center,
-              children: <Widget>[
-                Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-                    child: Container(color: Colors.black.withOpacity(0.1)),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      width: deviceWidth * 0.35,
-                      child: Lottie.asset(
-                        bgImages,
-                        repeat: false,
-                        width: (deviceWidth * 0.35) * 0.85,
-                        height: (deviceWidth * 0.35) * 0.85,
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    Container(
-                      child: Text(
-                        answerResult,
-                        style: Theme.of(context).textTheme.headline3,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            );
+    showDialog(
+        context: context,
+        useSafeArea: false,
+        builder: (BuildContext context) {
+          Future.delayed(Duration(milliseconds: 1500), () {
+            Navigator.pop(context);
+            stageProvider.onSelectedAnswer(-1, "");
           });
-    }else {
-      stageProvider.stopLearnTime();
-      userProviderModel.recordLearning(
-          authServiceAdapter.authJWT,
-          categoryProvider.selectedSentence.id,
-          stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
-      ).then((value) {
-        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+          return Stack(
+            alignment: AlignmentDirectional.center,
+            children: <Widget>[
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                  child: Container(color: Colors.black.withOpacity(0.1)),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: deviceWidth * 0.35,
+                    child: Lottie.asset(
+                      bgImages,
+                      repeat: false,
+                      width: (deviceWidth * 0.35) * 0.85,
+                      height: (deviceWidth * 0.35) * 0.85,
+                    ),
+                  ),
+                  SizedBox(height: 15),
+                  Container(
+                    child: Text(
+                      answerResult,
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+
+    if(stageProvider.round >= 5) {
+      Future.delayed(Duration(milliseconds: 1500), () {
+        stageProvider.stopLearnTime();
+        userProviderModel.recordLearning(
+            authServiceAdapter.authJWT,
+            categoryProvider.selectedSentence.id,
+            stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
+        ).then((value) {
+          RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+        });
       });
     }
     categoryProvider.playCount = 0;
