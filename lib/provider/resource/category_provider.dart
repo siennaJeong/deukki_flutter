@@ -7,7 +7,6 @@ import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
-import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -227,10 +226,6 @@ class CategoryProvider with ChangeNotifier {
   }
 
   void _initAudioPlayer() async {
-
-    //_audioPlayer ??= AudioPlayer();
-    print("init audio player null ? ${audioPlayer.toString()}");
-
     this.audioPlayer.playerStateStream.listen((event) async {
       switch(event.processingState) {
         case ProcessingState.completed:
@@ -239,19 +234,15 @@ class CategoryProvider with ChangeNotifier {
           setPlayCount();
           break;
         case ProcessingState.idle:
-        // TODO: Handle this case.
           print("audio player state => idle");
           break;
         case ProcessingState.loading:
-        // TODO: Handle this case.
           print("audio player state => loading");
           break;
         case ProcessingState.buffering:
-        // TODO: Handle this case.
           print("audio player state => buffering");
           break;
         case ProcessingState.ready:
-        // TODO: Handle this case.
           print("audio player state => ready");
           break;
       }
