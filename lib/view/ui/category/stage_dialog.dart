@@ -102,7 +102,7 @@ class _StageDialogState extends State<StageDialog> {
     return GestureDetector(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: deviceWidth > 700 ? MainAxisAlignment.center : MainAxisAlignment.end,
+        mainAxisAlignment: deviceHeight > 420 ? MainAxisAlignment.center : MainAxisAlignment.end,
         children: <Widget>[
           _scoreWidget(stageVO.score, index),
           _stageWidget(stageVO, index)
