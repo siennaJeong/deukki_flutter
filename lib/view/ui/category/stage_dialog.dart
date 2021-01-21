@@ -263,7 +263,7 @@ class _StageDialogState extends State<StageDialog> {
             PronunciationVO.fromJson(pronunResult['rightPronunciation'])
         );
         categoryProvider.initStepProgress();
-        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
+        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
         _isClick = false;
       });
