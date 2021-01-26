@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'dart:ui';
 
@@ -107,7 +108,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
       ),
       onTap: () {                                               //  List Item Button
         AnalyticsService().sendAnalyticsEvent(false, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
-        Navigator.of(context).pop([mediumVO.title, mediumVO.id]);
+        Navigator.of(context).pop(json.encode(mediumVO));
       },
     );
   }

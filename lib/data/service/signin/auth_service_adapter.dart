@@ -5,6 +5,7 @@ import 'package:deukki/data/model/user_vo.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/data/service/signin/sns_auth_service.dart';
+import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
@@ -156,9 +157,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         await FirebaseAuth.instance.signOut();
         break;
     }
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
-    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
+    sharedHelper.removeAllShared();
     return true;
   }
 
@@ -181,9 +180,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   @override
   Future<void> signOut() async {
     await FirebaseAuth.instance.currentUser.delete();
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, null);
-    sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, null);
-    sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, null);
+    sharedHelper.removeAllShared();
   }
 
   @override

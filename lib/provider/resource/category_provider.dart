@@ -1,16 +1,25 @@
 
+import 'dart:convert';
+
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/category_vo.dart';
 import 'package:deukki/data/model/pronunciation_vo.dart';
 import 'package:deukki/data/model/sentence_vo.dart';
 import 'package:deukki/data/model/stage_vo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 
 class CategoryProvider with ChangeNotifier {
+  static const String MEDIUM_KEY = "mediumCategory";
   final DBHelper dbHelper;
+  final SharedHelper sharedHelper;
+  final AudioPlayer audioPlayer;
   bool isBookmark;
   bool isRootBookmark;
+  bool isPlaying;
+  int playCount;
   int selectLargeIndex;
   int selectStageIndex;
   int selectStageIdx;
@@ -18,9 +27,8 @@ class CategoryProvider with ChangeNotifier {
   double stepProgress;
   double stageAvgScore;
   String _largeId;
-  String _mediumId;
-  String _mediumTitle;
   String _sentenceTitle;
+  CategoryMediumVO _categoryMediumVO;
   SentenceVO selectedSentence;
   PronunciationVO _rightPronunciation;
   List<CategoryLargeVO> _categoryLargeList = [];
@@ -30,7 +38,9 @@ class CategoryProvider with ChangeNotifier {
   List<PronunciationVO> _pronunciationList = [];
   List<PreScoreVO> _preScoreList;
 
-  CategoryProvider(this._categoryLargeList, {this.dbHelper}) {
+  CategoryProvider(this._categoryLargeList, {this.dbHelper, this.sharedHelper, this.audioPlayer}) {
+    this.isPlaying = false;
+    this.playCount = 0;
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
     this.selectStageIdx = -1;
@@ -39,8 +49,11 @@ class CategoryProvider with ChangeNotifier {
     this.stepProgress = 0.2;
     this.stageAvgScore = 0;
     this.isRootBookmark = false;
-    if(dbHelper != null) {
+    if(this.dbHelper != null) {
       fetchAndSetLargeCategory();
+    }
+    if(this.audioPlayer != null) {
+      _initAudioPlayer();
     }
   }
 
@@ -52,15 +65,13 @@ class CategoryProvider with ChangeNotifier {
   List<PreScoreVO> get preScoreList => [..._preScoreList];
 
   getLargeId() => _largeId;
-  getMediumId() => _mediumId;
-  getMediumTitle() => _mediumTitle;
   getSentenceTitle() => _sentenceTitle;
+  CategoryMediumVO getCurrentMedium() => _categoryMediumVO;
   PronunciationVO getRightPronun() => _rightPronunciation;
 
   setLargeId(String largeId) => _largeId = largeId;
-  setMediumId(String mediumId) => _mediumId = mediumId;
-  setMediumTitle(String mediumTitle) => _mediumTitle = mediumTitle;
   setSentenceTitle(String sentenceTitle) => _sentenceTitle = sentenceTitle;
+  setCurrentMedium(CategoryMediumVO categoryMediumVO) => _categoryMediumVO = categoryMediumVO;
   setRightPronun(PronunciationVO rightPronun) => _rightPronunciation = rightPronun;
 
   Future<void> fetchAndSetLargeCategory() async {
@@ -75,8 +86,14 @@ class CategoryProvider with ChangeNotifier {
     setLargeId(largeId);
     final mediumList = await dbHelper.getCategoryMedium(largeId);
     _categoryMediumList = mediumList.map((items) => dbHelper.mediumFromJson(items)).toList();
-    setMediumId(_categoryMediumList[0].id);
-    setMediumTitle(_categoryMediumList[0].title);
+    if(sharedHelper.sharedPreference != null) {
+      final sharedCategory = await sharedHelper.getStringSharedPref("${MEDIUM_KEY}_$selectLargeIndex");
+      if(sharedCategory.isNotEmpty) {
+        setCurrentMedium(CategoryMediumVO.fromJson(json.decode(sharedCategory)));
+      }else {
+        setCurrentMedium(_categoryMediumList[0]);
+      }
+    }
     notifyListeners();
   }
 
@@ -192,6 +209,51 @@ class CategoryProvider with ChangeNotifier {
       this._pronunciationList.add(pronunciationVO);
     });
     notifyListeners();
+  }
+
+  Future<void> saveCategory(CategoryMediumVO mediumVO) async {
+    sharedHelper.setStringSharedPref("${MEDIUM_KEY}_$selectLargeIndex", json.encode(mediumVO));
+  }
+
+  void setPlaying(bool isPlaying) {
+    this.isPlaying = isPlaying;
+    notifyListeners();
+  }
+
+  void setPlayCount() {
+    this.playCount ++;
+    notifyListeners();
+  }
+
+  void _initAudioPlayer() async {
+    this.audioPlayer.playerStateStream.listen((event) async {
+      switch(event.processingState) {
+        case ProcessingState.completed:
+          await this.audioPlayer.pause();
+          setPlaying(false);
+          setPlayCount();
+          break;
+        case ProcessingState.idle:
+          print("audio player state => idle");
+          break;
+        case ProcessingState.loading:
+          print("audio player state => loading");
+          break;
+        case ProcessingState.buffering:
+          print("audio player state => buffering");
+          break;
+        case ProcessingState.ready:
+          print("audio player state => ready");
+          break;
+      }
+    });
+
+  }
+
+  void play(String filePath, double speed) async {
+    await this.audioPlayer.setFilePath(filePath);
+    await this.audioPlayer.setSpeed(speed);
+    await this.audioPlayer.play();
   }
 
 }

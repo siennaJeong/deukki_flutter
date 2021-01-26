@@ -86,11 +86,12 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "ok", "", "");
-      if((categoryProvider.selectStageIndex + 1) % 3 != 0) {
+      /*if((categoryProvider.selectStageIndex + 1) % 3 != 0) {
         Navigator.pop(context);
       }else {
         RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
-      }
+      }*/
+      Navigator.pop(context);
       categoryProvider.updateScore(acquiredStars, stageAvg);
       categoryProvider.updatePreScore();
     }

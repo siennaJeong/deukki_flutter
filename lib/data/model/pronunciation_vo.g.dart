@@ -11,6 +11,7 @@ PronunciationVO _$PronunciationVOFromJson(Map<String, dynamic> json) {
     json['pIdx'] as int,
     json['pronunciation'] as String,
     json['downloadUrl'] as String,
+    json['wrongIndex'] as int,
   );
 }
 
@@ -19,4 +20,5 @@ Map<String, dynamic> _$PronunciationVOToJson(PronunciationVO instance) =>
       'pIdx': instance.pIdx,
       'pronunciation': instance.pronunciation,
       'downloadUrl': instance.downloadUrl,
+      'wrongIndex': instance.wrongIndex,
     };

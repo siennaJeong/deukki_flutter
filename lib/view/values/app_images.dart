@@ -1,6 +1,7 @@
 
 class AppImages {
   static const String _basePath = "images";
+  static const String _lottiePath = "assets/lottie";
 
   static String appLogoMint = "$_basePath/app_logo_mint.png";
   static String kakaoLogo = "$_basePath/kakao_logo.png";
@@ -42,7 +43,9 @@ class AppImages {
   static String xButton = "$_basePath/icon_clear.png";
   static String dropDown = "$_basePath/icon_drop_down.png";
 
-  static String lottieAnimation = "assets/lottie/sound_effect.json";
+  static String lottieAnimation = "$_lottiePath/sound_effect.json";
+  static String incorrectAnimation = "$_lottiePath/incorrect_answer.json";
+  static String correctAnimation = "$_lottiePath/correct_answer.json";
 
   static String hearingIcon = "$_basePath/icon_hearing.png";
   static String micIcon = "$_basePath/icon_keyboard_voice.png";

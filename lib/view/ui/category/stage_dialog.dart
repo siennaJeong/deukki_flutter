@@ -17,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class StageDialog extends StatefulWidget {
   final String title;
@@ -33,6 +34,9 @@ class _StageDialogState extends State<StageDialog> {
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
+
+  final AutoScrollController _autoScrollController = AutoScrollController();
+
   double deviceWidth, deviceHeight;
   String _title;
   int _selectedStageIdx, _selectedIndex;
@@ -67,13 +71,13 @@ class _StageDialogState extends State<StageDialog> {
             margin: EdgeInsets.only(top: 8, bottom: deviceHeight > 390 ? 30 : 20, left: 36),
             alignment: AlignmentDirectional.bottomCenter,
             child: ListView.separated(
-              shrinkWrap: false,
+              controller: _autoScrollController,
               padding: EdgeInsets.only(left: 0),
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
               itemCount: stages.length,
               itemBuilder: (BuildContext context, index) {
-                return _listItemWidget(stages[index], index);
+                return _autoScrollTag(index, stages[index]);
               },
               separatorBuilder: (BuildContext context, index) {
                 return SizedBox(width: 10);
@@ -85,11 +89,20 @@ class _StageDialogState extends State<StageDialog> {
     );
   }
 
+  Widget _autoScrollTag(int index, StageVO stageVO) {
+    return AutoScrollTag(
+        key: ValueKey(index),
+        controller: _autoScrollController,
+        index: index,
+        child: _listItemWidget(stageVO, index)
+    );
+  }
+
   Widget _listItemWidget(StageVO stageVO, int index) {
     return GestureDetector(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: deviceWidth > 700 ? MainAxisAlignment.center : MainAxisAlignment.end,
+        mainAxisAlignment: deviceHeight > 420 ? MainAxisAlignment.center : MainAxisAlignment.end,
         children: <Widget>[
           _scoreWidget(stageVO.score, index),
           _stageWidget(stageVO, index)
@@ -250,7 +263,8 @@ class _StageDialogState extends State<StageDialog> {
             PronunciationVO.fromJson(pronunResult['rightPronunciation'])
         );
         categoryProvider.initStepProgress();
-        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == _selectedStageIdx, orElse: () => null)) != null);
+        categoryProvider.playCount = 0;
+        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
         _isClick = false;
       });
@@ -264,6 +278,13 @@ class _StageDialogState extends State<StageDialog> {
     deviceHeight = MediaQuery.of(context).size.height;
 
     categoryProvider.initPreScore();
+
+    setState(() {
+      _autoScrollController.scrollToIndex(
+          categoryProvider.selectStageIndex,
+          preferPosition: AutoScrollPosition.middle,
+          duration: Duration(milliseconds: 500));
+    });
 
     return Stack(
       children: <Widget>[
