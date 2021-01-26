@@ -113,6 +113,7 @@ class _SplashState extends State<Splash> {
   Future<void> checkAppVersion;
   Future<void> checkAllVersion;
   Future<void> verifyToken;
+  Future<void> analytics;
 
   @override
   void didChangeDependencies() {
@@ -160,7 +161,7 @@ class _SplashState extends State<Splash> {
         }
         if(tokenStatusResult.result.asValue.value != null) {
           if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
-            AnalyticsService().setUserProperties(
+            analytics ??= AnalyticsService().setUserProperties(
                 "${tokenStatusResult.result.asValue.value.idx}",
                 authServiceAdapter.userVO.gender,
                 authServiceAdapter.userVO.birthDate);

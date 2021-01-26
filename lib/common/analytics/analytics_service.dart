@@ -1,14 +1,14 @@
 
 import 'dart:io';
 
+import 'package:amplitude_flutter/amplitude.dart';
 import 'package:device_info/device_info.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:package_info/package_info.dart';
 
 class AnalyticsService {
   static const String PREFIX = "DEUKKI_";
-  FirebaseAnalytics firebaseAnalytics;
+  Amplitude analytics;
   String userId;
   String deviceName;
   String deviceModel;
@@ -24,7 +24,9 @@ class AnalyticsService {
   }
   AnalyticsService._internal() {
     deviceInfo = DeviceInfoPlugin();
-    firebaseAnalytics = FirebaseAnalytics();
+    analytics = Amplitude.getInstance();
+    analytics.init("436822ec0eeba1a00fd758661220bf7a");
+    analytics.enableCoppaControl();
     userId = "";
     deviceName = "";
     deviceModel = "";
@@ -35,16 +37,20 @@ class AnalyticsService {
   setUserId(String userId) => this.userId = userId;
 
   Future<void> setUserProperties(String userId, String gender, String birthDate) async {
-    if(!kDebugMode) {
+    /*if(!kDebugMode) {
       setUserId(userId);
-      await firebaseAnalytics.setUserId(userId);
-      await firebaseAnalytics.setUserProperty(name: 'gender', value: gender);
-      await firebaseAnalytics.setUserProperty(name: 'birthDate', value: birthDate);
-    }
+      await analytics.setUserId(userId);
+      await analytics.setUserProperties(
+          <String, dynamic> {
+            'gender': gender,
+            'birthDate': birthDate
+          }
+      );
+    }*/
   }
 
   Future<void> sendAnalyticsEvent(bool isVisited, bool isPremium, String page, String click, String subPage, String value) async {
-    if(!kDebugMode) {
+    /*if(!kDebugMode) {
       var now = DateTime.now();
       packageInfo ??= await PackageInfo.fromPlatform();
 
@@ -62,24 +68,24 @@ class AnalyticsService {
         this.deviceOSVersion = androidDeviceInfo.version.release;
       }
 
-      await firebaseAnalytics.logEvent(
-          name: "$PREFIX${Platform.isIOS ? 'ios' : 'and'}",
-          parameters: <String, String>{
-            'log_type': isVisited ? 'visit' : 'action',
-            'reg_date': '$now',
-            'user_id': this.userId,
-            'premium': isPremium ? 'premium' : 'free',
-            'device_model': this.deviceModel,
-            'device_name': this.deviceName,
-            'device_os' : this.deviceOS,
-            'device_os_version': this.deviceOSVersion,
-            'deukki_version': packageInfo.version,
-            'view': page,
-            'click': click,
-            'sub': subPage,
-            'value': value
-          }
+      await analytics.logEvent(
+        "$PREFIX${Platform.isIOS ? 'ios' : 'and'}",
+        eventProperties: <String, dynamic> {
+          'log_type': isVisited ? 'visit' : 'action',
+          'reg_date': '$now',
+          'user_id': this.userId,
+          'premium': isPremium ? 'premium' : 'free',
+          'device_model': this.deviceModel,
+          'device_name': this.deviceName,
+          'device_os' : this.deviceOS,
+          'device_os_version': this.deviceOSVersion,
+          'deukki_version': packageInfo.version,
+          'view': page,
+          'click': click,
+          'sub': subPage,
+          'value': value
+        }
       );
-    }
+    }*/
   }
 }
