@@ -448,7 +448,7 @@ class _StageQuizState extends State<StageQuiz> {
         child: Stack(
           children: <Widget>[
             Positioned(
-              child: _answerWidget(index, pronunciationVO.pronunciation, rightPronunciation, textColor),
+              child: _answerWidget(index, pronunciationVO.pronunciation, textColor, pronunciationVO.wrongIndex),
             ),
             Positioned(
               left: 0,
@@ -484,7 +484,7 @@ class _StageQuizState extends State<StageQuiz> {
     );
   }
 
-  Widget _answerWidget(int index, String pronunciation, String rightPronunciation, Color textColor) {
+  Widget _answerWidget(int index, String pronunciation, Color textColor, int wrongIndex) {
     if((stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) != null) {
       return DottedBorder(
         color: MainColors.yellow_100,
@@ -513,15 +513,96 @@ class _StageQuizState extends State<StageQuiz> {
         width: double.infinity,
         height: double.infinity,
         alignment: AlignmentDirectional.center,
-        child: Text(
-          pronunciation,
+        child: _pronunciationWidget(pronunciation, wrongIndex, textColor),
+      );
+    }
+  }
+
+  /// 틀린 글자 위치 표시
+  ///   - 첫번째 글자가 틀렸을때,
+  ///   - 중간 글자가 툴렸을때,
+  ///   - 마지막 글자가 틀렸을때,
+  Widget _pronunciationWidget(String pronunciation, int wrongIndex, Color textColor) {
+    if(wrongIndex != null) {
+      if(wrongIndex <= 0) {
+        return RichText(
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 24,
-            fontFamily: "TmoneyRound",
-            fontWeight: FontWeight.w700,
+          text: TextSpan(
+            style: TextStyle(
+              fontSize: 22,
+              fontFamily: "TmoneyRound",
+              fontWeight: FontWeight.w700
+            ),
+            children: <TextSpan>[
+              TextSpan(
+                text: pronunciation.substring(0, 1),
+                style: TextStyle(color: categoryProvider.isPlaying || categoryProvider.playCount <= 0 ? Colors.red.shade200 : Colors.red),
+              ),
+              TextSpan(
+                text: pronunciation.substring(1),
+                style: TextStyle(color: textColor),
+              )
+            ]
           ),
+        );
+      }else {
+        if(wrongIndex < (pronunciation.length - 1)) {
+          return RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 22,
+                fontFamily: "TmoneyRound",
+                fontWeight: FontWeight.w700,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: pronunciation.substring(0, wrongIndex),
+                  style: TextStyle(color: textColor),
+                ),
+                TextSpan(
+                  text: pronunciation.substring(wrongIndex, wrongIndex + 1),
+                  style: TextStyle(color: categoryProvider.isPlaying || categoryProvider.playCount <= 0 ? Colors.red.shade200 : Colors.red),
+                ),
+                TextSpan(
+                  text: pronunciation.substring(wrongIndex + 1),
+                  style: TextStyle(color: textColor),
+                )
+              ]
+            ),
+          );
+        }else {
+          return RichText(
+            textAlign: TextAlign.center,
+            text: TextSpan(
+              style: TextStyle(
+                fontSize: 22,
+                fontFamily: "TmoneyRound",
+                fontWeight: FontWeight.w700,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: pronunciation.substring(0, wrongIndex),
+                  style: TextStyle(color: textColor),
+                ),
+                TextSpan(
+                  text: pronunciation.substring(wrongIndex),
+                  style: TextStyle(color: categoryProvider.isPlaying || categoryProvider.playCount <= 0 ? Colors.red.shade200 : Colors.red)
+                )
+              ]
+            ),
+          );
+        }
+      }
+    }else {
+      return Text(
+        pronunciation,
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 24,
+          fontFamily: "TmoneyRound",
+          fontWeight: FontWeight.w700
         ),
       );
     }

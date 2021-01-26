@@ -14,13 +14,16 @@ class PronunciationVO {
   @JsonKey(name: 'downloadUrl')
   String downloadUrl;
 
-  PronunciationVO(this.pIdx, this.pronunciation, this.downloadUrl);
+  @JsonKey(name: 'wrongIndex')
+  int wrongIndex;
+
+  PronunciationVO(this.pIdx, this.pronunciation, this.downloadUrl, this.wrongIndex);
 
   factory PronunciationVO.fromJson(Map<String, dynamic> json) => _$PronunciationVOFromJson(json);
   Map<String, dynamic> toJson() => _$PronunciationVOToJson(this);
 
   @override
   String toString() {
-    return 'PronunciationVO{pIdx: $pIdx, pronunciation: $pronunciation, downloadUrl: $downloadUrl}';
+    return 'PronunciationVO{pIdx: $pIdx, pronunciation: $pronunciation, downloadUrl: $downloadUrl, wrongIdex : $wrongIndex}';
   }
 }
