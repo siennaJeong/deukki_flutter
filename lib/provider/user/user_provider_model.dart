@@ -125,4 +125,9 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.verifyToken.set(verifyToken, notifyListeners);
   }
 
+  Future<void> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, int appVersion, String fcmToken) async {
+    final saveDeviceInfo = _userRepository.saveDeviceInfo(authJWT, platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken);
+    await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
+  }
+
 }

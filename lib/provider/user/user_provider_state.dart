@@ -21,4 +21,5 @@ class UserProviderState {
   final updateMarketingAgree = ProviderModelResult<CommonResultVO>();
   final getReports = ProviderModelResult<ReportVO>();
   final verifyToken = ProviderModelResult<VerifyTokenVO>();
+  final saveDeviceInfo = ProviderModelResult<CommonResultVO>();
 }

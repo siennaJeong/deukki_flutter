@@ -41,6 +41,16 @@ class UserRestRepository implements UserRepository {
     'agree': agreement,
   };
 
+  Map<String, dynamic> _deviceInfoToJson(String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, int appVersion, String fcmToken) => <String, dynamic> {
+    'platform': platform,
+    'deviceId': deviceId,
+    'deviceModel': deviceModel,
+    'mnft': manufacturer,
+    'osVersion': osVersion,
+    'appVersion': appVersion,
+    'fcmToken': fcmToken
+  };
+
   @override
   Future<Result<CommonResultVO>> checkUserSignUp(String authType, String authId, String fbUid) async {
     final checkSignUpJson = await _httpClient.getRequest("${HttpUrls.SIGN_UP_CHECK}/$authType?socialId=$authId&fbUid=$fbUid", HttpUrls.headers(""));
@@ -175,7 +185,11 @@ class UserRestRepository implements UserRepository {
         return Result.value(ReportVO.fromJson(getReports.asValue.value['result'] as Map<String, dynamic>));
       }else if(status == 404) {
         return Result.value(ReportVO(0, 0, 0, ""));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
       }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
 
@@ -190,7 +204,26 @@ class UserRestRepository implements UserRepository {
       }else {
         return Result.value(null);
       }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
+
+  @override
+  Future<Result<CommonResultVO>> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, int appVersion, String fcmToken) async {
+    final saveDeviceInfo = await _httpClient.postRequest(HttpUrls.SAVE_DEVICE_INFO, HttpUrls.postHeaders(authJWT), _deviceInfoToJson(platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken));
+    if(saveDeviceInfo.isValue) {
+      final status = saveDeviceInfo.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(CommonResultVO.fromJson(saveDeviceInfo.asValue.value));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
+      }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+
 
 }
