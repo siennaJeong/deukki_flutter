@@ -95,7 +95,12 @@ class UserRestRepository implements UserRepository {
   Future<Result<CommonResultVO>> logout(String authJWT) async {
     final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, HttpUrls.headers(authJWT));
     if(logoutJson.isValue) {
-      return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
+      final status = logoutJson.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
+      }
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
