@@ -15,7 +15,7 @@
     <!--<uses-permission android:name="com.android.vending.BILLING" />-->
 
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name=".Application"
         android:label="바름드끼"
         android:icon="@mipmap/ic_launcher">
         <activity
