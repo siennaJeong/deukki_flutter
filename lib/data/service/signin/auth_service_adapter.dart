@@ -139,8 +139,6 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
 
   @override
   Future<void> logout() async {
-    // *** 참고 : Firebase 탈퇴 - await FirebaseAuth.instance.currentUser.delete();
-
     switch (await sharedHelper.getStringSharedPref(AuthService.AUTH_TYPE, "") as String) {
       case AuthService.AUTH_TYPE_KAKAO:
         var logout = await UserApi.instance.logout();
