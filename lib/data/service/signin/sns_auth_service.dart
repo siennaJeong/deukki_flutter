@@ -108,21 +108,30 @@ class SNSAuthService {
       _name = userCredential.user.displayName;
       _fbUid = userCredential.user.uid;
 
-      if(response['genders'][0]['value'] == "female") {
-        _gender = "F";
-      }else if(response['genders'][0]['value'] == "male") {
-        _gender = "M";
+      if(response['genders'] != null) {
+        if(response['genders'][0]['value'] == "female") {
+          _gender = "F";
+        }else if(response['genders'][0]['value'] == "male") {
+          _gender = "M";
+        }else {
+          _gender = "N";
+        }
       }else {
         _gender = "N";
       }
 
-      if(response['birthdays'][0]['date'] != null) {
-        var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
-        var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
-        _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
+      if(response['birthdays'] != null) {
+        if(response['birthdays'][0]['date'] != null) {
+          var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
+          var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
+          _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
+        }else {
+          _birthDate = "0000-00-00";
+        }
       }else {
         _birthDate = "0000-00-00";
       }
+
 
       return googleUser.id;
     }else {
