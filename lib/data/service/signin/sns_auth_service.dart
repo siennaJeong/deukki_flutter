@@ -1,4 +1,5 @@
 
+import 'dart:io';
 import 'dart:math';
 
 import 'dart:convert';
@@ -114,10 +115,14 @@ class SNSAuthService {
         }else if(response['genders'][0]['value'] == "male") {
           _gender = "M";
         }else {
-          _gender = "N";
+          if(Platform.isIOS) {
+            _gender = "F";
+          }else {
+            _gender = "";
+          }
         }
       }else {
-        _gender = "N";
+        _gender = "";
       }
 
       if(response['birthdays'] != null) {
@@ -126,10 +131,10 @@ class SNSAuthService {
           var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
           _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
         }else {
-          _birthDate = "0000-00-00";
+          _birthDate = "";
         }
       }else {
-        _birthDate = "0000-00-00";
+        _birthDate = "";
       }
 
 
