@@ -74,7 +74,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   Widget _listItemWidget(double progress, CategoryMediumVO mediumVO, int index, int length) {
     return GestureDetector(
       child: Container(
-        height: deviceHeight * 0.20,
+        height: deviceHeight * 0.18,
         child: Stack(
           children: <Widget>[
             Positioned(child: _titleWidget(progress, mediumVO, index, length, mediumVO.premium ? 1 : 0)),
