@@ -160,6 +160,8 @@ class _StageQuizState extends State<StageQuiz> {
           ),
           onTap: () {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "back", "", "");
+
+
             Navigator.of(context).pop();
           },
         ),
@@ -739,24 +741,30 @@ class _StageQuizState extends State<StageQuiz> {
       _bookmarkList = bookmarkList.result.asValue.value;
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        left: false,
-        right: false,
-        child: Center(
-          child: Container(
-            width: deviceWidth,
-            height: deviceHeight,
-            margin: EdgeInsets.only(top: 14, bottom: 10, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _header(),
-                _listWidget(deviceWidth),
-                _bottom(ratioWidth)
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        //  왼쪽 -> 오른쪽 Swipe 시에 뒤로가기 방지
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          left: false,
+          right: false,
+          child: Center(
+            child: Container(
+              width: deviceWidth,
+              height: deviceHeight,
+              margin: EdgeInsets.only(top: 14, bottom: 10, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _header(),
+                  _listWidget(deviceWidth),
+                  _bottom(ratioWidth)
+                ],
+              ),
             ),
           ),
         ),
