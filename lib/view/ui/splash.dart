@@ -103,6 +103,7 @@ void main() async {
 
 }
 
+// ignore: must_be_immutable
 class Splash extends BaseWidget {
   @override
   _SplashState createState() => _SplashState();

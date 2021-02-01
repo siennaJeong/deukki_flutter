@@ -41,7 +41,7 @@ class UserRestRepository implements UserRepository {
     'agree': agreement,
   };
 
-  Map<String, dynamic> _deviceInfoToJson(String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, int appVersion, String fcmToken) => <String, dynamic> {
+  Map<String, dynamic> _deviceInfoToJson(String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) => <String, dynamic> {
     'platform': platform,
     'deviceId': deviceId,
     'deviceModel': deviceModel,
@@ -215,7 +215,7 @@ class UserRestRepository implements UserRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, int appVersion, String fcmToken) async {
+  Future<Result<CommonResultVO>> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) async {
     final saveDeviceInfo = await _httpClient.postRequest(HttpUrls.SAVE_DEVICE_INFO, HttpUrls.postHeaders(authJWT), _deviceInfoToJson(platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken));
     if(saveDeviceInfo.isValue) {
       final status = saveDeviceInfo.asValue.value['status'];
