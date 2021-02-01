@@ -39,7 +39,7 @@ class _MemberShipState extends State<MemberShip> {
 
   List<ProductDetails> _products = [];
 
-  List<String> _productIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
+  List<String> _productIds = [];
 
   double deviceWidth, deviceHeight;
   int _premium;
@@ -56,11 +56,12 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void initState() {
-    _initUpdateStream();
-    _initStore();
-
     _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    _addProductIds();
+    _initUpdateStream();
+    _initStore();
 
     AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "", "", "");
     super.initState();
@@ -70,6 +71,12 @@ class _MemberShipState extends State<MemberShip> {
   void dispose() {
     _subscription?.cancel();
     super.dispose();
+  }
+
+  void _addProductIds() {
+    for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
+      _productIds.add(_userProviderModel.productList[i].iapGoogle);
+    }
   }
 
   void _initStore() async {
@@ -222,12 +229,11 @@ class _MemberShipState extends State<MemberShip> {
       onTap: () {
         //  멤버십 구매
         _paymentPreRequest(productionVO);
-        if(productionVO.title.contains("월 정기")) {
-          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "monthly", "", "");
-          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.monthly", orElse: () => null), false);
+        if(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null) != null) {
+          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null), false);
         }else {
-          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "yearly", "", "");
-          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.annual", orElse: () => null), true);
+          _myPageProvider.setIsPaying(false);
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
         }
       },
     );
@@ -295,14 +301,11 @@ class _MemberShipState extends State<MemberShip> {
             _premiumEndAt = _dateFormat(expireDate);
             _userProviderModel.userVOForHttp.premium = 1;
           });
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
         }else if(validation.result.asValue.value.status == 400) {
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_error)));
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error)));
         }else {
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_server_error)));
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
         }
         _myPageProvider.setIsPaying(false);
       });

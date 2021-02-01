@@ -51,7 +51,7 @@ class PaymentRestRepository implements PaymentRepository {
   Future<Result<CommonResultVO>> paymentValidation(String authJWT, String platform, String receipt, String paymentId) async {
     final paymentValidation = await _httpClient.paymentRequest(HttpUrls.PAYMENT_VALIDATION, HttpUrls.postHeaders(authJWT), validateToJson(platform, receipt, paymentId));
     if(paymentValidation.isValue) {
-      print("valid value : ${paymentValidation.asValue.value}");
+      print("payment valid value : ${paymentValidation.asValue.value}");
       return Result.value(CommonResultVO.fromJson(paymentValidation.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));

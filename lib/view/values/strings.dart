@@ -155,6 +155,8 @@ class Strings {
   static const String payment_error = '결제 중 오류가 발생했습니다.';
   static const String payment_server_error = '알 수 없는 오류가 발생했습니다.';
   static const String payment_completed = '결제가 완료되었습니다.';
+  static const String payment_not_found_error = '존재하지 않는 상품입니다.';
+
   static const String coupon_registration = '쿠폰 등록';
   static const String coupone_input_hint = '쿠폰 번호를 입력해주세요.';
   static const String coupon_error = '쿠폰 번호가 잘못되었습니다.';
