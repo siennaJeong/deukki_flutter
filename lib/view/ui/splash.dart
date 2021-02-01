@@ -117,6 +117,13 @@ class _SplashState extends State<Splash> {
   Future<void> analytics;
 
   @override
+  void initState() {
+    super.initState();
+    BaseWidget.getDeviceInfo();
+    BaseWidget.fcmListener();
+  }
+
+  @override
   void didChangeDependencies() {
     checkAllVersion ??= Provider.of<ResourceProviderModel>(context, listen: false).checkAllVersion();
     checkAppVersion ??= Provider.of<ResourceProviderModel>(context).checkAppVersion();

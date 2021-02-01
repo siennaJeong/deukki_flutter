@@ -108,7 +108,15 @@ class _LoginState extends State<Login> {
       }
       if(loginResult.result.isValue) {
         if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
-          signInProviderModel.saveDeviceInfo(authServiceAdapter.authJWT, widget.platform, widget.deviceId, widget.deviceModel, widget.manufacturer, widget.osVersion, widget.appVersion, null);
+          signInProviderModel.saveDeviceInfo(
+              loginResult.result.asValue.value.result,
+              BaseWidget.platform,
+              BaseWidget.deviceId,
+              BaseWidget.deviceModel,
+              BaseWidget.manufacturer,
+              BaseWidget.osVersion,
+              BaseWidget.appVersion,
+              BaseWidget.fcmToken);
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           authServiceAdapter.setIsSigning(false);
