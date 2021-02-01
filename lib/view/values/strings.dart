@@ -29,6 +29,8 @@ class Strings {
   static const String common_btn_yes = '네';
   static const String common_btn_no = '아니오';
   static const String common_btn_close = '닫기';
+  static const String common_btn_stay = '머무르기';
+  static const String common_btn_exit = '나가기';
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
@@ -95,6 +97,7 @@ class Strings {
   static const String record_quiet_script = '조용한 곳에서 노란색 권장 성량에 맞추어 발음해 주세요.';
   static const String permission_script = '권한을 허용해주세요.';
   static const String record_over_time = '다시 녹음해주세요.';
+  static const String quiz_exit_script = '학습을 완료하지 않고 나가시면 현재 학습 데이터는 저장되지 않습니다.\n그래도 나가시겠습니까?';
 
   static const String mypage_report = '리포트';
   static const String mypage_report_title = '님, 바름리포트는 매주 월요일에 카카오톡과 이메일을 통해 발행됩니다.';
