@@ -663,7 +663,7 @@ class _StageQuizState extends State<StageQuiz> {
         context: context,
         useSafeArea: false,
         builder: (BuildContext context) {
-          Future.delayed(Duration(milliseconds: 800), () {
+          Future.delayed(Duration(milliseconds: 700), () {
             Navigator.pop(context);
             stageProvider.onSelectedAnswer(-1, "");
           });
@@ -703,7 +703,7 @@ class _StageQuizState extends State<StageQuiz> {
         });
 
     if(stageProvider.round >= 5) {
-      Future.delayed(Duration(milliseconds: 800), () {
+      Future.delayed(Duration(milliseconds: 700), () {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,

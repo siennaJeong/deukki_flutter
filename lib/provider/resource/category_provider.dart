@@ -24,6 +24,7 @@ class CategoryProvider with ChangeNotifier {
   int selectStageIndex;
   int selectStageIdx;
   int currentStageIndex;
+  int premiumPopupCount;      //  5개의 stage 완료 시에 premium pop up 띄운다.
   double stepProgress;
   double stageAvgScore;
   String _largeId;
@@ -48,6 +49,7 @@ class CategoryProvider with ChangeNotifier {
     this.isBookmark = false;
     this.stepProgress = 0.2;
     this.stageAvgScore = 0;
+    this.premiumPopupCount = 0;
     this.isRootBookmark = false;
     if(this.dbHelper != null) {
       fetchAndSetLargeCategory();
@@ -254,6 +256,10 @@ class CategoryProvider with ChangeNotifier {
     await this.audioPlayer.setFilePath(filePath);
     await this.audioPlayer.setSpeed(speed);
     await this.audioPlayer.play();
+  }
+
+  void setPremiumPopupCount() {
+    this.premiumPopupCount++;
   }
 
 }

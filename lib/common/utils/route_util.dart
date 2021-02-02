@@ -7,6 +7,7 @@ import 'package:deukki/view/ui/category/stage/stage_complete_dialog.dart';
 import 'package:deukki/view/ui/category/stage/stage_quiz.dart';
 import 'package:deukki/view/ui/mypage/coupon_registration.dart';
 import 'package:deukki/view/ui/mypage/my_page.dart';
+import 'package:deukki/view/ui/premium_pop_up.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/signin/privacy_terms.dart';
 import 'package:deukki/view/ui/signin/sign_up_email.dart';
@@ -37,6 +38,7 @@ class GetRoutesName {
   static const String ROUTE_PRIVACY_TERMS = "/privacyTerms";
   static const String ROUTE_PRIVACY_INFO = "/privacyInfo";
   static const String ROUTE_COUPON_REGISTRATION = "/couponRegistration";
+  static const String ROUTE_PREMIUM_POPUP = "/premiumPopup";
 }
 
 final routes = <String, WidgetBuilder> {
@@ -56,6 +58,7 @@ final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_PRIVACY_TERMS: (context) => PrivacyTerms(),
   GetRoutesName.ROUTE_PRIVACY_INFO: (context) => PrivacyInfo(),
   GetRoutesName.ROUTE_COUPON_REGISTRATION: (context) => CouponRegistration(),
+  GetRoutesName.ROUTE_PREMIUM_POPUP: (context) => PremiumPopup(),
 };
 
 class RouteNavigator {
@@ -109,6 +112,9 @@ class RouteNavigator {
         break;
       case GetRoutesName.ROUTE_COUPON_REGISTRATION:
         Navigator.pushNamed(context, GetRoutesName.ROUTE_COUPON_REGISTRATION);
+        break;
+      case GetRoutesName.ROUTE_PREMIUM_POPUP:
+        Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_PREMIUM_POPUP);
         break;
     }
   }

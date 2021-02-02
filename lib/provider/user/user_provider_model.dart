@@ -1,4 +1,5 @@
 import 'package:deukki/common/storage/db_helper.dart';
+import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
 import 'package:deukki/data/model/learning_vo.dart';
 import 'package:deukki/data/model/production_vo.dart';
@@ -14,20 +15,24 @@ import 'package:flutter/material.dart';
 
 class UserProviderModel extends ProviderModel<UserProviderState> {
   DBHelper _dbHelper;
+  SharedHelper _sharedHelper;
 
-  UserProviderModel({@required UserRepository userRepository, @required DBHelper dbHelper})
+  UserProviderModel({@required UserRepository userRepository, @required DBHelper dbHelper, @required SharedHelper sharedHelper})
       : assert(userRepository != null),
         _userRepository = userRepository,
         _dbHelper = dbHelper,
+        _sharedHelper = sharedHelper,
         super(UserProviderState());
 
-  factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper());
+  factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
   final UserRepository _userRepository;
+  static const String PREMIUM_POPUP = "premiumPopup";
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   UserVOForHttp userVOForHttp;
   ReportVO weeklyReports;
   int bookmarkScore = 0;
+  int premiumPopupShow = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -128,6 +133,17 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) async {
     final saveDeviceInfo = _userRepository.saveDeviceInfo(authJWT, platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken);
     await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
+  }
+
+  Future<void> sharedPremiumPopup() async {
+    if(_sharedHelper != null) {
+      premiumPopupShow = await _sharedHelper.getIntSharedPref(PREMIUM_POPUP);
+    }
+  }
+
+  void setPremiumPopupShow() async {
+    await _sharedHelper.setIntSharedPref(PREMIUM_POPUP, 1);
+    sharedPremiumPopup();
   }
 
 }

@@ -136,6 +136,7 @@ flutter:
     - images/white_bg_shape.png
     - images/yellow_bg_shape.png
     - images/icon_drop_down.png
+    - images/picture.png
     - assets/lottie/sound_effect.json
     - assets/lottie/correct_answer.json
     - assets/lottie/incorrect_answer.json

@@ -157,6 +157,20 @@ class Strings {
   static const String payment_completed = '결제가 완료되었습니다.';
   static const String payment_not_found_error = '존재하지 않는 상품입니다.';
 
+  static const String premium_popup_title = '"난청인으로 살아온 38년이 지난 지금도 저는 귀가 열리고 있습니다"';
+  static const String premium_popup_name1 = '전성국 ';
+  static const String premium_popup_name2 = '2급 청각장애 / 딕션 대표';
+  static const String premium_popup_title2 = '바름드끼 프리미엄 멤버십으로 앞서가세요!';
+  static const String premium_popup_script1 = '· 25,000여개의 기초 단어와 일상 용어의 학습 컨텐츠 제공';
+  static const String premium_popup_script2 = '· 나만의 청능수준을 음소 단위로 분석한 리포트 제공';
+  static const String premium_popup_script3 = '· 좋은 습관을 만들어주는 학습 가이드 제공';
+  static const String premium_popup_free_start = '먼저 14일 동안 무료로 시작하세요!';
+  static const String premium_popup_cancel_ios = '앱스토어에서 언제든지 취소 가능합니다.';
+  static const String premium_popup_cancel_and = '플레이스토어에서 언제든지 취소 가능합니다.';
+  static const String premium_popup_annual = '1년 구독';
+  static const String premium_popup_monthly = '1개월 구독';
+  static const String premium_popup_monthly_price = '월 환산 ';
+
   static const String coupon_registration = '쿠폰 등록';
   static const String coupone_input_hint = '쿠폰 번호를 입력해주세요.';
   static const String coupon_error = '쿠폰 번호가 잘못되었습니다.';
