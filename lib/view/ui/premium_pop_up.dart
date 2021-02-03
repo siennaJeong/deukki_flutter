@@ -39,10 +39,10 @@ class _PremiumPopupState extends State<PremiumPopup> {
   List<String> _productIds = [];
 
   double deviceWidth, deviceHeight;
-  int _premium;
-  String _paymentId, _premiumEndAt;
+  String _paymentId;
   bool _isAvailable = false;
   bool _autoConsume = true;
+  bool _isPaying = false;
 
   @override
   void initState() {
@@ -62,9 +62,19 @@ class _PremiumPopupState extends State<PremiumPopup> {
     super.didChangeDependencies();
   }
 
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    super.dispose();
+  }
+
   void _addProductIds() {
     for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
-      _productIds.add(_userProviderModel.productList[i].iapGoogle);
+      if(Platform.isIOS) {
+        _productIds.add(_userProviderModel.productList[i].iapApple);
+      }else {
+        _productIds.add(_userProviderModel.productList[i].iapGoogle);
+      }
     }
   }
 
@@ -103,7 +113,9 @@ class _PremiumPopupState extends State<PremiumPopup> {
     purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
       if(purchaseDetails.status != PurchaseStatus.pending) {
         if(purchaseDetails.status == PurchaseStatus.error) {
-          //_myPageProvider.setIsPaying(false);
+          setState(() {
+            _isPaying = false;
+          });
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_error_canceled)));
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {                //  결제 완료
@@ -131,18 +143,46 @@ class _PremiumPopupState extends State<PremiumPopup> {
       _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
         final validation = _paymentProviderModel.value.paymentValidation;
         if(validation.result.asValue.value.status == 200) {
-          final expireDate = validation.result.asValue.value.result['expiredDate'];
-
-          //  TODO 사용자 Premium expire date 설정하기!
-
+          final expiredDate = validation.result.asValue.value.result['expiredDate'];
+          _userProviderModel.setPremiumPopupShow();
+          _userProviderModel.setUserPremium(expiredDate);
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
+          Navigator.of(context).pop();
         }else if(validation.result.asValue.value.status == 400) {
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error)));
         }else {
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
         }
-        //_myPageProvider.setIsPaying(false);
+
+        setState(() {
+          _isPaying = false;
+        });
       });
+    }
+  }
+
+  void _paymentPreRequest(ProductionVO productionVO) {
+    setState(() {
+      _isPaying = true;
+    });
+    paymentPreRequestInit ??= _paymentProviderModel.paymentPreRequest(
+        _authServiceAdapter.authJWT,
+        TYPE_SUBSCRIPTION,
+        productionVO.discountPrice,
+        CURRENCY_KRW,
+        true,
+        Platform.isIOS ? "Apple" : "Google",
+        true,
+        14,
+        productionVO.idx);
+  }
+
+  void _buyProduct(ProductDetails productDetails, bool isConsumable) {
+    PurchaseParam purchaseParam = PurchaseParam(productDetails: productDetails, sandboxTesting: false);
+    if(isConsumable) {
+      _connection.buyConsumable(purchaseParam: purchaseParam, autoConsume: _autoConsume || Platform.isIOS);
+    }else {
+      _connection.buyNonConsumable(purchaseParam: purchaseParam);
     }
   }
 
@@ -166,6 +206,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
+          margin: EdgeInsets.only(right: 3),
           width: deviceWidth < 750 ? deviceWidth * 0.41 : deviceWidth * 0.43,
           child: OverflowBox(
             maxWidth: deviceWidth * 0.49,
@@ -195,7 +236,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
                           style: TextStyle(color: MainColors.green_dark, fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                         TextSpan(
-                          text: deviceWidth > 900 ? "${Strings.premium_popup_name1}  " : "     ${Strings.premium_popup_name1}  ",
+                          text: deviceWidth > 900 ? "   ${Strings.premium_popup_name1}  " : "      ${Strings.premium_popup_name1}  ",
                           style: TextStyle(color: MainColors.grey_name, fontSize: 12, fontWeight: FontWeight.w500),
                         ),
                         TextSpan(
@@ -206,39 +247,48 @@ class _PremiumPopupState extends State<PremiumPopup> {
                     ),
                   ),
                   SizedBox(height: 25),
-                  Text(
-                    Strings.premium_popup_title2,
-                    style: TextStyle(
-                      color: MainColors.grey_100,
-                      fontSize: deviceWidth > 900 ? 25 : 22,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.w700
+                  Container(
+                    margin: EdgeInsets.only(left: 8),
+                    child: Text(
+                      Strings.premium_popup_title2,
+                      style: TextStyle(
+                          color: MainColors.grey_100,
+                          fontSize: deviceWidth > 900 ? 25 : 22,
+                          fontFamily: "NotoSansKR",
+                          fontWeight: FontWeight.w700
+                      ),
                     ),
                   ),
                   SizedBox(height: 4),
-                  RichText(
-                    text: TextSpan(
-                      style: TextStyle(
-                        color: MainColors.grey_script,
-                        fontSize: deviceWidth < 700 ? 15 : 16,
-                        fontFamily: "NotoSansKR",
-                        fontWeight: FontWeight.w400
+                  Container(
+                    margin: EdgeInsets.only(left: 8),
+                    child: RichText(
+                      text: TextSpan(
+                          style: TextStyle(
+                              color: MainColors.grey_script,
+                              fontSize: deviceWidth < 700 ? 15 : 16,
+                              fontFamily: "NotoSansKR",
+                              fontWeight: FontWeight.w400
+                          ),
+                          children: <TextSpan>[
+                            TextSpan(text: "${Strings.premium_popup_script1}\n"),
+                            TextSpan(text: "${Strings.premium_popup_script2}\n"),
+                            TextSpan(text: "${Strings.premium_popup_script3}")
+                          ]
                       ),
-                      children: <TextSpan>[
-                        TextSpan(text: "${Strings.premium_popup_script1}\n"),
-                        TextSpan(text: "${Strings.premium_popup_script2}\n"),
-                        TextSpan(text: "${Strings.premium_popup_script3}")
-                      ]
                     ),
                   ),
                   SizedBox(height: 23),
-                  Text(
-                    Strings.premium_popup_free_start,
-                    style: TextStyle(
-                      color: MainColors.green_100,
-                      fontSize: 16,
-                      fontFamily: "NotoSansKR",
-                      fontWeight: FontWeight.w700
+                  Container(
+                    margin: EdgeInsets.only(left: 8),
+                    child: Text(
+                      Strings.premium_popup_free_start,
+                      style: TextStyle(
+                          color: MainColors.green_100,
+                          fontSize: 16,
+                          fontFamily: "NotoSansKR",
+                          fontWeight: FontWeight.w700
+                      ),
                     ),
                   ),
                   SizedBox(height: 9),
@@ -336,7 +386,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
         shrinkWrap: true,
         reverse: true,
         physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.only(right: 0),
+        padding: EdgeInsets.only(right: 0, left: 0),
         scrollDirection: Axis.horizontal,
         itemCount: _userProviderModel.productList.length,
         itemBuilder: (BuildContext context, i) {
@@ -359,7 +409,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
             ),
             elevation: 0,
             child: Container(
-              width: deviceWidth > 750 ? deviceWidth * 0.27 : deviceWidth * 0.23,
+              width: deviceWidth * 0.23,
               height: deviceWidth < 750 ? (deviceWidth * 0.27) * 0.22 : (deviceWidth * 0.27) * 0.2,
               child: Stack(
                 children: <Widget>[
@@ -400,6 +450,18 @@ class _PremiumPopupState extends State<PremiumPopup> {
           : Container(),
         ],
       ),
+      onTap: () {
+        //  결제
+        _paymentPreRequest(productionVO);
+        if(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null) != null) {
+          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null), false);
+        }else {
+          setState(() {
+            _isPaying = false;
+          });
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
+        }
+      },
     );
   }
 
@@ -412,25 +474,36 @@ class _PremiumPopupState extends State<PremiumPopup> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
-    print("device width : $deviceWidth");
-
     return WillPopScope(
       onWillPop: () async {
         return false;
       },
-      child: Scaffold(
-        backgroundColor: MainColors.grey_20,
-        body: SafeArea(
-          left: false,
-          right: false,
-          bottom: false,
-          top: false,
-          child: Stack(
-            children: <Widget>[
-              Positioned(child: _contentsWidget()),
-            ],
+      child: Stack(
+        children: <Widget>[
+          Scaffold(
+            key: scaffoldKey,
+            backgroundColor: MainColors.grey_20,
+            body: SafeArea(
+              left: false,
+              right: false,
+              bottom: false,
+              top: false,
+              child: Stack(
+                children: <Widget>[
+                  Positioned(child: _contentsWidget()),
+                ],
+              ),
+            ),
           ),
-        ),
+          Visibility(
+            visible: _isPaying,
+            child: Container(
+              color: Colors.black26,
+              alignment: AlignmentDirectional.center,
+              child: CupertinoActivityIndicator(radius: 14),
+            ),
+          )
+        ],
       ),
     );
   }

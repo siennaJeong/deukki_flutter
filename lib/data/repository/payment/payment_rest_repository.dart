@@ -10,7 +10,7 @@ import 'package:deukki/data/repository/payment/payment_repository.dart';
 class PaymentRestRepository implements PaymentRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, dynamic> paymentToJson(String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) => <String, dynamic>{
+  Map<String, dynamic> paymentToJson(String type, int amount, String currency, bool iap, String iapProvider, bool trial, int trialDays, int productionIdx) => <String, dynamic>{
     'type': type,
     'amount': "$amount",
     'currency': currency,
@@ -26,8 +26,8 @@ class PaymentRestRepository implements PaymentRepository {
   };
 
   @override
-  Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) async {
-    final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, productionIdx));
+  Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, bool trial, int trialDays, int productionIdx) async {
+    final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, trial, trialDays, productionIdx));
     if(paymentPreRequest.isValue) {
       final result = paymentPreRequest.asValue.value['result'];
       return Result.value(result['paymentId']);

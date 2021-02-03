@@ -47,6 +47,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> signOut(String authJWT) async {
     final signOut = _userRepository.signOut(authJWT);
     await value.signOut.set(signOut, notifyListeners);
+    userVOForHttp = null;
   }
 
   Future<void> login(String authType, String authId, String fbUid) async {
@@ -141,9 +142,13 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     }
   }
 
+  void setUserPremium(String expiredDate) async {
+    userVOForHttp.premium = 1;
+    userVOForHttp.premiumEndAt = expiredDate;
+  }
+
   void setPremiumPopupShow() async {
     await _sharedHelper.setIntSharedPref(PREMIUM_POPUP, 1);
     sharedPremiumPopup();
   }
-
 }

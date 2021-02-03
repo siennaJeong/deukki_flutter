@@ -20,8 +20,8 @@ class PaymentProviderModel extends ProviderModel<PaymentProviderState> {
   factory PaymentProviderModel.build() => PaymentProviderModel(paymentRepository: PaymentRestRepository());
   final PaymentRepository _paymentRepository;
 
-  Future<void> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) async {
-    final paymentPreRequest = _paymentRepository.paymentPreRequest(authJWT, type, amount, currency, iap, iapProvider, productionIdx);
+  Future<void> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, bool trial, int trialDays, int productionIdx) async {
+    final paymentPreRequest = _paymentRepository.paymentPreRequest(authJWT, type, amount, currency, iap, iapProvider, trial, trialDays, productionIdx);
     await value.paymentPreRequest.set(paymentPreRequest, notifyListeners);
   }
 

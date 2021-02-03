@@ -75,7 +75,11 @@ class _MemberShipState extends State<MemberShip> {
 
   void _addProductIds() {
     for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
-      _productIds.add(_userProviderModel.productList[i].iapGoogle);
+      if(Platform.isIOS) {
+        _productIds.add(_userProviderModel.productList[i].iapApple);
+      }else {
+        _productIds.add(_userProviderModel.productList[i].iapGoogle);
+      }
     }
   }
 
@@ -255,11 +259,13 @@ class _MemberShipState extends State<MemberShip> {
     _myPageProvider.setIsPaying(true);
     paymentPreRequestInit ??= _paymentProviderModel.paymentPreRequest(
         _authServiceAdapter.authJWT,
-        productionVO.idx == 1 ? TYPE_SUBSCRIPTION : TYPE_OFFLINE,
+        TYPE_SUBSCRIPTION,
         productionVO.discountPrice,
         CURRENCY_KRW,
         true,
         Platform.isIOS ? "Apple" : "Google",
+        false,
+        0,
         productionVO.idx);
   }
 
@@ -295,11 +301,12 @@ class _MemberShipState extends State<MemberShip> {
       _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
         final validation = _paymentProviderModel.value.paymentValidation;
         if(validation.result.asValue.value.status == 200) {
-          final expireDate = validation.result.asValue.value.result['expiredDate'];
+          final expiredDate = validation.result.asValue.value.result['expiredDate'];
           setState(() {
             _premium = 1;
-            _premiumEndAt = _dateFormat(expireDate);
-            _userProviderModel.userVOForHttp.premium = 1;
+            _premiumEndAt = _dateFormat(expiredDate);
+            _userProviderModel.setUserPremium(expiredDate);
+            _userProviderModel.setPremiumPopupShow();
           });
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
         }else if(validation.result.asValue.value.status == 400) {
