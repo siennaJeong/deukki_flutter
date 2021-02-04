@@ -156,6 +156,8 @@ class Strings {
   static const String payment_server_error = '알 수 없는 오류가 발생했습니다.';
   static const String payment_completed = '결제가 완료되었습니다.';
   static const String payment_not_found_error = '존재하지 않는 상품입니다.';
+  static const String payment_wrong_request = '잘못된 요청입니다.';
+  static const String payment_token_valid_fail = '만료된 토큰입니다.';
 
   static const String premium_popup_title = '"난청인으로 살아온 38년이 지난 지금도 저는 귀가 열리고 있습니다"';
   static const String premium_popup_name1 = '전성국 ';

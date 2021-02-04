@@ -30,8 +30,14 @@ class PaymentRestRepository implements PaymentRepository {
   Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, bool trial, int productionIdx) async {
     final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, trial, productionIdx));
     if(paymentPreRequest.isValue) {
-      final result = paymentPreRequest.asValue.value['result'];
-      return Result.value(result['paymentId']);
+      final status = paymentPreRequest.asValue.value['status'];
+      if(status == 200) {
+        final result = paymentPreRequest.asValue.value['result'];
+        return Result.value(result['paymentId']);
+      }else {
+        return Result.value("$status");
+      }
+
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }

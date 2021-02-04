@@ -59,6 +59,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> logout(String authJWT) async {
     final logout = _userRepository.logout(authJWT);
     await value.logout.set(logout, notifyListeners);
+    userVOForHttp = null;
   }
 
   Future<void> recordLearning(String authJWT, String sentenceId, LearningVO learningVO) async {

@@ -135,25 +135,44 @@ class _PremiumPopupState extends State<PremiumPopup> {
     initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
-
-      _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
-        final validation = _paymentProviderModel.value.paymentValidation;
-        if(validation.result.asValue.value.status == 200) {
-          final expiredDate = validation.result.asValue.value.result['expiredDate'];
-          _userProviderModel.setPremiumPopupShow();
-          _userProviderModel.setUserPremium(expiredDate);
-          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
-          Navigator.of(context).pop();
-        }else if(validation.result.asValue.value.status == 400) {
-          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error)));
-        }else {
-          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
-        }
-
-        setState(() {
-          _isPaying = false;
+      if(_paymentId.length > 3) {
+        _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
+          final validation = _paymentProviderModel.value.paymentValidation;
+          if(validation.result.asValue.value.status == 200) {
+            final expiredDate = validation.result.asValue.value.result['expiredDate'];
+            setState(() {
+              _userProviderModel.setUserPremium(expiredDate);
+              _userProviderModel.setPremiumPopupShow();
+            });
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 1)));
+          }else if(validation.result.asValue.value.status == 400) {
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error), duration: Duration(seconds: 1)));
+          }else {
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+          }
+          setState(() { _isPaying = false; });
         });
-      });
+      }else if(_paymentId as int == 400) {
+        setState(() { _isPaying = false; });
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_wrong_request), duration: Duration(seconds: 1)));
+      }else if(_paymentId as int == 401) {
+        setState(() { _isPaying = false; });
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_token_valid_fail), duration: Duration(seconds: 1)));
+        Future.delayed(Duration(seconds: 1), () {
+          _authServiceAdapter.logout();
+          _userProviderModel.logout(_authServiceAdapter.authJWT);
+          RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+        });
+      }else if(_paymentId as int == 404) {
+        setState(() { _isPaying = false; });
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error), duration: Duration(seconds: 1)));
+      }else if(_paymentId as int == 500) {
+        setState(() { _isPaying = false; });
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+      }else {
+        setState(() { _isPaying = false; });
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+      }
     }
   }
 
