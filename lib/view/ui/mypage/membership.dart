@@ -75,11 +75,7 @@ class _MemberShipState extends State<MemberShip> {
 
   void _addProductIds() {
     for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
-      if(Platform.isIOS) {
-        _productIds.add(_userProviderModel.productList[i].iapApple);
-      }else {
-        _productIds.add(_userProviderModel.productList[i].iapGoogle);
-      }
+      _productIds.add(_userProviderModel.productList[i].iapId);
     }
   }
 
@@ -233,8 +229,8 @@ class _MemberShipState extends State<MemberShip> {
       onTap: () {
         //  멤버십 구매
         _paymentPreRequest(productionVO);
-        if(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null) != null) {
-          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null), false);
+        if(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null) != null) {
+          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null), false);
         }else {
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));

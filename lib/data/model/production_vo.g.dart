@@ -14,8 +14,10 @@ ProductionVO _$ProductionVOFromJson(Map<String, dynamic> json) {
     json['discountPrice'] as int,
     json['discountRate'] as int,
     json['monthlyPrice'] as int,
+    json['iapId'] as String,
     json['iapGoogle'] as String,
     json['iapApple'] as String,
+    json['trial'] as bool,
   );
 }
 
@@ -27,6 +29,8 @@ Map<String, dynamic> _$ProductionVOToJson(ProductionVO instance) =>
       'discountPrice': instance.discountPrice,
       'discountRate': instance.discountRate,
       'monthlyPrice': instance.monthlyPrice,
+      'iapId': instance.iapId,
       'iapGoogle': instance.iapGoogle,
       'iapApple': instance.iapApple,
+      'trial': instance.trial,
     };

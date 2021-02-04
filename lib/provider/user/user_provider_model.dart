@@ -29,6 +29,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   static const String PREMIUM_POPUP = "premiumPopup";
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
+  List<ProductionVO> trialProductList = [];
   UserVOForHttp userVOForHttp;
   ReportVO weeklyReports;
   int bookmarkScore = 0;
@@ -108,7 +109,13 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> getProductList(String authJWT) async {
     final getProductList = _userRepository.getProductList(authJWT);
     getProductList.then((value) {
-      productList = value.asValue.value;
+      for(int i = 0 ; i < value.asValue.value.length ; i++) {
+        if(value.asValue.value[i].trial) {
+          trialProductList.add(value.asValue.value[i]);
+        }else {
+          productList.add(value.asValue.value[i]);
+        }
+      }
     });
     await value.getProductList.set(getProductList, notifyListeners);
   }

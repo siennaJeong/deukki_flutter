@@ -23,20 +23,36 @@ class ProductionVO {
   @JsonKey(name: 'monthlyPrice')
   int monthlyPrice;
 
+  @JsonKey(name: 'iapId')
+  String iapId;
+
   @JsonKey(name: 'iapGoogle')
   String iapGoogle;
 
   @JsonKey(name: 'iapApple')
   String iapApple;
 
-  ProductionVO(this.idx, this.title, this.price, this.discountPrice,
-      this.discountRate, this.monthlyPrice, this.iapGoogle, this.iapApple);
+  @JsonKey(name: 'trial')
+  bool trial;
+
+
+  ProductionVO(
+      this.idx,
+      this.title,
+      this.price,
+      this.discountPrice,
+      this.discountRate,
+      this.monthlyPrice,
+      this.iapId,
+      this.iapGoogle,
+      this.iapApple,
+      this.trial);
 
   factory ProductionVO.fromJson(Map<String, dynamic> json) => _$ProductionVOFromJson(json);
   Map<String, dynamic> toJson() => _$ProductionVOToJson(this);
 
   @override
   String toString() {
-    return 'ProductionVO{idx: $idx, title: $title, price: $price, discountPrice: $discountPrice, discountRate: $discountRate, monthlyPrice: $monthlyPrice, iapGoogle: $iapGoogle, iapApple: $iapApple}';
+    return 'ProductionVO{idx: $idx, title: $title, price: $price, discountPrice: $discountPrice, discountRate: $discountRate, monthlyPrice: $monthlyPrice, iapId: $iapId, trial : $trial}';
   }
 }

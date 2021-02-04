@@ -69,12 +69,8 @@ class _PremiumPopupState extends State<PremiumPopup> {
   }
 
   void _addProductIds() {
-    for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
-      if(Platform.isIOS) {
-        _productIds.add(_userProviderModel.productList[i].iapApple);
-      }else {
-        _productIds.add(_userProviderModel.productList[i].iapGoogle);
-      }
+    for(int i = 0 ; i < _userProviderModel.trialProductList.length ; i++) {
+      _productIds.add(_userProviderModel.trialProductList[i].iapId);
     }
   }
 
@@ -388,9 +384,9 @@ class _PremiumPopupState extends State<PremiumPopup> {
         physics: NeverScrollableScrollPhysics(),
         padding: EdgeInsets.only(right: 0, left: 0),
         scrollDirection: Axis.horizontal,
-        itemCount: _userProviderModel.productList.length,
+        itemCount: _userProviderModel.trialProductList.length,
         itemBuilder: (BuildContext context, i) {
-          return _listItemWidget(i, _userProviderModel.productList[i]);
+          return _listItemWidget(i, _userProviderModel.trialProductList[i]);
         },
       ),
     );
@@ -453,8 +449,8 @@ class _PremiumPopupState extends State<PremiumPopup> {
       onTap: () {
         //  결제
         _paymentPreRequest(productionVO);
-        if(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null) != null) {
-          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapGoogle, orElse: () => null), false);
+        if(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null) != null) {
+          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null), false);
         }else {
           setState(() {
             _isPaying = false;

@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
@@ -161,7 +163,8 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<List<ProductionVO>>> getProductList(String authJWT) async {
-    final getProductList = await _httpClient.getRequest("${HttpUrls.GET_PRODUCT}?iap=${true}", HttpUrls.headers(authJWT));
+    String platform = Platform.isIOS ? "apple" : "google";
+    final getProductList = await _httpClient.getRequest("${HttpUrls.GET_PRODUCT}?iap=${true}&platform=$platform", HttpUrls.headers(authJWT));
     if(getProductList.isValue) {
       return Result.value((getProductList.asValue.value['result'] as List)
           .map((json) => ProductionVO.fromJson(json as Map<String, dynamic>))
