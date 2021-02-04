@@ -17,7 +17,7 @@ ProductionVO _$ProductionVOFromJson(Map<String, dynamic> json) {
     json['iapId'] as String,
     json['iapGoogle'] as String,
     json['iapApple'] as String,
-    json['trial'] as bool,
+    json['trial'] as int,
   );
 }
 

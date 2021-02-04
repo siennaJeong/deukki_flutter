@@ -105,6 +105,7 @@ class _MemberShipState extends State<MemberShip> {
       child: ListView.builder(
         shrinkWrap: true,
         primary: false,
+        reverse: true,
         scrollDirection: Axis.horizontal,
         itemCount: _userProviderModel.productList.length,
         itemBuilder: (BuildContext context, i) {
@@ -117,11 +118,11 @@ class _MemberShipState extends State<MemberShip> {
   Widget _listItemWidget(int i, ProductionVO productionVO) {
     return GestureDetector(
       child: Card(
-        color: i == 0 ? MainColors.green_100 : Colors.white,
+        color: productionVO.title.contains("월") ? MainColors.green_100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(
-            color: i == 0 ? MainColors.green_100 : MainColors.grey_50,
+            color: productionVO.title.contains("월") ? MainColors.green_100 : MainColors.grey_50,
             width: 2,
           ),
         ),
@@ -137,7 +138,7 @@ class _MemberShipState extends State<MemberShip> {
               Text(
                 productionVO.title,
                 style: TextStyle(
-                  color: i == 0 ? Colors.white : MainColors.grey_100,
+                  color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                   fontSize: 20,
                   fontFamily: "TmoneyRound",
                   fontWeight: FontWeight.w700
@@ -156,15 +157,15 @@ class _MemberShipState extends State<MemberShip> {
                               text: "${_numberWithComma(productionVO.price)}",
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
-                                  decorationColor: i == 0 ? MainColors.green_30 : MainColors.grey_price,
-                                  color: i == 0 ? MainColors.green_30 : MainColors.grey_price,
+                                  decorationColor: productionVO.title.contains("월") ? MainColors.green_30 : MainColors.grey_price,
+                                  color: productionVO.title.contains("월") ? MainColors.green_30 : MainColors.grey_price,
                                   fontWeight: FontWeight.w400
                               )
                           ),
                           TextSpan(
                               text: "   ${productionVO.discountRate}${Strings.mypage_membership_discount_rate}",
                               style: TextStyle(
-                                  color: i == 0 ? Colors.white : MainColors.grey_100,
+                                  color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                                   fontWeight: FontWeight.w700
                               )
                           ),
@@ -176,7 +177,7 @@ class _MemberShipState extends State<MemberShip> {
                           style: TextStyle(
                               fontFamily: "NotoSansKR",
                               fontWeight: FontWeight.w900,
-                              color: i == 0 ? Colors.white : MainColors.green_100
+                              color: productionVO.title.contains("월") ? Colors.white : MainColors.green_100
                           ),
                           children: <TextSpan>[
                             TextSpan(
@@ -184,7 +185,7 @@ class _MemberShipState extends State<MemberShip> {
                                 style: TextStyle(fontSize: 32)
                             ),
                             TextSpan(
-                                text: i == 0 ? Strings.mypage_membership_won : Strings.mypage_membership_annual_won,
+                                text: productionVO.title.contains("월") ? Strings.mypage_membership_won : Strings.mypage_membership_annual_won,
                                 style: TextStyle(fontSize: 20)
                             )
                           ]
@@ -192,7 +193,7 @@ class _MemberShipState extends State<MemberShip> {
                     ),
 
                     Text(
-                      i == 0 ? "" : "(${Strings.mypage_membership_monthly_price} ${_numberWithComma(productionVO.monthlyPrice)}${Strings.mypage_membership_annual_won})",
+                      productionVO.title.contains("월") ? "" : "(${Strings.mypage_membership_monthly_price} ${_numberWithComma(productionVO.monthlyPrice)}${Strings.mypage_membership_annual_won})",
                       style: TextStyle(
                         color: MainColors.grey_answer,
                         fontSize: 16,
@@ -211,14 +212,14 @@ class _MemberShipState extends State<MemberShip> {
                     Text(
                       Strings.mypage_membership_join,
                       style: TextStyle(
-                          color: i == 0 ? Colors.white : MainColors.grey_100,
+                          color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                           fontSize: 16,
                           fontFamily: "NotoSansKR",
                           fontWeight: FontWeight.w700
                       ),
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.arrow_forward_ios, size: 17, color: i == 0 ? Colors.white : MainColors.grey_100,)
+                    Icon(Icons.arrow_forward_ios, size: 17, color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,)
                   ],
                 ),
               ),

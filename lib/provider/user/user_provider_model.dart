@@ -110,7 +110,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     final getProductList = _userRepository.getProductList(authJWT);
     getProductList.then((value) {
       for(int i = 0 ; i < value.asValue.value.length ; i++) {
-        if(value.asValue.value[i].trial) {
+        if(value.asValue.value[i].trial == 1) {
           trialProductList.add(value.asValue.value[i]);
         }else {
           productList.add(value.asValue.value[i]);

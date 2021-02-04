@@ -33,8 +33,7 @@ class ProductionVO {
   String iapApple;
 
   @JsonKey(name: 'trial')
-  bool trial;
-
+  int trial;
 
   ProductionVO(
       this.idx,

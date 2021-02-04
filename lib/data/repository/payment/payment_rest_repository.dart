@@ -16,7 +16,7 @@ class PaymentRestRepository implements PaymentRepository {
     'currency': currency,
     'iap': "$iap",
     'iapProvider': iapProvider,
-    'trial': trial,
+    'trial': "$trial",
     'productionIdx': "$productionIdx",
   };
 
