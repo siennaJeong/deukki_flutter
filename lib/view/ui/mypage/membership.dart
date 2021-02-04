@@ -261,7 +261,6 @@ class _MemberShipState extends State<MemberShip> {
         true,
         Platform.isIOS ? "Apple" : "Google",
         false,
-        0,
         productionVO.idx);
   }
 

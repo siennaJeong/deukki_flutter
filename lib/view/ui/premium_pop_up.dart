@@ -169,7 +169,6 @@ class _PremiumPopupState extends State<PremiumPopup> {
         true,
         Platform.isIOS ? "Apple" : "Google",
         true,
-        14,
         productionVO.idx);
   }
 
