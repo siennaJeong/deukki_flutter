@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:async/async.dart';
 import 'package:deukki/common/network/api_exception.dart';
 import 'package:deukki/common/network/exception_mapper.dart';
@@ -39,6 +41,16 @@ class UserRestRepository implements UserRepository {
     'marketingMethod': marketingMethod,
     'phone': phone,
     'agree': agreement,
+  };
+
+  Map<String, dynamic> _deviceInfoToJson(String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) => <String, dynamic> {
+    'platform': platform,
+    'deviceId': deviceId,
+    'deviceModel': deviceModel,
+    'mnft': manufacturer,
+    'osVersion': osVersion,
+    'appVersion': appVersion,
+    'fcmToken': fcmToken
   };
 
   @override
@@ -85,7 +97,12 @@ class UserRestRepository implements UserRepository {
   Future<Result<CommonResultVO>> logout(String authJWT) async {
     final logoutJson = await _httpClient.deleteRequest(HttpUrls.LOGOUT, HttpUrls.headers(authJWT));
     if(logoutJson.isValue) {
-      return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
+      final status = logoutJson.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(CommonResultVO.fromJson(logoutJson.asValue.value as Map<String, dynamic>));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
+      }
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
@@ -146,7 +163,8 @@ class UserRestRepository implements UserRepository {
 
   @override
   Future<Result<List<ProductionVO>>> getProductList(String authJWT) async {
-    final getProductList = await _httpClient.getRequest("${HttpUrls.GET_PRODUCT}?iap=${true}", HttpUrls.headers(authJWT));
+    String platform = Platform.isIOS ? "apple" : "google";
+    final getProductList = await _httpClient.getRequest("${HttpUrls.GET_PRODUCT}?iap=${true}&platform=$platform", HttpUrls.headers(authJWT));
     if(getProductList.isValue) {
       return Result.value((getProductList.asValue.value['result'] as List)
           .map((json) => ProductionVO.fromJson(json as Map<String, dynamic>))
@@ -175,7 +193,11 @@ class UserRestRepository implements UserRepository {
         return Result.value(ReportVO.fromJson(getReports.asValue.value['result'] as Map<String, dynamic>));
       }else if(status == 404) {
         return Result.value(ReportVO(0, 0, 0, ""));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
       }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
 
@@ -190,7 +212,26 @@ class UserRestRepository implements UserRepository {
       }else {
         return Result.value(null);
       }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
   }
+
+  @override
+  Future<Result<CommonResultVO>> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) async {
+    final saveDeviceInfo = await _httpClient.postRequest(HttpUrls.SAVE_DEVICE_INFO, HttpUrls.postHeaders(authJWT), _deviceInfoToJson(platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken));
+    if(saveDeviceInfo.isValue) {
+      final status = saveDeviceInfo.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(CommonResultVO.fromJson(saveDeviceInfo.asValue.value));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
+      }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
+
 
 }

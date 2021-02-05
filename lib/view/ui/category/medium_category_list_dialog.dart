@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/model/category_vo.dart';
+import 'package:deukki/view/ui/base/membership_dialog_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,14 +25,16 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
   String _title;
   List<CategoryMediumVO> _list;
   List<double> scores = [];   //  test
-  int _premium;
+  int _userPremium;
+
+  double deviceWidth, deviceHeight;
 
   @override
   void initState() {
     _title = widget.title;
     _list = widget.list;
-    _premium = widget.premium;
-    AnalyticsService().sendAnalyticsEvent(true, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "", "", "");
+    _userPremium = widget.premium;
+    AnalyticsService().sendAnalyticsEvent(true, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "", "", "");
     super.initState();
   }
 
@@ -49,7 +51,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
     return Expanded(
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-        child: ListView.builder(
+        child: ListView.separated(
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
           itemCount: list.length,
@@ -61,6 +63,9 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
                 list.length
             );
           },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider();
+          },
         ),
       ),
     );
@@ -68,8 +73,60 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
 
   Widget _listItemWidget(double progress, CategoryMediumVO mediumVO, int index, int length) {
     return GestureDetector(
+      child: Container(
+        height: deviceHeight * 0.18,
+        child: Stack(
+          children: <Widget>[
+            Positioned(child: _titleWidget(progress, mediumVO, index, length, mediumVO.premium ? 1 : 0)),
+            Positioned(child: _premiumTagWidget(mediumVO.premium ? 1 : 0)),
+          ],
+        ),
+      ),
+      onTap: () {             //  List Item Click
+        AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
+
+        if(_userPremium == 0) {
+          if(!mediumVO.premium) {
+            Navigator.of(context).pop(json.encode(mediumVO));
+          }else {
+            showDialog(
+                context: context,
+                useSafeArea: false,
+                builder: (BuildContext context) {
+                  return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight);
+                }
+            );
+          }
+        }else {
+          Navigator.of(context).pop(json.encode(mediumVO));
+        }
+      },
+    );
+  }
+
+  Widget _premiumTagWidget(int premium) {
+    if(_userPremium == 0 && _userPremium < premium) {
+      return Container(
+          width: double.infinity,
+          height: double.infinity,
+          alignment: AlignmentDirectional.center,
+          decoration: BoxDecoration(
+              color: MainColors.black_50,
+              borderRadius: BorderRadius.circular(16)
+          ),
+          child: Icon(Icons.lock, size: 28, color: Colors.white,)
+      );
+    }else {
+      return Container();
+    }
+  }
+
+  Widget _titleWidget(double progress, CategoryMediumVO mediumVO, int index, int length, int premium) {
+    return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           SizedBox(height: 8),
           Container(
@@ -85,44 +142,41 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
               ),
             ),
           ),
-          Stack(
-            alignment: Alignment.centerLeft,
-            children: <Widget>[
-              Positioned(
-                child: Container(
-                  padding: EdgeInsets.only(left: 5),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    valueColor: AlwaysStoppedAnimation<Color>(MainColors.yellow_80),
-                    backgroundColor: MainColors.grey_google,
-                    minHeight: 7.0,
-                  ),
-                ),
-              ),
-              Image.asset(AppImages.fullStar, width: 20, height: 20,),
-            ],
-          ),
-          SizedBox(height: 8,),
-          _divider(index, length),
+          _progressWidget(progress, mediumVO, index, length, premium),
         ],
       ),
-      onTap: () {                                               //  List Item Button
-        AnalyticsService().sendAnalyticsEvent(false, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
-        Navigator.of(context).pop(json.encode(mediumVO));
-      },
     );
   }
 
-  Widget _divider(int index, int length) {
-    if(index + 1 < length) {
-      return Divider();
-    }else {
+  Widget _progressWidget(double progress, CategoryMediumVO mediumVO, int index, int length, int premium) {
+    if(_userPremium == 0 && _userPremium < premium) {
       return Container();
+    }else {
+      return Stack(
+        alignment: Alignment.centerLeft,
+        children: <Widget>[
+          Positioned(
+            child: Container(
+              padding: EdgeInsets.only(left: 5),
+              child: LinearProgressIndicator(
+                value: progress,
+                valueColor: AlwaysStoppedAnimation<Color>(MainColors.yellow_80),
+                backgroundColor: MainColors.grey_google,
+                minHeight: 7.0,
+              ),
+            ),
+          ),
+          Image.asset(AppImages.fullStar, width: 20, height: 20,),
+        ],
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
         Positioned.fill(
@@ -131,7 +185,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             child: GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.1)),
               onTap: () {
-                AnalyticsService().sendAnalyticsEvent(false, _premium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "outside", "", "");
+                AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "outside", "", "");
                 Navigator.of(context).pop();
               },
             ),

@@ -10,6 +10,7 @@ import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -29,9 +30,9 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    userProviderModel.sharedPremiumPopup();
 
     AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "", "", "");
-
     super.initState();
   }
 
@@ -91,9 +92,30 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
       }else {
         RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
       }*/
-      Navigator.pop(context);
       categoryProvider.updateScore(acquiredStars, stageAvg);
       categoryProvider.updatePreScore();
+      categoryProvider.setPremiumPopupCount();
+      if(!kDebugMode) {
+        if(categoryProvider.premiumPopupCount >= 5) {
+          if(userProviderModel.premiumPopupShow == 0) {
+            if(userProviderModel.userVOForHttp.premium == 1) {
+              Navigator.pop(context);
+            }else {
+              RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+            }
+          }else {
+            Navigator.pop(context);
+          }
+        }else {
+          Navigator.pop(context);
+        }
+      }else {
+        if(categoryProvider.premiumPopupCount >= 1) {
+          RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+        }else {
+          Navigator.pop(context);
+        }
+      }
     }
 
     return Scaffold(

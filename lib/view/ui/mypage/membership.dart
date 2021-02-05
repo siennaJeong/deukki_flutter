@@ -39,7 +39,7 @@ class _MemberShipState extends State<MemberShip> {
 
   List<ProductDetails> _products = [];
 
-  List<String> _productIds = ['io.com.diction.deukki.monthly', 'io.com.diction.deukki.annual'];
+  List<String> _productIds = [];
 
   double deviceWidth, deviceHeight;
   int _premium;
@@ -56,11 +56,12 @@ class _MemberShipState extends State<MemberShip> {
 
   @override
   void initState() {
-    _initUpdateStream();
-    _initStore();
-
     _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+
+    _addProductIds();
+    _initUpdateStream();
+    _initStore();
 
     AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "", "", "");
     super.initState();
@@ -70,6 +71,12 @@ class _MemberShipState extends State<MemberShip> {
   void dispose() {
     _subscription?.cancel();
     super.dispose();
+  }
+
+  void _addProductIds() {
+    for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
+      _productIds.add(_userProviderModel.productList[i].iapId);
+    }
   }
 
   void _initStore() async {
@@ -98,6 +105,7 @@ class _MemberShipState extends State<MemberShip> {
       child: ListView.builder(
         shrinkWrap: true,
         primary: false,
+        reverse: true,
         scrollDirection: Axis.horizontal,
         itemCount: _userProviderModel.productList.length,
         itemBuilder: (BuildContext context, i) {
@@ -110,11 +118,11 @@ class _MemberShipState extends State<MemberShip> {
   Widget _listItemWidget(int i, ProductionVO productionVO) {
     return GestureDetector(
       child: Card(
-        color: i == 0 ? MainColors.green_100 : Colors.white,
+        color: productionVO.title.contains("월") ? MainColors.green_100 : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
           side: BorderSide(
-            color: i == 0 ? MainColors.green_100 : MainColors.grey_50,
+            color: productionVO.title.contains("월") ? MainColors.green_100 : MainColors.grey_50,
             width: 2,
           ),
         ),
@@ -130,7 +138,7 @@ class _MemberShipState extends State<MemberShip> {
               Text(
                 productionVO.title,
                 style: TextStyle(
-                  color: i == 0 ? Colors.white : MainColors.grey_100,
+                  color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                   fontSize: 20,
                   fontFamily: "TmoneyRound",
                   fontWeight: FontWeight.w700
@@ -149,15 +157,15 @@ class _MemberShipState extends State<MemberShip> {
                               text: "${_numberWithComma(productionVO.price)}",
                               style: TextStyle(
                                   decoration: TextDecoration.lineThrough,
-                                  decorationColor: i == 0 ? MainColors.green_30 : MainColors.grey_price,
-                                  color: i == 0 ? MainColors.green_30 : MainColors.grey_price,
+                                  decorationColor: productionVO.title.contains("월") ? MainColors.green_30 : MainColors.grey_price,
+                                  color: productionVO.title.contains("월") ? MainColors.green_30 : MainColors.grey_price,
                                   fontWeight: FontWeight.w400
                               )
                           ),
                           TextSpan(
                               text: "   ${productionVO.discountRate}${Strings.mypage_membership_discount_rate}",
                               style: TextStyle(
-                                  color: i == 0 ? Colors.white : MainColors.grey_100,
+                                  color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                                   fontWeight: FontWeight.w700
                               )
                           ),
@@ -169,7 +177,7 @@ class _MemberShipState extends State<MemberShip> {
                           style: TextStyle(
                               fontFamily: "NotoSansKR",
                               fontWeight: FontWeight.w900,
-                              color: i == 0 ? Colors.white : MainColors.green_100
+                              color: productionVO.title.contains("월") ? Colors.white : MainColors.green_100
                           ),
                           children: <TextSpan>[
                             TextSpan(
@@ -177,7 +185,7 @@ class _MemberShipState extends State<MemberShip> {
                                 style: TextStyle(fontSize: 32)
                             ),
                             TextSpan(
-                                text: i == 0 ? Strings.mypage_membership_won : Strings.mypage_membership_annual_won,
+                                text: productionVO.title.contains("월") ? Strings.mypage_membership_won : Strings.mypage_membership_annual_won,
                                 style: TextStyle(fontSize: 20)
                             )
                           ]
@@ -185,7 +193,7 @@ class _MemberShipState extends State<MemberShip> {
                     ),
 
                     Text(
-                      i == 0 ? "" : "(${Strings.mypage_membership_monthly_price} ${_numberWithComma(productionVO.monthlyPrice)}${Strings.mypage_membership_annual_won})",
+                      productionVO.title.contains("월") ? "" : "(${Strings.mypage_membership_monthly_price} ${_numberWithComma(productionVO.monthlyPrice)}${Strings.mypage_membership_annual_won})",
                       style: TextStyle(
                         color: MainColors.grey_answer,
                         fontSize: 16,
@@ -204,14 +212,14 @@ class _MemberShipState extends State<MemberShip> {
                     Text(
                       Strings.mypage_membership_join,
                       style: TextStyle(
-                          color: i == 0 ? Colors.white : MainColors.grey_100,
+                          color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,
                           fontSize: 16,
                           fontFamily: "NotoSansKR",
                           fontWeight: FontWeight.w700
                       ),
                     ),
                     SizedBox(width: 10),
-                    Icon(Icons.arrow_forward_ios, size: 17, color: i == 0 ? Colors.white : MainColors.grey_100,)
+                    Icon(Icons.arrow_forward_ios, size: 17, color: productionVO.title.contains("월") ? Colors.white : MainColors.grey_100,)
                   ],
                 ),
               ),
@@ -222,12 +230,11 @@ class _MemberShipState extends State<MemberShip> {
       onTap: () {
         //  멤버십 구매
         _paymentPreRequest(productionVO);
-        if(productionVO.title.contains("월 정기")) {
-          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "monthly", "", "");
-          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.monthly", orElse: () => null), false);
+        if(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null) != null) {
+          _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null), false);
         }else {
-          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "yearly", "", "");
-          _buyProduct(_products.firstWhere((element) => element.id == "io.com.diction.deukki.annual", orElse: () => null), true);
+          _myPageProvider.setIsPaying(false);
+          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
         }
       },
     );
@@ -249,11 +256,12 @@ class _MemberShipState extends State<MemberShip> {
     _myPageProvider.setIsPaying(true);
     paymentPreRequestInit ??= _paymentProviderModel.paymentPreRequest(
         _authServiceAdapter.authJWT,
-        productionVO.idx == 1 ? TYPE_SUBSCRIPTION : TYPE_OFFLINE,
+        TYPE_SUBSCRIPTION,
         productionVO.discountPrice,
         CURRENCY_KRW,
         true,
         Platform.isIOS ? "Apple" : "Google",
+        false,
         productionVO.idx);
   }
 
@@ -285,29 +293,46 @@ class _MemberShipState extends State<MemberShip> {
     initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
       _paymentId ??= initPaymentPreRequest.result.asValue.value;
-
-      _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
-        final validation = _paymentProviderModel.value.paymentValidation;
-        if(validation.result.asValue.value.status == 200) {
-          final expireDate = validation.result.asValue.value.result['expiredDate'];
-          setState(() {
-            _premium = 1;
-            _premiumEndAt = _dateFormat(expireDate);
-            _userProviderModel.userVOForHttp.premium = 1;
-          });
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 2)));
-        }else if(validation.result.asValue.value.status == 400) {
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_error)));
-        }else {
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_server_error)));
-        }
+      if(_paymentId.length > 3) {
+        _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
+          final validation = _paymentProviderModel.value.paymentValidation;
+          if(validation.result.asValue.value.status == 200) {
+            final expiredDate = validation.result.asValue.value.result['expiredDate'];
+            setState(() {
+              _premium = 1;
+              _premiumEndAt = _dateFormat(expiredDate);
+              _userProviderModel.setUserPremium(expiredDate);
+              _userProviderModel.setPremiumPopupShow();
+            });
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 1)));
+          }else if(validation.result.asValue.value.status == 400) {
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error), duration: Duration(seconds: 1)));
+          }else {
+            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+          }
+          _myPageProvider.setIsPaying(false);
+        });
+      }else if(_paymentId as int == 400) {
         _myPageProvider.setIsPaying(false);
-      });
-
-
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_wrong_request), duration: Duration(seconds: 1)));
+      }else if(_paymentId as int == 401) {
+        _myPageProvider.setIsPaying(false);
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_token_valid_fail), duration: Duration(seconds: 1)));
+        Future.delayed(Duration(seconds: 1), () {
+          _authServiceAdapter.logout();
+          _userProviderModel.logout(_authServiceAdapter.authJWT);
+          RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+        });
+      }else if(_paymentId as int == 404) {
+        _myPageProvider.setIsPaying(false);
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error), duration: Duration(seconds: 1)));
+      }else if(_paymentId as int == 500) {
+        _myPageProvider.setIsPaying(false);
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+      }else {
+        _myPageProvider.setIsPaying(false);
+        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+      }
     }
 
   }

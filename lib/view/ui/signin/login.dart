@@ -17,6 +17,7 @@ import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 import 'package:deukki/view/values/strings.dart';
 
+// ignore: must_be_immutable
 class Login extends BaseWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -107,6 +108,15 @@ class _LoginState extends State<Login> {
       }
       if(loginResult.result.isValue) {
         if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
+          signInProviderModel.saveDeviceInfo(
+              loginResult.result.asValue.value.result,
+              BaseWidget.platform,
+              BaseWidget.deviceId,
+              BaseWidget.deviceModel,
+              BaseWidget.manufacturer,
+              BaseWidget.osVersion,
+              BaseWidget.appVersion,
+              BaseWidget.fcmToken);
           authServiceAdapter.signInDone(loginResult.result.asValue.value.result, authType);
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           authServiceAdapter.setIsSigning(false);

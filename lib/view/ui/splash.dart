@@ -103,6 +103,7 @@ void main() async {
 
 }
 
+// ignore: must_be_immutable
 class Splash extends BaseWidget {
   @override
   _SplashState createState() => _SplashState();
@@ -114,6 +115,13 @@ class _SplashState extends State<Splash> {
   Future<void> checkAllVersion;
   Future<void> verifyToken;
   Future<void> analytics;
+
+  @override
+  void initState() {
+    super.initState();
+    BaseWidget.getDeviceInfo();
+    BaseWidget.fcmListener();
+  }
 
   @override
   void didChangeDependencies() {

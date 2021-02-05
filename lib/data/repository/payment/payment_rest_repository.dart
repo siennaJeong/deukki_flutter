@@ -10,12 +10,13 @@ import 'package:deukki/data/repository/payment/payment_repository.dart';
 class PaymentRestRepository implements PaymentRepository {
   final HttpClient _httpClient = HttpClient();
 
-  Map<String, dynamic> paymentToJson(String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) => <String, dynamic>{
+  Map<String, dynamic> paymentToJson(String type, int amount, String currency, bool iap, String iapProvider, bool trial, int productionIdx) => <String, dynamic>{
     'type': type,
     'amount': "$amount",
     'currency': currency,
     'iap': "$iap",
     'iapProvider': iapProvider,
+    'trial': "$trial",
     'productionIdx': "$productionIdx",
   };
 
@@ -26,11 +27,17 @@ class PaymentRestRepository implements PaymentRepository {
   };
 
   @override
-  Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, int productionIdx) async {
-    final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, productionIdx));
+  Future<Result<String>> paymentPreRequest(String authJWT, String type, int amount, String currency, bool iap, String iapProvider, bool trial, int productionIdx) async {
+    final paymentPreRequest = await _httpClient.postRequest(HttpUrls.PRE_PAYMENT, HttpUrls.postHeaders(authJWT), paymentToJson(type, amount, currency, iap, iapProvider, trial, productionIdx));
     if(paymentPreRequest.isValue) {
-      final result = paymentPreRequest.asValue.value['result'];
-      return Result.value(result['paymentId']);
+      final status = paymentPreRequest.asValue.value['status'];
+      if(status == 200) {
+        final result = paymentPreRequest.asValue.value['result'];
+        return Result.value(result['paymentId']);
+      }else {
+        return Result.value("$status");
+      }
+
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
     }
@@ -51,7 +58,7 @@ class PaymentRestRepository implements PaymentRepository {
   Future<Result<CommonResultVO>> paymentValidation(String authJWT, String platform, String receipt, String paymentId) async {
     final paymentValidation = await _httpClient.paymentRequest(HttpUrls.PAYMENT_VALIDATION, HttpUrls.postHeaders(authJWT), validateToJson(platform, receipt, paymentId));
     if(paymentValidation.isValue) {
-      print("valid value : ${paymentValidation.asValue.value}");
+      print("payment valid value : ${paymentValidation.asValue.value}");
       return Result.value(CommonResultVO.fromJson(paymentValidation.asValue.value as Map<String, dynamic>));
     }else {
       return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));

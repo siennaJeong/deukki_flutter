@@ -47,6 +47,8 @@ class HttpUrls {
 
   static const String GET_REPORTS = "$SERVER_URL/reports/weekly";
 
+  static const String SAVE_DEVICE_INFO = "$SERVER_URL/devices";
+
   static Map<String, String> headers(String authJWT) => <String, String> {
     'content-type': 'application/json',
     'authorization': 'Bearer ' + authJWT

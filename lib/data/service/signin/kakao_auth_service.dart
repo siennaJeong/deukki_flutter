@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
@@ -45,13 +46,13 @@ class KakaoAuthService {
             _gender = "M";
           }
         }else {
-          _gender = "N";
+          _gender = "";
         }
 
         if(user.kakaoAccount.birthyear != null && user.kakaoAccount.birthday != null) {
           _birthDate = "${user.kakaoAccount.birthyear}-${user.kakaoAccount.birthday.substring(0, 2)}-${user.kakaoAccount.birthday.substring(2)}";
         }else {
-          _birthDate = "0000-00-00";
+          _birthDate = "";
         }
 
         return user.id.toString();

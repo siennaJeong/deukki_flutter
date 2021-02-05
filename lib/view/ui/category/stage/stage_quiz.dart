@@ -13,6 +13,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -119,7 +120,7 @@ class _StageQuizState extends State<StageQuiz> {
           ),
           onTap: () {
             AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "back", "", "");
-            Navigator.of(context).pop();
+            _showExitDialog();
           },
         ),
       ),
@@ -602,26 +603,26 @@ class _StageQuizState extends State<StageQuiz> {
       stageProvider.setCorrect(true);
       stageProvider.setCountCorrectAnswer();
       stageProvider.addHistory();
-      _showDialog(resultBgImage, resultText);
+      _showResultDialog(resultBgImage, resultText);
       stageProvider.setLevel();
       stageProvider.setPlayRate();
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }else {
       stageProvider.addHistory();
-      _showDialog(resultBgImage, resultText);
+      _showResultDialog(resultBgImage, resultText);
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }
     randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
   }
 
-  _showDialog(String bgImages, String answerResult) {
+  void _showResultDialog(String bgImages, String answerResult) {
     showDialog(
         context: context,
         useSafeArea: false,
         builder: (BuildContext context) {
-          Future.delayed(Duration(milliseconds: 1500), () {
+          Future.delayed(Duration(milliseconds: 700), () {
             Navigator.pop(context);
             stageProvider.onSelectedAnswer(-1, "");
           });
@@ -661,7 +662,7 @@ class _StageQuizState extends State<StageQuiz> {
         });
 
     if(stageProvider.round >= 5) {
-      Future.delayed(Duration(milliseconds: 1500), () {
+      Future.delayed(Duration(milliseconds: 700), () {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,
@@ -673,6 +674,90 @@ class _StageQuizState extends State<StageQuiz> {
       });
     }
     categoryProvider.playCount = 0;
+  }
+
+  void _showExitDialog() {
+    showDialog(
+      context: context,
+      useSafeArea: false,
+      builder: (BuildContext context) {
+        return Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
+                child: Container(color: Colors.black.withOpacity(0.1)),
+              ),
+            ),
+            Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: Container(
+                width: deviceWidth * 0.6,
+                height: deviceHeight * 0.51,
+                child: Column(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(top: 32, bottom: 30, left: 60, right: 60),
+                          child: Text(
+                            Strings.quiz_exit_script,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.bodyText2,
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              width: (deviceWidth * 0.6) * 0.38,
+                              child: CommonRaisedButton(
+                                textColor: MainColors.purple_100,
+                                buttonColor: Colors.white,
+                                borderColor: MainColors.purple_100,
+                                buttonText: Strings.common_btn_exit,
+                                fontSize: 16,
+                                voidCallback: _exit,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Container(
+                              width: (deviceWidth * 0.6) * 0.38,
+                              child: CommonRaisedButton(
+                                textColor: Colors.white,
+                                buttonColor: MainColors.purple_100,
+                                borderColor: MainColors.purple_100,
+                                buttonText: Strings.common_btn_stay,
+                                fontSize: 16,
+                                voidCallback: _dismissDialog,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      }
+    );
+  }
+
+  void _dismissDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _exit() {
+    Navigator.of(context).pop();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -698,24 +783,30 @@ class _StageQuizState extends State<StageQuiz> {
       _bookmarkList = bookmarkList.result.asValue.value;
     }
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        left: false,
-        right: false,
-        child: Center(
-          child: Container(
-            width: deviceWidth,
-            height: deviceHeight,
-            margin: EdgeInsets.only(top: 14, bottom: 10, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _header(),
-                _listWidget(deviceWidth),
-                _bottom(ratioWidth)
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        //  왼쪽 -> 오른쪽 Swipe 시에 뒤로가기 방지
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          left: false,
+          right: false,
+          child: Center(
+            child: Container(
+              width: deviceWidth,
+              height: deviceHeight,
+              margin: EdgeInsets.only(top: 14, bottom: 10, left: deviceWidth * 0.05, right: deviceWidth * 0.05),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  _header(),
+                  _listWidget(deviceWidth),
+                  _bottom(ratioWidth)
+                ],
+              ),
             ),
           ),
         ),
