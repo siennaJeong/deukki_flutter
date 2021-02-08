@@ -56,7 +56,6 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void initState() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
 
@@ -86,6 +85,7 @@ class _StageQuizState extends State<StageQuiz> {
 
   @override
   void didChangeDependencies() {
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     categoryProvider = Provider.of<CategoryProvider>(context);
     stageProvider = Provider.of<StageProvider>(context);
 
@@ -332,7 +332,8 @@ class _StageQuizState extends State<StageQuiz> {
   }
 
   Widget _dataLoadingWidget(String soundIcons, String playSpeed) {
-    if(resourceProviderModel.audioFilePath.length > 0) {
+    final saveAudioFile = resourceProviderModel.value.saveAudioFile;
+    if(saveAudioFile.hasData) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
