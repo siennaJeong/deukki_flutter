@@ -43,7 +43,7 @@ void main() async {
   }
 
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight])
+  SystemChrome.setPreferredOrientations([Platform.isIOS ? DeviceOrientation.landscapeRight : DeviceOrientation.landscapeLeft])
   .then((_) {
     runApp(
         MultiProvider(
