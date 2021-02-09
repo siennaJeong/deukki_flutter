@@ -24,7 +24,7 @@ class MemberShip extends StatefulWidget {
 }
 
 class _MemberShipState extends State<MemberShip> {
-  static const String PAGE_MY_MEMBERSHIP = "mypage_membership";
+  static const String PAGE_MY_MEMBERSHIP = "My Membership";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
@@ -44,6 +44,7 @@ class _MemberShipState extends State<MemberShip> {
   double deviceWidth, deviceHeight;
   int _premium;
   String _paymentId, _premiumEndAt;
+  String _premiumType;    //  Amplitude 를 위한 변수 (월간인지 연간인지 구분)
   bool _isAvailable = false;
   bool _autoConsume = true;
 
@@ -63,7 +64,7 @@ class _MemberShipState extends State<MemberShip> {
     _initUpdateStream();
     _initStore();
 
-    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_MEMBERSHIP", <String, dynamic> {'premium': _userProviderModel.userVOForHttp.premium == 0 ? "false" : "true"});
     super.initState();
   }
 
@@ -232,6 +233,15 @@ class _MemberShipState extends State<MemberShip> {
         _paymentPreRequest(productionVO);
         if(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null) != null) {
           _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null), false);
+
+          if(productionVO.title.contains("월")) {
+            _premiumType = "monthly";
+            AnalyticsService().sendAnalyticsEvent("MYM Monthly", null);
+          }else {
+            _premiumType = "yearly";
+            AnalyticsService().sendAnalyticsEvent("MYM Yearly", null);
+          }
+
         }else {
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
@@ -305,6 +315,9 @@ class _MemberShipState extends State<MemberShip> {
               _userProviderModel.setPremiumPopupShow();
             });
             scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 1)));
+
+            AnalyticsService().sendAnalyticsEvent("MYM Paid", <String, dynamic> {'product': _premiumType});
+
           }else if(validation.result.asValue.value.status == 400) {
             scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error), duration: Duration(seconds: 1)));
           }else {
@@ -347,7 +360,6 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _couponRegistration() {
-    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "coupon_registration", "", "");
     RouteNavigator().go(GetRoutesName.ROUTE_COUPON_REGISTRATION, context);
   }
 
@@ -556,7 +568,7 @@ class _MemberShipState extends State<MemberShip> {
                         ),
                       ),
                       onTap: () {
-                        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "terms", "", "");
+                        AnalyticsService().sendAnalyticsEvent("MYM Temrs", null);
                         RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
                       },
                     ),
@@ -576,7 +588,7 @@ class _MemberShipState extends State<MemberShip> {
                         ),
                       ),
                       onTap: () {
-                        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "privacy", "", "");
+                        AnalyticsService().sendAnalyticsEvent("MYM Privacy", null);
                         RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
                       },
                     ),

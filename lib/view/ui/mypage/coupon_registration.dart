@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/payment/payment_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
@@ -39,7 +38,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
     _paymentProviderModel = Provider.of<PaymentProviderModel>(context, listen: false);
     _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "", "", "");
     super.initState();
     _focusNode = FocusNode();
   }
@@ -65,7 +64,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
 
   void _couponRegistration() {
     _unFocused();
-    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "registration", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "registration", "", "");
     if(_couponFormKey.currentState.validate()) {
       _couponFormKey.currentState.save();
       //  서버 api 콜
@@ -187,7 +186,7 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
                             ),
                             onTap: () {
                               _unFocused();
-                              AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "close", "", "");
+                              ///AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_COUPON, "close", "", "");
                               Navigator.pop(context);
                             },
                           ),

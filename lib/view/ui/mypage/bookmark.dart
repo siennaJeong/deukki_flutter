@@ -23,7 +23,7 @@ class BookMark extends StatefulWidget {
 }
 
 class _BookMarkState extends State<BookMark> {
-  static const String PAGE_MY_BOOKMARK = "mypage_bookmark";
+  static const String PAGE_MY_BOOKMARK = "MY Bookmark";
 
   List<BookmarkVO> _bookmarkList;
   double deviceWidth, deviceHeight;
@@ -41,7 +41,7 @@ class _BookMarkState extends State<BookMark> {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_BOOKMARK, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_BOOKMARK", null);
 
     super.initState();
   }
@@ -141,7 +141,7 @@ class _BookMarkState extends State<BookMark> {
       onTap: () {
         //  stage quiz 화면으로
         if(!_isClick) {
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_BOOKMARK, "bookmark", "", "bookmark_idx : ${_bookmarkList[index].bookmarkIdx}");
+          AnalyticsService().sendAnalyticsEvent("MYB Bookmark", <String, dynamic> {'bookmark_id': _bookmarkList[index].bookmarkIdx});
           _isClick = true;
           resourceProviderModel.getPronunciation(
               authServiceAdapter.authJWT,

@@ -28,8 +28,7 @@ class CategorySmall extends BaseWidget {
 }
 
 class _CategorySmallState extends State<CategorySmall> with SingleTickerProviderStateMixin {
-  static const String PAGE_CONTENT_LIST = "content_list";
-  static const String DIALOG_UPGRADE = "upgrade_popup";
+  static const String PAGE_CONTENT_LIST = "Content List";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -55,7 +54,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.repeat(reverse: true);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_CONTENT_LIST", null);
     super.initState();
   }
 
@@ -111,8 +110,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
       context: context,
       useSafeArea: false,
       builder: (BuildContext context) {
-        AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "", "", "");
-        return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight);
+        return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight, callFrom: PAGE_CONTENT_LIST);
       }
     );
   }
@@ -195,9 +193,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
           _onItemClick(sentenceVO);
 
           if(sentenceVO.premium == 0) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "enable_content", "", "sentence_id : ${sentenceVO.id}");
+            AnalyticsService().sendAnalyticsEvent("CL Enable Content", <String,dynamic> {'sentence_id': sentenceVO.id});
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "disable_content", "", "sentence_id : ${sentenceVO.id}");
+            AnalyticsService().sendAnalyticsEvent("CL Disable Content", <String, dynamic> {'sentence_id': sentenceVO.id});
           }
         }
       },
@@ -222,7 +220,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
               context: context,
               useSafeArea: false,
               builder: (BuildContext context) {
-                return StageDialog(title: sentenceVO.content,);
+                return StageDialog(title: sentenceVO.content, sentenceId: sentenceVO.id);
               }
           );
         });
@@ -246,7 +244,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
             context: context,
             useSafeArea: false,
             builder: (BuildContext context) {
-              return StageDialog(title: sentenceVO.content,);
+              return StageDialog(title: sentenceVO.content, sentenceId: sentenceVO.id);
             }
         );
       });
@@ -384,7 +382,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                           onTap: () {
                             categoryProvider.onSelectedLarge(-1);
                             Navigator.of(context).pop();
-                            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "back", "", "");
+                            AnalyticsService().sendAnalyticsEvent("CL Back", null);
                           },
                         ),
                       ),
@@ -410,7 +408,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                         ],
                       ),
                       onTap: () => {                      //  More List Button
-                      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_CONTENT_LIST, "category", "", ""),
+                      AnalyticsService().sendAnalyticsEvent("CL Category", null),
                         showDialog(
                             context: context,
                             barrierDismissible: true,

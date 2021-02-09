@@ -21,7 +21,7 @@ class MediumCategoryListDialog extends StatefulWidget {
 }
 
 class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
-  static const String PAGE_LEARNING_CATEGORY = "learning_category";
+  static const String PAGE_LEARNING_CATEGORY = "Learning Category";
   String _title;
   List<CategoryMediumVO> _list;
   List<double> scores = [];   //  test
@@ -34,7 +34,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
     _title = widget.title;
     _list = widget.list;
     _userPremium = widget.premium;
-    AnalyticsService().sendAnalyticsEvent(true, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_CATEGORY", null);
     super.initState();
   }
 
@@ -83,22 +83,28 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
         ),
       ),
       onTap: () {             //  List Item Click
-        AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
-
         if(_userPremium == 0) {
           if(!mediumVO.premium) {
+            AnalyticsService().sendAnalyticsEvent("LC Select", <String, dynamic> {'category_id': mediumVO.id});
             Navigator.of(context).pop(json.encode(mediumVO));
           }else {
+            AnalyticsService().sendAnalyticsEvent("LC Disable Select", <String, dynamic> {'category_id': mediumVO.id});
             showDialog(
                 context: context,
                 useSafeArea: false,
                 builder: (BuildContext context) {
-                  return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight);
+                  return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight, callFrom: PAGE_LEARNING_CATEGORY);
                 }
             );
           }
         }else {
           Navigator.of(context).pop(json.encode(mediumVO));
+
+          if(!mediumVO.premium) {
+            AnalyticsService().sendAnalyticsEvent("LC Select", <String, dynamic> {'category_id': mediumVO.id});
+          }else {
+            AnalyticsService().sendAnalyticsEvent("LC Disable Select", <String, dynamic> {'category_id': mediumVO.id});
+          }
         }
       },
     );
@@ -185,7 +191,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             child: GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.1)),
               onTap: () {
-                AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "outside", "", "");
+                AnalyticsService().sendAnalyticsEvent("LC Outside", null);
                 Navigator.of(context).pop();
               },
             ),

@@ -170,7 +170,7 @@ class _SplashState extends State<Splash> {
         if(tokenStatusResult.result.asValue.value != null) {
           if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
             analytics ??= AnalyticsService().setUserProperties(
-                "${tokenStatusResult.result.asValue.value.idx}",
+                tokenStatusResult.result.asValue.value.premium,
                 authServiceAdapter.userVO.gender,
                 authServiceAdapter.userVO.birthDate);
           }

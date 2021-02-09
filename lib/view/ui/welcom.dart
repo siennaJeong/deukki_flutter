@@ -18,12 +18,10 @@ class _WelcomeState extends State<Welcome> {
 
   @override
   void initState() {
-    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_WELCOME, "", "", "");
     super.initState();
   }
 
   void getRoute() {
-    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_WELCOME, "confirm", "", "");
     setState(() {
       RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
     });

@@ -34,7 +34,7 @@ class StageQuiz extends StatefulWidget {
 }
 
 class _StageQuizState extends State<StageQuiz> {
-  static const String PAGE_LEARNING = "learning";
+  static const String PAGE_LEARNING = "Learning";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -54,13 +54,12 @@ class _StageQuizState extends State<StageQuiz> {
 
   List<BookmarkVO> _bookmarkList = [];
 
+  Future<void> analyticsResult;
+
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "", "", "");
-
     _audioManager = AudioManager.STREAM_MUSIC;
 
     if(!Platform.isIOS) {
@@ -88,6 +87,14 @@ class _StageQuizState extends State<StageQuiz> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     categoryProvider = Provider.of<CategoryProvider>(context);
     stageProvider = Provider.of<StageProvider>(context);
+
+    analyticsResult ??= AnalyticsService().sendAnalyticsEvent(
+      "${AnalyticsService.VISIT}$PAGE_LEARNING",
+      <String, dynamic> {
+        'sentence_id': categoryProvider.selectedSentence.id,
+        'stage_number': categoryProvider.selectStageIndex
+      },
+    );
 
     super.didChangeDependencies();
   }
@@ -160,7 +167,7 @@ class _StageQuizState extends State<StageQuiz> {
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
           onTap: () {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "back", "", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_LEARNING Back", <String, dynamic> {'round': stageProvider.round});
             _showExitDialog();
           },
         ),
@@ -178,7 +185,16 @@ class _StageQuizState extends State<StageQuiz> {
           height: 50,
         ),
         onTap: () {
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "bookmark", "", "stage_idx : ${categoryProvider.selectStageIdx}");
+          AnalyticsService().sendAnalyticsEvent(
+            "$PAGE_LEARNING Bookmark",
+            <String,dynamic> {
+              'sentence_id': categoryProvider.selectedSentence.id,
+              'stage_number': categoryProvider.selectStageIndex,
+              'play_pronunciation_id': stageProvider.playPIdx,
+              'play_repeat': stageProvider.soundRepeat,
+              'round': stageProvider.round
+            }
+          );
 
           if(categoryProvider.isBookmark) {
             categoryProvider.onBookMark(false);
@@ -319,7 +335,7 @@ class _StageQuizState extends State<StageQuiz> {
         ),
         child: _dataLoadingWidget(soundIcons, playSpeed),
         onPressed: () {               //  Play Button Click
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "play", "", "");
+          AnalyticsService().sendAnalyticsEvent("$PAGE_LEARNING Play", <String, dynamic> {'play_pronunciation_id': stageProvider.playPIdx});
 
           if(!categoryProvider.isPlaying) {
             categoryProvider.play(randomPath.path, stageProvider.playRate);
@@ -468,10 +484,22 @@ class _StageQuizState extends State<StageQuiz> {
             && (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) == null) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "right", "", "pronunciation_id : ${pronunciationVO.pIdx}");
+            AnalyticsService().sendAnalyticsEvent(
+              "$PAGE_LEARNING Right",
+              <String, dynamic> {
+                'pronunciation_id': pronunciationVO.pIdx,
+                'play_pronunciation_id': randomPath.stageIdx
+              }
+            );
             stageProvider.historyInit(randomPath.stageIdx);
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "wrong", "", "pronunciation_id : ${pronunciationVO.pIdx}");
+            AnalyticsService().sendAnalyticsEvent(
+              "$PAGE_LEARNING Wrong",
+              <String, dynamic> {
+                'pronunciation_id': pronunciationVO.pIdx,
+                'play_pronunciation_id': randomPath.stageIdx
+              }
+            );
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
             stageProvider.setOneTimeAnswerCount();

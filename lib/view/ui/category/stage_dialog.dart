@@ -21,15 +21,16 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class StageDialog extends StatefulWidget {
   final String title;
+  final String sentenceId;
 
-  StageDialog({@required this.title});
+  StageDialog({@required this.title, @required this.sentenceId});
 
   @override
   _StageDialogState createState() => _StageDialogState();
 }
 
 class _StageDialogState extends State<StageDialog> {
-  static const String PAGE_LEARNING_STAGE = "learning_stage";
+  static const String PAGE_LEARNING_STAGE = "Learning Stage";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -39,6 +40,7 @@ class _StageDialogState extends State<StageDialog> {
 
   double deviceWidth, deviceHeight;
   String _title;
+  String _sentenceId;
   int _selectedStageIdx, _selectedIndex;
 
   bool _isClick = false;
@@ -46,11 +48,12 @@ class _StageDialogState extends State<StageDialog> {
   @override
   void initState() {
     _title = widget.title;
+    _sentenceId = widget.sentenceId;
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_STAGE", <String, dynamic> {'sentence_id': _sentenceId});
 
     super.initState();
   }
@@ -201,12 +204,12 @@ class _StageDialogState extends State<StageDialog> {
           _onSelectedStage();
 
           if(index == categoryProvider.currentStageIndex) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "current_stage", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Current Stage", <String, dynamic> {'stage_number': index});
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "completed_stage", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Completed Stage", <String, dynamic> {'stage_number': index});
           }
         }else {
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "next_stage", "", "");
+          AnalyticsService().sendAnalyticsEvent("LS Next Stage", <String, dynamic> {'stage_number': index});
         }
       },
     );
@@ -227,7 +230,7 @@ class _StageDialogState extends State<StageDialog> {
             child: Icon(Icons.arrow_back, color: MainColors.purple_100, size: 30),
           ),
           onTap: () {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "back", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Back", null);
             categoryProvider.selectStageIndex = -1;
             categoryProvider.selectStageIdx = -1;
             if(categoryProvider.stageAvgScore != 0) {
@@ -247,7 +250,7 @@ class _StageDialogState extends State<StageDialog> {
 
   void _stageStart() {        //  Start Click
     if(!_isClick) {
-      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "start", "", "");
+      AnalyticsService().sendAnalyticsEvent("LS Start", <String, dynamic> {'stage_number': categoryProvider.selectStageIndex});
       _isClick = true;
       resourceProviderModel.getPronunciation(
           authServiceAdapter.authJWT,
@@ -300,7 +303,6 @@ class _StageDialogState extends State<StageDialog> {
           ),
           child: Container(
             alignment: AlignmentDirectional.center,
-            //margin: EdgeInsets.only(top: deviceHeight > 700 ? 40 : 0, bottom: deviceHeight > 700 ? 40 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
