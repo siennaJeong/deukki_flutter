@@ -30,7 +30,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    userProviderModel.sharedPremiumPopup();
+    userProviderModel.getPremiumPopup();
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARN_COMPLETE", null);
     super.initState();

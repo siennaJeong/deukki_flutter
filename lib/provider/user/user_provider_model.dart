@@ -27,6 +27,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
   final UserRepository _userRepository;
   static const String PREMIUM_POPUP = "premiumPopup";
+  static const String IS_GUIDE_DONE = "guide";
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   List<ProductionVO> trialProductList = [];
@@ -34,6 +35,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   ReportVO weeklyReports;
   int bookmarkScore = 0;
   int premiumPopupShow = 0;
+  int isGuideDone = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -144,9 +146,15 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
   }
 
-  Future<void> sharedPremiumPopup() async {
+  Future<void> getPremiumPopup() async {
     if(_sharedHelper != null) {
       premiumPopupShow = await _sharedHelper.getIntSharedPref(PREMIUM_POPUP);
+    }
+  }
+
+  Future<void> getGuideDone() async {
+    if(_sharedHelper != null) {
+      isGuideDone = await _sharedHelper.getIntSharedPref(IS_GUIDE_DONE);
     }
   }
 
@@ -157,6 +165,11 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   void setPremiumPopupShow() async {
     await _sharedHelper.setIntSharedPref(PREMIUM_POPUP, 1);
-    sharedPremiumPopup();
+    getPremiumPopup();
+  }
+
+  void setGuide() async {
+    await _sharedHelper.setIntSharedPref(IS_GUIDE_DONE, 1);
+    getGuideDone();
   }
 }

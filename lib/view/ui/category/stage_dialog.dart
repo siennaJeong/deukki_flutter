@@ -10,6 +10,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
+import 'package:deukki/view/ui/base/ripple_animation.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -29,7 +30,7 @@ class StageDialog extends StatefulWidget {
   _StageDialogState createState() => _StageDialogState();
 }
 
-class _StageDialogState extends State<StageDialog> {
+class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin{
   static const String PAGE_LEARNING_STAGE = "Learning Stage";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
@@ -37,7 +38,10 @@ class _StageDialogState extends State<StageDialog> {
   UserProviderModel userProviderModel;
 
   final AutoScrollController _autoScrollController = AutoScrollController();
+  final GlobalKey _sizeKey = GlobalKey();
+  AnimationController _controller;
 
+  Size widgetSize;
   double deviceWidth, deviceHeight;
   String _title;
   String _sentenceId;
@@ -52,10 +56,15 @@ class _StageDialogState extends State<StageDialog> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    userProviderModel.getGuideDone();
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_STAGE", <String, dynamic> {'sentence_id': _sentenceId});
 
     super.initState();
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 1000),
+      vsync: this)
+      ..repeat(reverse: true);
   }
 
   @override
@@ -335,13 +344,17 @@ class _StageDialogState extends State<StageDialog> {
                       Expanded(
                         flex: 7,
                         child: Container(
-                          child:CommonRaisedButton(
-                            buttonText: Strings.start_btn,
-                            buttonColor: MainColors.purple_100,
-                            textColor: Colors.white,
-                            borderColor: MainColors.purple_100,
-                            fontSize: 24,
-                            voidCallback: _stageStart,   // Start Button
+                          child: RippleAnimation(
+                            controller: _controller,
+                            color: MainColors.purple_100,
+                            rippleTarget: CommonRaisedButton(
+                              buttonText: Strings.start_btn,
+                              buttonColor: MainColors.purple_100,
+                              textColor: Colors.white,
+                              borderColor: MainColors.purple_100,
+                              fontSize: 24,
+                              voidCallback: _stageStart,   // Start Button
+                            ),
                           ),
                         ),
                       )
