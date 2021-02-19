@@ -50,6 +50,8 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    userProviderModel.getStageGuide();
+    userProviderModel.getLearnGuide();
 
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.repeat(reverse: true);
@@ -417,7 +419,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                               return MediumCategoryListDialog(
                                 title: categoryProvider.getCurrentMedium().title,
                                 list: categoryProvider.categoryMediumList,
-                                premium: userProviderModel.userVOForHttp.premium,
+                                premium: userProviderModel.userVOForHttp.premium
                               );
                             }
                         ).then((value) {

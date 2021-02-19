@@ -33,7 +33,7 @@ class StageQuiz extends StatefulWidget {
   _StageQuizState createState() => _StageQuizState();
 }
 
-class _StageQuizState extends State<StageQuiz> {
+class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   static const String PAGE_LEARNING = "Learning";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
@@ -46,15 +46,16 @@ class _StageQuizState extends State<StageQuiz> {
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
-  int maxVol, currentVol;
 
+  int maxVol, currentVol;
   var deviceWidth;
   var deviceHeight;
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
-
   Future<void> analyticsResult;
+
+  AnimationController _controller;
 
   @override
   void initState() {
@@ -78,6 +79,10 @@ class _StageQuizState extends State<StageQuiz> {
     if(!Platform.isIOS) {
       initVolume();
     }
+
+    _controller = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this);
 
     super.initState();
   }
@@ -216,7 +221,7 @@ class _StageQuizState extends State<StageQuiz> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         _stepIndicatorWidget(width),
-        _playButtonWidget(width * 0.32),
+        _playWidget(width * 0.32),
       ],
     );
   }
@@ -294,7 +299,7 @@ class _StageQuizState extends State<StageQuiz> {
     );
   }
 
-  Widget _playButtonWidget(double width) {              //  Play button
+  Widget _playWidget(double width) {              //  Play button
     String playSpeed;
     String soundIcons;    // speed : 0.8, 0.95, 1.1, 1.25, 1.4
     if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
@@ -319,6 +324,12 @@ class _StageQuizState extends State<StageQuiz> {
       soundIcons = AppImages.speaker;
     }
 
+    if(userProviderModel.learnGuide == 0) {
+
+    }
+  }
+
+  Widget _buttonWidget(double width, String soundIcons, String playSpeed) {
     return Container(
       width: width + 2,
       margin: EdgeInsets.only(top: 32),

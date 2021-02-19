@@ -38,7 +38,6 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
   UserProviderModel userProviderModel;
 
   final AutoScrollController _autoScrollController = AutoScrollController();
-  final GlobalKey _sizeKey = GlobalKey();
   AnimationController _controller;
 
   Size widgetSize;
@@ -50,20 +49,25 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
   bool _isClick = false;
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
+  @override
   void initState() {
     _title = widget.title;
     _sentenceId = widget.sentenceId;
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    userProviderModel.getGuideDone();
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_STAGE", <String, dynamic> {'sentence_id': _sentenceId});
 
     super.initState();
     _controller = AnimationController(
-      duration: Duration(milliseconds: 1000),
-      vsync: this)
+        duration: Duration(milliseconds: 800),
+        vsync: this)
       ..repeat(reverse: true);
   }
 
@@ -252,6 +256,29 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
     );
   }
 
+  Widget _startButtonWidget() {           //  Start Button
+    if(userProviderModel.stageGuide == 0) {
+      return RippleAnimation(
+        controller: _controller,
+        color: MainColors.purple_100,
+        rippleTarget: _buttonWidget(),
+      );
+    }else {
+      return _buttonWidget();
+    }
+  }
+
+  Widget _buttonWidget() {
+    return CommonRaisedButton(
+      buttonText: Strings.start_btn,
+      buttonColor: MainColors.purple_100,
+      textColor: Colors.white,
+      borderColor: MainColors.purple_100,
+      fontSize: 24,
+      voidCallback: _stageStart,
+    );
+  }
+
   void _onSelectedStage() {            //  ListView Item Click
     categoryProvider.onSelectedStage(_selectedIndex, _selectedStageIdx);
     categoryProvider.onRootBookmark(false);
@@ -278,7 +305,10 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
         categoryProvider.playCount = 0;
         categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+
         _isClick = false;
+        userProviderModel.setStageGuide();
+        _controller?.stop();
       });
     }
   }
@@ -344,18 +374,7 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
                       Expanded(
                         flex: 7,
                         child: Container(
-                          child: RippleAnimation(
-                            controller: _controller,
-                            color: MainColors.purple_100,
-                            rippleTarget: CommonRaisedButton(
-                              buttonText: Strings.start_btn,
-                              buttonColor: MainColors.purple_100,
-                              textColor: Colors.white,
-                              borderColor: MainColors.purple_100,
-                              fontSize: 24,
-                              voidCallback: _stageStart,   // Start Button
-                            ),
-                          ),
+                          child: _startButtonWidget(),
                         ),
                       )
                     ],
