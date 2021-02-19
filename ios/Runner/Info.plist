@@ -10,6 +10,10 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ko</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>바름드끼</string>
 	<key>CFBundlePackageType</key>
@@ -18,10 +22,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleLocalizations</key>
-	<array>
-	    <string>ko</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
