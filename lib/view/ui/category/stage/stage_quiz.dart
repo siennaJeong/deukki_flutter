@@ -110,6 +110,8 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
 
     if(_isAnswerAnimation && categoryProvider.playCount > 0 && !categoryProvider.isPlaying) {
       _answerController.repeat(reverse: true);
+    }else {
+      _answerController?.reset();
     }
 
     super.didChangeDependencies();
@@ -460,8 +462,8 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             padding: EdgeInsets.only(left: 0),
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 24,
-            mainAxisSpacing: 24,
+            crossAxisSpacing: 18,
+            mainAxisSpacing: 18,
             scrollDirection: Axis.horizontal,
             itemCount: pronunciations.length,
             itemBuilder: (BuildContext context, index) {
@@ -792,18 +794,21 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         });
 
     if(stageProvider.round >= 5) {
-      Future.delayed(Duration(milliseconds: 700), () {
+      Future.delayed(Duration(milliseconds: 800), () {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,
             categoryProvider.selectedSentence.id,
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
+          userProviderModel.setLearnGuide();
           RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
         });
       });
     }
     categoryProvider.playCount = 0;
+    _isPlayAnimation = true;
+    _isAnswerAnimation = true;
   }
 
   void _showExitDialog() {
