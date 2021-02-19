@@ -24,7 +24,7 @@ class Login extends BaseWidget {
 }
 
 class _LoginState extends State<Login> {
-  static const String PAGE_LOGIN = "login";
+  static const String PAGE_LOGIN = "Login";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel signInProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -35,7 +35,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     signInProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_LOGIN, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LOGIN", null);
     super.initState();
   }
 
@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
   }
 
   void _checkSignUp(String authType, AuthServiceType authServiceType) async {
-    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_LOGIN, authType, "", "");
+    AnalyticsService().sendAnalyticsEvent("$authType $PAGE_LOGIN", null);
 
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
@@ -121,9 +121,9 @@ class _LoginState extends State<Login> {
           RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
           authServiceAdapter.setIsSigning(false);
           if(signInProviderModel.userVOForHttp != null) {
-            AnalyticsService().setUserProperties("${signInProviderModel.userVOForHttp.idx}", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+            AnalyticsService().setUserProperties(signInProviderModel.userVOForHttp.premium == 0 ? false : true, authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
           }else {
-            AnalyticsService().setUserProperties("-1", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+            AnalyticsService().setUserProperties(false, authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
           }
         }
       }

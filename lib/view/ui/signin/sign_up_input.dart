@@ -21,7 +21,7 @@ class SignUpInputBirth extends BaseWidget {
 }
 
 class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
-  static const String PAGE_SIGNUP_INFO = "sign_up_info";
+  static const String PAGE_SIGNUP_INFO = "Additional Info";
   final _formKey = GlobalKey<FormState>();
   FocusScopeNode _focusNode;
   AuthServiceAdapter authServiceAdapter;
@@ -30,7 +30,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
 
   @override
   void initState() {
-    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_SIGNUP_INFO, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_SIGNUP_INFO", null);
     super.initState();
     _focusNode = FocusScopeNode();
   }
@@ -49,7 +49,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
   }
 
   void _signUpDone() {
-    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_INFO, "done", "", "");
+    AnalyticsService().sendAnalyticsEvent("AI Done", null);
     if(_focusNode.hasFocus) {
       _focusNode.unfocus();
       SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
@@ -73,7 +73,7 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
         }
         if(signUpResult.result.isValue) {
           authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
-          AnalyticsService().setUserProperties("-1", authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
+          AnalyticsService().setUserProperties(false, authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
         }else if(signUpResult.result.isError) {
           print("sign up error : " + signUpResult.result.asError.error.toString());
         }
@@ -260,7 +260,6 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
                                     value: Strings.sign_up_gender_male,
                                     groupValue: selectGender,
                                     onChanged: (String val) {
-                                      AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_INFO, "gender", "", val);
                                       setState(() {
                                         selectGender = val;
                                         authServiceAdapter.userVO.gender = "M";

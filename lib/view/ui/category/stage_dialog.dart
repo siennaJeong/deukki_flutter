@@ -10,6 +10,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
+import 'package:deukki/view/ui/base/ripple_animation.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -21,38 +22,53 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class StageDialog extends StatefulWidget {
   final String title;
+  final String sentenceId;
 
-  StageDialog({@required this.title});
+  StageDialog({@required this.title, @required this.sentenceId});
 
   @override
   _StageDialogState createState() => _StageDialogState();
 }
 
-class _StageDialogState extends State<StageDialog> {
-  static const String PAGE_LEARNING_STAGE = "learning_stage";
+class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin{
+  static const String PAGE_LEARNING_STAGE = "Learning Stage";
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
 
   final AutoScrollController _autoScrollController = AutoScrollController();
+  AnimationController _controller;
 
+  Size widgetSize;
   double deviceWidth, deviceHeight;
   String _title;
+  String _sentenceId;
   int _selectedStageIdx, _selectedIndex;
 
   bool _isClick = false;
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller?.dispose();
+  }
+
+  @override
   void initState() {
     _title = widget.title;
+    _sentenceId = widget.sentenceId;
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_STAGE", <String, dynamic> {'sentence_id': _sentenceId});
 
     super.initState();
+    _controller = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this)
+      ..repeat(reverse: true);
   }
 
   @override
@@ -201,12 +217,12 @@ class _StageDialogState extends State<StageDialog> {
           _onSelectedStage();
 
           if(index == categoryProvider.currentStageIndex) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "current_stage", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Current Stage", <String, dynamic> {'stage_number': index});
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "completed_stage", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Completed Stage", <String, dynamic> {'stage_number': index});
           }
         }else {
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "next_stage", "", "");
+          AnalyticsService().sendAnalyticsEvent("LS Next Stage", <String, dynamic> {'stage_number': index});
         }
       },
     );
@@ -227,7 +243,7 @@ class _StageDialogState extends State<StageDialog> {
             child: Icon(Icons.arrow_back, color: MainColors.purple_100, size: 30),
           ),
           onTap: () {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "back", "", "");
+            AnalyticsService().sendAnalyticsEvent("LS Back", null);
             categoryProvider.selectStageIndex = -1;
             categoryProvider.selectStageIdx = -1;
             if(categoryProvider.stageAvgScore != 0) {
@@ -240,6 +256,30 @@ class _StageDialogState extends State<StageDialog> {
     );
   }
 
+  Widget _startButtonAnimation() {           //  Start Button
+    if(userProviderModel.stageGuide == 0) {
+      return RippleAnimation(
+        controller: _controller,
+        color: MainColors.purple_100,
+        rippleTarget: _animationWidget(),
+        radius: 30.0,
+      );
+    }else {
+      return _animationWidget();
+    }
+  }
+
+  Widget _animationWidget() {
+    return CommonRaisedButton(
+      buttonText: Strings.start_btn,
+      buttonColor: MainColors.purple_100,
+      textColor: Colors.white,
+      borderColor: MainColors.purple_100,
+      fontSize: 24,
+      voidCallback: _stageStart,
+    );
+  }
+
   void _onSelectedStage() {            //  ListView Item Click
     categoryProvider.onSelectedStage(_selectedIndex, _selectedStageIdx);
     categoryProvider.onRootBookmark(false);
@@ -247,7 +287,7 @@ class _StageDialogState extends State<StageDialog> {
 
   void _stageStart() {        //  Start Click
     if(!_isClick) {
-      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING_STAGE, "start", "", "");
+      AnalyticsService().sendAnalyticsEvent("LS Start", <String, dynamic> {'stage_number': categoryProvider.selectStageIndex});
       _isClick = true;
       resourceProviderModel.getPronunciation(
           authServiceAdapter.authJWT,
@@ -266,7 +306,10 @@ class _StageDialogState extends State<StageDialog> {
         categoryProvider.playCount = 0;
         categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
         RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+
         _isClick = false;
+        userProviderModel.setStageGuide();
+        _controller?.stop();
       });
     }
   }
@@ -300,7 +343,6 @@ class _StageDialogState extends State<StageDialog> {
           ),
           child: Container(
             alignment: AlignmentDirectional.center,
-            //margin: EdgeInsets.only(top: deviceHeight > 700 ? 40 : 0, bottom: deviceHeight > 700 ? 40 : 0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
@@ -333,14 +375,7 @@ class _StageDialogState extends State<StageDialog> {
                       Expanded(
                         flex: 7,
                         child: Container(
-                          child:CommonRaisedButton(
-                            buttonText: Strings.start_btn,
-                            buttonColor: MainColors.purple_100,
-                            textColor: Colors.white,
-                            borderColor: MainColors.purple_100,
-                            fontSize: 24,
-                            voidCallback: _stageStart,   // Start Button
-                          ),
+                          child: _startButtonAnimation(),
                         ),
                       )
                     ],

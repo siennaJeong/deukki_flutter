@@ -214,7 +214,6 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     String fileId = "$sentenceId";
     String filePath, dbFilePath;
     final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
-    await value.getPronunciation.set(getPronunciation, notifyListeners);
 
     directory ??= await getApplicationDocumentsDirectory();
     String fileDir = directory.path;
@@ -248,6 +247,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         }
       });
     });
+    await value.getPronunciation.set(getPronunciation, notifyListeners);
   }
 
   Future<void> saveAudioFile(String dir, String url, String fileName) async {

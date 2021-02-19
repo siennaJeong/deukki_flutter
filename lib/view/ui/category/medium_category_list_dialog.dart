@@ -8,6 +8,7 @@ import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class MediumCategoryListDialog extends StatefulWidget {
   final String title;
@@ -21,11 +22,12 @@ class MediumCategoryListDialog extends StatefulWidget {
 }
 
 class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
-  static const String PAGE_LEARNING_CATEGORY = "learning_category";
+  static const String PAGE_LEARNING_CATEGORY = "Learning Category";
+  final AutoScrollController _autoScrollController = AutoScrollController();
   String _title;
-  List<CategoryMediumVO> _list;
-  List<double> scores = [];   //  test
   int _userPremium;
+  List<CategoryMediumVO> _list;
+  List<double> scores = [];
 
   double deviceWidth, deviceHeight;
 
@@ -34,7 +36,8 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
     _title = widget.title;
     _list = widget.list;
     _userPremium = widget.premium;
-    AnalyticsService().sendAnalyticsEvent(true, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "", "", "");
+
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_CATEGORY", null);
     super.initState();
   }
 
@@ -52,11 +55,12 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
         child: ListView.separated(
+          controller: _autoScrollController,
           shrinkWrap: true,
           physics: BouncingScrollPhysics(),
           itemCount: list.length,
           itemBuilder: (BuildContext context, index) {
-            return _listItemWidget(
+            return _autoScrollTag(
                 scores[index],
                 list[index],
                 index,
@@ -68,6 +72,15 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _autoScrollTag(double progress, CategoryMediumVO mediumVO, int index, int length) {
+    return AutoScrollTag(
+        key: ValueKey(index),
+        controller: _autoScrollController,
+        index: index,
+        child: _listItemWidget(progress, mediumVO, index, length)
     );
   }
 
@@ -83,22 +96,28 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
         ),
       ),
       onTap: () {             //  List Item Click
-        AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "select", "", mediumVO.id);
-
         if(_userPremium == 0) {
           if(!mediumVO.premium) {
+            AnalyticsService().sendAnalyticsEvent("LC Select", <String, dynamic> {'category_id': mediumVO.id});
             Navigator.of(context).pop(json.encode(mediumVO));
           }else {
+            AnalyticsService().sendAnalyticsEvent("LC Disable Select", <String, dynamic> {'category_id': mediumVO.id});
             showDialog(
                 context: context,
                 useSafeArea: false,
                 builder: (BuildContext context) {
-                  return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight);
+                  return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight, callFrom: PAGE_LEARNING_CATEGORY);
                 }
             );
           }
         }else {
           Navigator.of(context).pop(json.encode(mediumVO));
+
+          if(!mediumVO.premium) {
+            AnalyticsService().sendAnalyticsEvent("LC Select", <String, dynamic> {'category_id': mediumVO.id});
+          }else {
+            AnalyticsService().sendAnalyticsEvent("LC Disable Select", <String, dynamic> {'category_id': mediumVO.id});
+          }
         }
       },
     );
@@ -177,6 +196,13 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
     deviceWidth = MediaQuery.of(context).size.width;
     deviceHeight = MediaQuery.of(context).size.height;
 
+    setState(() {
+      _autoScrollController.scrollToIndex(
+          _list.indexWhere((element) => element.title == _title),
+          preferPosition: AutoScrollPosition.middle,
+          duration: Duration(milliseconds: 500));
+    });
+
     return Stack(
       children: <Widget>[
         Positioned.fill(
@@ -185,7 +211,7 @@ class _MediumCategoryListDialogState extends State<MediumCategoryListDialog> {
             child: GestureDetector(
               child: Container(color: Colors.black.withOpacity(0.1)),
               onTap: () {
-                AnalyticsService().sendAnalyticsEvent(false, _userPremium == 0 ? false : true, PAGE_LEARNING_CATEGORY, "outside", "", "");
+                AnalyticsService().sendAnalyticsEvent("LC Outside", null);
                 Navigator.of(context).pop();
               },
             ),

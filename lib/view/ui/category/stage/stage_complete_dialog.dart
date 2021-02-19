@@ -21,7 +21,7 @@ class StageCompleteDialog extends StatefulWidget {
 }
 
 class _StageCompleteDialogState extends State<StageCompleteDialog> {
-  static const String PAGE_LEARN_COMPLETE = "learning_complete";
+  static const String PAGE_LEARN_COMPLETE = "Learning Complete";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
 
@@ -30,9 +30,9 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    userProviderModel.sharedPremiumPopup();
+    userProviderModel.getPremiumPopup();
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARN_COMPLETE", null);
     super.initState();
   }
 
@@ -86,12 +86,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     }
 
     void _quizDone() {
-      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARN_COMPLETE, "ok", "", "");
-      /*if((categoryProvider.selectStageIndex + 1) % 3 != 0) {
-        Navigator.pop(context);
-      }else {
-        RouteNavigator().go(GetRoutesName.ROUTE_RECORD, context);
-      }*/
+      AnalyticsService().sendAnalyticsEvent("$PAGE_LEARN_COMPLETE OK", null);
       categoryProvider.updateScore(acquiredStars, stageAvg);
       categoryProvider.updatePreScore();
       categoryProvider.setPremiumPopupCount();

@@ -17,7 +17,7 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
-  static const String PAGE_MY_REPORT = "mypage_report";
+  static const String PAGE_MY_REPORT = "MY Report";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
@@ -31,7 +31,7 @@ class _ReportState extends State<Report> {
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_REPORT", null);
     super.initState();
   }
 
@@ -104,7 +104,9 @@ class _ReportState extends State<Report> {
         ),
       ),
       onTap: () {
-        AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, isAccuracy ? "speaking" : "listening", "", "");
+        if(isAccuracy) {
+          AnalyticsService().sendAnalyticsEvent("MYR Speaking", <String, dynamic> {'score': weeklyReports.speakingScore});
+        }
       },
     );
   }
@@ -165,7 +167,7 @@ class _ReportState extends State<Report> {
                 child: GestureDetector(
                   onTap: () async {
                     if(!_isClick) {
-                      AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_REPORT, "report_link", "", "");
+                      AnalyticsService().sendAnalyticsEvent("MYR Link", <String, dynamic> {'score': weeklyReports.speakingScore});
 
                       _isClick = true;
                       if(weeklyReports.link != "") {

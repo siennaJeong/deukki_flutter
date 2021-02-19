@@ -26,7 +26,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
-  static const String PAGE_MY_SETTINGS = "mypage_settings";
+  static const String PAGE_MY_SETTINGS = "MY Settings";
   AuthServiceAdapter _authServiceAdapter;
   UserProviderModel _userProviderModel;
 
@@ -50,7 +50,7 @@ class _SettingsState extends State<Settings> {
     getPackageInfo();
     _clickEnable ??= true;
 
-    AnalyticsService().sendAnalyticsEvent(true, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_SETTINGS", null);
     super.initState();
   }
 
@@ -222,7 +222,7 @@ class _SettingsState extends State<Settings> {
         ),
       ),
       onTap: () {
-        AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "logout", "", "");
+        AnalyticsService().sendAnalyticsEvent("MYS Logout", null);
         _authServiceAdapter.logout();                             //  Firebase 로그아웃
         _userProviderModel.logout(_authServiceAdapter.authJWT);   //  서버 로그아웃
         RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
@@ -290,7 +290,7 @@ class _SettingsState extends State<Settings> {
                     onChanged: (value) {
                       setState(() {
                         if(_clickEnable) {
-                          AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "alert", "", "");
+                          AnalyticsService().sendAnalyticsEvent("MYS Alert", <String, dynamic> {'enable': value});
                           _kakaoNotification = value;
                           _setKakaoAlarm();
                         }
@@ -366,7 +366,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   onTap: () {
-                    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "terms", "", "");
+                    AnalyticsService().sendAnalyticsEvent("MYS Terms", null);
                     RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
                   },
                 ),
@@ -384,7 +384,7 @@ class _SettingsState extends State<Settings> {
                     ),
                   ),
                   onTap: () {
-                    AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "privacy", "", "");
+                    AnalyticsService().sendAnalyticsEvent("MYS Privacy", null);
                     RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
                   },
                 ),
@@ -405,7 +405,7 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
                 onTap: () {
-                  AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_SETTINGS, "sign_out", "", "");
+                  AnalyticsService().sendAnalyticsEvent("MYS Sign out", null);
                   _showSignOutConfirm();
                 },
               ),

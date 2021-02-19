@@ -17,7 +17,7 @@ class SignUpTerms extends BaseWidget {
 }
 
 class _SignUpTermsState extends State<SignUpTerms> {
-  static const String PAGE_SIGNUP_TERMS = "sign_up_terms";
+  static const String PAGE_SIGNUP_TERMS = "Agree";
   bool marketingAgree = false;
   AuthServiceAdapter authServiceAdapter;
   UserProviderModel userProviderModel;
@@ -26,7 +26,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
 
   @override
   void initState() {
-    AnalyticsService().sendAnalyticsEvent(true, false, PAGE_SIGNUP_TERMS, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_SIGNUP_TERMS", null);
     super.initState();
   }
 
@@ -38,7 +38,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
   }
 
   void _isEmailExist() {
-    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "confirm", "", "");
+    AnalyticsService().sendAnalyticsEvent("AG Ok", <String, dynamic> {'agree': '$marketingAgree'});
     setState(() {
       authServiceAdapter.marketingAgree = marketingAgree;
       authServiceAdapter.marketingMethod = "email";
@@ -80,7 +80,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
   }
 
   void _onBackPressed() {
-    AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "cancel", "", "");
+    AnalyticsService().sendAnalyticsEvent("AG Cancel", null);
     setState(() {
       Navigator.of(context).pop();
     });
@@ -142,7 +142,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
                               activeColor: MainColors.purple_100,
                               value: marketingAgree,
                               onChanged: (bool value) {
-                                AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "marketing_agree", "", "$value");
+                                AnalyticsService().sendAnalyticsEvent("AG Checkbox", null);
                                 setState(() {
                                   marketingAgree = value;
                                 });
@@ -201,11 +201,11 @@ class _SignUpTermsState extends State<SignUpTerms> {
       onTap: () {
         switch(str) {
           case Strings.sign_up_terms_terms:         //  이용약관
-            AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "terms", "", "");
+            AnalyticsService().sendAnalyticsEvent("AG Terms", null);
             RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
             break;
           case Strings.sign_up_terms_info:          //  개인정보처리
-            AnalyticsService().sendAnalyticsEvent(false, false, PAGE_SIGNUP_TERMS, "privacy", "", "");
+            AnalyticsService().sendAnalyticsEvent("AG Privacy", null);
             RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
             break;
         }

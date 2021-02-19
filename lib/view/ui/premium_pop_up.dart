@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/model/production_vo.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -23,6 +24,7 @@ class PremiumPopup extends BaseWidget {
 }
 
 class _PremiumPopupState extends State<PremiumPopup> {
+  static const String PAGE_PREMIUM_POPUP = "Premium Popup";
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final InAppPurchaseConnection _connection = InAppPurchaseConnection.instance;
   StreamSubscription<List<PurchaseDetails>> _subscription;
@@ -52,6 +54,8 @@ class _PremiumPopupState extends State<PremiumPopup> {
     _addProductIds();
     _initUpdateStream();
     _initStore();
+
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_PREMIUM_POPUP", null);
 
     super.initState();
   }
@@ -201,7 +205,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
   }
 
   Widget _closeButtonWidget() {               //  close button
-    //AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "close", "", "");
+    AnalyticsService().sendAnalyticsEvent("PP Close", null);
     return InkWell(
       child: Container(
         margin: EdgeInsets.all(24),
@@ -354,7 +358,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
                               ),
                             ),
                             onTap: () {
-                              //AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "terms", "", "");
+                              AnalyticsService().sendAnalyticsEvent("PP Terms", null);
                               RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_TERMS, context);
                             },
                           ),
@@ -374,7 +378,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
                               ),
                             ),
                             onTap: () {
-                              //AnalyticsService().sendAnalyticsEvent(false, _userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_MEMBERSHIP, "privacy", "", "");
+                              AnalyticsService().sendAnalyticsEvent("PP Privacy", null);
                               RouteNavigator().go(GetRoutesName.ROUTE_PRIVACY_INFO, context);
                             },
                           ),
@@ -469,6 +473,13 @@ class _PremiumPopupState extends State<PremiumPopup> {
         _paymentPreRequest(productionVO);
         if(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null) != null) {
           _buyProduct(_products.firstWhere((element) => element.id == productionVO.iapId, orElse: () => null), false);
+
+          if(productionVO.title.contains("월")) {
+            AnalyticsService().sendAnalyticsEvent("PP Monthly", null);
+          }else {
+            AnalyticsService().sendAnalyticsEvent("PP Monthly", null);
+          }
+
         }else {
           setState(() {
             _isPaying = false;

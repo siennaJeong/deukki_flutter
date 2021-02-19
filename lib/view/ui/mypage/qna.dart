@@ -14,7 +14,7 @@ class QnA extends StatefulWidget {
 }
 
 class _QnAState extends State<QnA> {
-  static const String PAGE_MY_HELP = "mypage_help";
+  static const String PAGE_MY_HELP = "MY Help";
   ResourceProviderModel resourceProviderModel;
   UserProviderModel userProviderModel;
   List<FaqVO> faqs = [];
@@ -23,7 +23,7 @@ class _QnAState extends State<QnA> {
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_HELP, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_HELP", null);
     super.initState();
   }
 
@@ -67,7 +67,7 @@ class _QnAState extends State<QnA> {
         ),
       ),
       onTap: () {
-        AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY_HELP, "faq", "", "faq_idx : $faqIdx");
+        AnalyticsService().sendAnalyticsEvent("MYH Faq", <String, dynamic> {'faq_idx': faqIdx});
       },
     );
   }

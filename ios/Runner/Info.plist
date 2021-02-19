@@ -18,6 +18,10 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+	    <string>ko</string>
+	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -44,6 +48,8 @@
 	<string>639456823354844</string>
 	<key>FacebookDisplayName</key>
 	<string>바름드끼</string>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>KAKAO_APP_KEY</key>
@@ -78,7 +84,7 @@
 		<true/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
-	<string>Use to store user&apos;s recording and voice files.</string>
+	<string>Use to store user's recording and voice files.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Can We Use Your Calendar Please.</string>
 	<key>NSContactsUsageDescription</key>
@@ -86,11 +92,11 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Can We Use Your Location When in usage</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Use to record the user&apos;s pronunciation.</string>
+	<string>Use to record the user's pronunciation.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Can We Use Your Motion Please</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Use to judge the user&apos;s pronunciation accuracy.</string>
+	<string>Use to judge the user's pronunciation accuracy.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -106,7 +112,6 @@
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
@@ -115,8 +120,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
-	<key>FirebaseAppDelegateProxyEnabled</key>
 	<false/>
 </dict>
 </plist>
