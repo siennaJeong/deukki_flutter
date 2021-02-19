@@ -7,11 +7,13 @@ class RippleAnimation extends StatefulWidget {
     this.color,
     this.rippleTarget,
     this.controller,
+    this.radius
   });
 
   final Color color;
   final Widget rippleTarget;
   final AnimationController controller;
+  final double radius;
 
   @override
   _RippleAnimationState createState() => _RippleAnimationState();
@@ -44,7 +46,7 @@ class _RippleAnimationState extends State<RippleAnimation> {
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(40),
+            borderRadius: BorderRadius.circular(widget.radius),
             boxShadow: [
               for(int i = 0 ; i <= 2 ; i++)
                 BoxShadow(

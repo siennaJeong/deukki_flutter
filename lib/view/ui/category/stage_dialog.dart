@@ -256,19 +256,20 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
     );
   }
 
-  Widget _startButtonWidget() {           //  Start Button
+  Widget _startButtonAnimation() {           //  Start Button
     if(userProviderModel.stageGuide == 0) {
       return RippleAnimation(
         controller: _controller,
         color: MainColors.purple_100,
-        rippleTarget: _buttonWidget(),
+        rippleTarget: _animationWidget(),
+        radius: 30.0,
       );
     }else {
-      return _buttonWidget();
+      return _animationWidget();
     }
   }
 
-  Widget _buttonWidget() {
+  Widget _animationWidget() {
     return CommonRaisedButton(
       buttonText: Strings.start_btn,
       buttonColor: MainColors.purple_100,
@@ -374,7 +375,7 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
                       Expanded(
                         flex: 7,
                         child: Container(
-                          child: _startButtonWidget(),
+                          child: _startButtonAnimation(),
                         ),
                       )
                     ],
