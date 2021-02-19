@@ -64,25 +64,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     _audioManager = AudioManager.STREAM_MUSIC;
-<<<<<<< HEAD
-=======
-
-    if(!Platform.isIOS) {
-      _volumeButtonEvent = volumeButtonEvents.listen((event) {
-        switch(event) {
-          case VolumeButtonEvent.VOLUME_UP:
-            _setVolume(true);
-            break;
-          case VolumeButtonEvent.VOLUME_DOWN:
-            _setVolume(false);
-            break;
-        }
-      });
-    }
-
-    if(!Platform.isIOS) {
-      initVolume();
-    }
 
     _playController = AnimationController(
         duration: Duration(milliseconds: 800),
@@ -92,7 +73,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 800),
         vsync: this);
 
->>>>>>> feature
     super.initState();
   }
 
