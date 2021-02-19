@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/record_provider.dart';
@@ -26,7 +25,7 @@ class Record extends BaseWidget {
 }
 
 class _RecordState extends State<Record> {
-  static const String PAGE_RECORD = "record";
+  static const String PAGE_RECORD = "Record";
   AuthServiceAdapter authServiceAdapter;
   ResourceProviderModel resourceProviderModel;
   UserProviderModel userProviderModel;
@@ -50,7 +49,7 @@ class _RecordState extends State<Record> {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "", "", "");
 
     super.initState();
     _initRecorder();
@@ -134,7 +133,7 @@ class _RecordState extends State<Record> {
   }
 
   void _recordButtonCallback() {                //  Record Button Click
-    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "record", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "record", "", "");
 
     switch(_recordingStatus) {
       case RecordingStatus.Initialized:
@@ -244,21 +243,21 @@ class _RecordState extends State<Record> {
   }
 
   void _recordAgain() {
-    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "again", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "again", "", "");
     _recordUpload(recordProvider.roundCount);
     _initRecorder();
     Navigator.pop(context);
   }
 
   void _recordDone() {
-    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "done", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "done", "", "");
     Navigator.pop(context);
     _recordUpload(recordProvider.roundCount);
     Navigator.pop(context);
   }
 
   Widget _closeButtonWidget() {               //  close button
-    AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "close", "", "");
+    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "close", "", "");
     return InkWell(
       child: Container(
         margin: EdgeInsets.all(24),

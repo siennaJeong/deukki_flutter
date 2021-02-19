@@ -27,6 +27,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
   final UserRepository _userRepository;
   static const String PREMIUM_POPUP = "premiumPopup";
+  static const String STAGE_GUIDE = "stageGuide";
+  static const String LEARN_GUIDE = "learnGuide";
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   List<ProductionVO> trialProductList = [];
@@ -34,6 +36,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   ReportVO weeklyReports;
   int bookmarkScore = 0;
   int premiumPopupShow = 0;
+  int stageGuide, learnGuide = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -144,9 +147,21 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
   }
 
-  Future<void> sharedPremiumPopup() async {
+  Future<void> getPremiumPopup() async {
     if(_sharedHelper != null) {
       premiumPopupShow = await _sharedHelper.getIntSharedPref(PREMIUM_POPUP);
+    }
+  }
+
+  Future<void> getStageGuide() async {
+    if(_sharedHelper != null) {
+      stageGuide = await _sharedHelper.getIntSharedPref(STAGE_GUIDE);
+    }
+  }
+
+  Future<void> getLearnGuide() async {
+    if(_sharedHelper != null) {
+      learnGuide = await _sharedHelper.getIntSharedPref(LEARN_GUIDE);
     }
   }
 
@@ -157,6 +172,16 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   void setPremiumPopupShow() async {
     await _sharedHelper.setIntSharedPref(PREMIUM_POPUP, 1);
-    sharedPremiumPopup();
+    getPremiumPopup();
+  }
+
+  void setStageGuide() async {
+    await _sharedHelper.setIntSharedPref(STAGE_GUIDE, 1);
+    getStageGuide();
+  }
+
+  void setLearnGuide() async {
+    await _sharedHelper.setIntSharedPref(LEARN_GUIDE, 1);
+    getLearnGuide();
   }
 }

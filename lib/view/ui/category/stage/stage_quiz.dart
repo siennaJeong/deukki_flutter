@@ -14,6 +14,7 @@ import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
+import 'package:deukki/view/ui/base/ripple_animation.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -32,8 +33,8 @@ class StageQuiz extends StatefulWidget {
   _StageQuizState createState() => _StageQuizState();
 }
 
-class _StageQuizState extends State<StageQuiz> {
-  static const String PAGE_LEARNING = "learning";
+class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
+  static const String PAGE_LEARNING = "Learning";
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -45,30 +46,75 @@ class _StageQuizState extends State<StageQuiz> {
   AudioManager _audioManager;
   StreamSubscription _volumeButtonEvent;
   AudioFilePathVO randomPath;
-  int maxVol, currentVol;
 
+  int maxVol, currentVol;
   var deviceWidth;
   var deviceHeight;
   String resultBgImage, resultText;
 
   List<BookmarkVO> _bookmarkList = [];
+  Future<void> analyticsResult;
+
+  AnimationController _playController, _answerController;
+  bool _isPlayAnimation = true;
+  bool _isAnswerAnimation = true;
 
   @override
   void initState() {
-    resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-
-    AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "", "", "");
-
     _audioManager = AudioManager.STREAM_MUSIC;
+<<<<<<< HEAD
+=======
+
+    if(!Platform.isIOS) {
+      _volumeButtonEvent = volumeButtonEvents.listen((event) {
+        switch(event) {
+          case VolumeButtonEvent.VOLUME_UP:
+            _setVolume(true);
+            break;
+          case VolumeButtonEvent.VOLUME_DOWN:
+            _setVolume(false);
+            break;
+        }
+      });
+    }
+
+    if(!Platform.isIOS) {
+      initVolume();
+    }
+
+    _playController = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this);
+
+    _answerController = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this);
+
+>>>>>>> feature
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
+    resourceProviderModel = Provider.of<ResourceProviderModel>(context);
     categoryProvider = Provider.of<CategoryProvider>(context);
     stageProvider = Provider.of<StageProvider>(context);
+
+    analyticsResult ??= AnalyticsService().sendAnalyticsEvent(
+      "${AnalyticsService.VISIT}$PAGE_LEARNING",
+      <String, dynamic> {
+        'sentence_id': categoryProvider.selectedSentence.id,
+        'stage_number': categoryProvider.selectStageIndex
+      },
+    );
+
+    if(_isAnswerAnimation && categoryProvider.playCount > 0 && !categoryProvider.isPlaying) {
+      _answerController.repeat(reverse: true);
+    }else {
+      _answerController?.reset();
+    }
 
     super.didChangeDependencies();
   }
@@ -79,6 +125,8 @@ class _StageQuizState extends State<StageQuiz> {
       _volumeButtonEvent?.cancel();
     }
     stageProvider.stopLearnTime();
+    _playController?.dispose();
+    _answerController?.dispose();
     super.dispose();
   }
 
@@ -119,7 +167,7 @@ class _StageQuizState extends State<StageQuiz> {
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
           onTap: () {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "back", "", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_LEARNING Back", <String, dynamic> {'round': stageProvider.round});
             _showExitDialog();
           },
         ),
@@ -137,7 +185,16 @@ class _StageQuizState extends State<StageQuiz> {
           height: 50,
         ),
         onTap: () {
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "bookmark", "", "stage_idx : ${categoryProvider.selectStageIdx}");
+          AnalyticsService().sendAnalyticsEvent(
+            "$PAGE_LEARNING Bookmark",
+            <String,dynamic> {
+              'sentence_id': categoryProvider.selectedSentence.id,
+              'stage_number': categoryProvider.selectStageIndex,
+              'play_pronunciation_id': stageProvider.playPIdx,
+              'play_repeat': stageProvider.soundRepeat,
+              'round': stageProvider.round
+            }
+          );
 
           if(categoryProvider.isBookmark) {
             categoryProvider.onBookMark(false);
@@ -159,7 +216,7 @@ class _StageQuizState extends State<StageQuiz> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         _stepIndicatorWidget(width),
-        _playButtonWidget(width * 0.32),
+        _playButtonContainer(width * 0.32),
       ],
     );
   }
@@ -237,7 +294,7 @@ class _StageQuizState extends State<StageQuiz> {
     );
   }
 
-  Widget _playButtonWidget(double width) {              //  Play button
+  Widget _playButtonContainer(double width) {              //  Play button
     String playSpeed;
     String soundIcons;    // speed : 0.8, 0.95, 1.1, 1.25, 1.4
     if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
@@ -265,33 +322,56 @@ class _StageQuizState extends State<StageQuiz> {
     return Container(
       width: width + 2,
       margin: EdgeInsets.only(top: 32),
-      child: RaisedButton(
-        padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
-        color: !categoryProvider.isPlaying ? MainColors.purple_80 : Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-            side: BorderSide(
-                color: MainColors.purple_80,
-                width: 2.0
-            )
-        ),
-        child: _dataLoadingWidget(soundIcons, playSpeed),
-        onPressed: () {               //  Play Button Click
-          AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "play", "", "");
+      child: _playButtonAnimation(width, soundIcons, playSpeed),
+    );
+  }
 
-          if(!categoryProvider.isPlaying) {
-            categoryProvider.play(randomPath.path, stageProvider.playRate);
-            categoryProvider.setPlaying(true);
-            stageProvider.setSoundRepeat();
-          }
-        },
+  Widget _playButtonAnimation(double width, String soundIcons, String playSpeed) {
+    if(userProviderModel.learnGuide == 0) {
+      return RippleAnimation(
+        controller: _playController,
+        color: MainColors.purple_80,
+        rippleTarget: _playButtonWidget(width, soundIcons, playSpeed),
+        radius: 40.0,
+      );
+    }else {
+      return _playButtonWidget(width, soundIcons, playSpeed);
+    }
+  }
+
+  Widget _playButtonWidget(double width, String soundIcons, String playSpeed) {
+    return RaisedButton(
+      padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
+      color: !categoryProvider.isPlaying ? MainColors.purple_80 : Colors.white,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+          side: BorderSide(
+              color: MainColors.purple_80,
+              width: 2.0
+          )
       ),
+      child: _dataLoadingWidget(soundIcons, playSpeed),
+      onPressed: () {               //  Play Button Click
+        _playController.reset();
+        _isPlayAnimation = false;
+        AnalyticsService().sendAnalyticsEvent("$PAGE_LEARNING Play", <String, dynamic> {'play_pronunciation_id': stageProvider.playPIdx});
+
+        if(!categoryProvider.isPlaying) {
+          categoryProvider.play(randomPath.path, stageProvider.playRate);
+          categoryProvider.setPlaying(true);
+          stageProvider.setSoundRepeat();
+        }
+      },
     );
   }
 
   Widget _dataLoadingWidget(String soundIcons, String playSpeed) {
-    if(resourceProviderModel.audioFilePath.length > 0) {
+    final saveAudioFile = resourceProviderModel.value.saveAudioFile;
+    if(saveAudioFile.hasData) {
+      if(_isPlayAnimation) {
+        _playController.repeat(reverse: true);
+      }
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
@@ -362,8 +442,8 @@ class _StageQuizState extends State<StageQuiz> {
             padding: EdgeInsets.only(left: 0),
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 12,
+            crossAxisSpacing: 18,
+            mainAxisSpacing: 18,
             scrollDirection: Axis.horizontal,
             itemCount: pronunciations.length,
             itemBuilder: (BuildContext context, index) {
@@ -401,35 +481,31 @@ class _StageQuizState extends State<StageQuiz> {
       }
     }
     return GestureDetector(
-      child: Card(
-        elevation: 0,
-        color: cardColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              child: _answerWidget(index, pronunciationVO.pronunciation, textColor, pronunciationVO.wrongIndex),
-            ),
-            Positioned(
-              left: 0,
-              top: 0,
-              child: (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) != null
-                  ? Container(color: Colors.white,)
-                  : _rightPronunciationTagWidget(pronunciationVO.pronunciation, rightPronunciation)
-            ),
-          ],
-        ),
-      ),
+      child: _listItemAnimation(pronunciationVO, rightPronunciation, index, cardColor, textColor),
       onTap: () {                   // List Item Click (Quiz answer click)
+        _answerController.reset();
+        _isAnswerAnimation = false;
         if(!categoryProvider.isPlaying
             && categoryProvider.playCount > 0
             && (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) == null) {
           stageProvider.onSelectedAnswer(index, pronunciationVO.pronunciation);
           if(pronunciationVO.pIdx == randomPath.stageIdx) {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "right", "", "pronunciation_id : ${pronunciationVO.pIdx}");
+            AnalyticsService().sendAnalyticsEvent(
+              "$PAGE_LEARNING Right",
+              <String, dynamic> {
+                'pronunciation_id': pronunciationVO.pIdx,
+                'play_pronunciation_id': randomPath.stageIdx
+              }
+            );
             stageProvider.historyInit(randomPath.stageIdx);
           }else {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_LEARNING, "wrong", "", "pronunciation_id : ${pronunciationVO.pIdx}");
+            AnalyticsService().sendAnalyticsEvent(
+              "$PAGE_LEARNING Wrong",
+              <String, dynamic> {
+                'pronunciation_id': pronunciationVO.pIdx,
+                'play_pronunciation_id': randomPath.stageIdx
+              }
+            );
             stageProvider.setSelectPIdx(pronunciationVO.pIdx);
             stageProvider.setCorrect(false);
             stageProvider.setOneTimeAnswerCount();
@@ -441,6 +517,42 @@ class _StageQuizState extends State<StageQuiz> {
           categoryProvider.setStepProgress();
         }
       },
+    );
+  }
+
+  Widget _listItemAnimation(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
+    if(userProviderModel.learnGuide == 0) {
+      return RippleAnimation(
+        controller: _answerController,
+        color: MainColors.yellow_60,
+        rippleTarget: _itemWidget(pronunciationVO, rightPronunciation, index, cardColor, textColor),
+        radius: 24.0,
+      );
+    }else {
+      return _itemWidget(pronunciationVO, rightPronunciation, index, cardColor, textColor);
+    }
+  }
+
+  Widget _itemWidget(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
+    return Card(
+      elevation: 0,
+      margin: EdgeInsets.all(0),
+      color: cardColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            child: _answerWidget(index, pronunciationVO.pronunciation, textColor, pronunciationVO.wrongIndex),
+          ),
+          Positioned(
+              left: 0,
+              top: 0,
+              child: (stageProvider.selectAnswerIndex.singleWhere((it) => it == index, orElse: () => null)) != null
+                  ? Container(color: Colors.white,)
+                  : _rightPronunciationTagWidget(pronunciationVO.pronunciation, rightPronunciation)
+          ),
+        ],
+      ),
     );
   }
 
@@ -662,18 +774,21 @@ class _StageQuizState extends State<StageQuiz> {
         });
 
     if(stageProvider.round >= 5) {
-      Future.delayed(Duration(milliseconds: 700), () {
+      Future.delayed(Duration(milliseconds: 800), () {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,
             categoryProvider.selectedSentence.id,
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
+          userProviderModel.setLearnGuide();
           RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
         });
       });
     }
     categoryProvider.playCount = 0;
+    _isPlayAnimation = true;
+    _isAnswerAnimation = true;
   }
 
   void _showExitDialog() {

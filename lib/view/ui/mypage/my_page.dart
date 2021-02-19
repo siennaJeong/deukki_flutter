@@ -20,7 +20,7 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
-  static const String PAGE_MY = "mypage";
+  static const String PAGE_MY = "My Tab";
   UserProviderModel userProviderModel;
   MyPageProvider myPageProvider;
 
@@ -42,13 +42,6 @@ class _MyPageState extends State<MyPage> {
     myPageProvider = Provider.of<MyPageProvider>(context);
     bookmarks = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
-  }
-
-  Future<bool> _onBackPressed() {
-    setState(() {
-      Navigator.of(context).pop();
-    });
-    return Future(() => true);
   }
 
   Widget _tabWidget() {
@@ -106,19 +99,19 @@ class _MyPageState extends State<MyPage> {
 
         switch(index) {
           case 0:
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "report", "mypage_tab", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Report", null);
             break;
           case 1:
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "bookmark", "mypage_tab", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Bookmark", null);
             break;
           case 2:
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "membership", "mypage_tab", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Membership", null);
             break;
           case 3:
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "settings", "mypage_tab", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Settings", null);
             break;
           case 4:
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "help", "mypage_tab", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Help", null);
             break;
         }
       },
@@ -142,7 +135,7 @@ class _MyPageState extends State<MyPage> {
             child: Icon(Icons.arrow_back, color: MainColors.green_100, size: 30),
           ),
           onTap: () {
-            AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_MY, "back", "", "");
+            AnalyticsService().sendAnalyticsEvent("$PAGE_MY Back", null);
             Navigator.of(context).pop();
           },
         ),

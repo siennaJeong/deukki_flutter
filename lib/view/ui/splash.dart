@@ -43,7 +43,7 @@ void main() async {
   }
 
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight])
+  SystemChrome.setPreferredOrientations([Platform.isIOS ? DeviceOrientation.landscapeRight : DeviceOrientation.landscapeLeft])
   .then((_) {
     runApp(
         MultiProvider(
@@ -170,7 +170,7 @@ class _SplashState extends State<Splash> {
         if(tokenStatusResult.result.asValue.value != null) {
           if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
             analytics ??= AnalyticsService().setUserProperties(
-                "${tokenStatusResult.result.asValue.value.idx}",
+                tokenStatusResult.result.asValue.value.premium,
                 authServiceAdapter.userVO.gender,
                 authServiceAdapter.userVO.birthDate);
           }

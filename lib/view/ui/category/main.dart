@@ -20,7 +20,7 @@ class MainCategory extends BaseWidget {
 }
 
 class _MainCategoryState extends State<MainCategory> {
-  static const String PAGE_MAIN = "main";
+  static const String PAGE_MAIN = "Main";
   AuthServiceAdapter authServiceAdapter;
   CategoryProvider categoryProvider;
   ResourceProviderModel resourceProviderModel;
@@ -41,7 +41,7 @@ class _MainCategoryState extends State<MainCategory> {
     getAllBookmark ??= Provider.of<UserProviderModel>(context, listen: false).getBookmark(authServiceAdapter.authJWT);
     getProductList ??= Provider.of<UserProviderModel>(context, listen: false).getProductList(authServiceAdapter.authJWT);
     getReports ??= Provider.of<UserProviderModel>(context, listen: false).getReports(authServiceAdapter.authJWT);
-    AnalyticsService().sendAnalyticsEvent(true, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "", "", "");
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MAIN", null);
     super.initState();
   }
 
@@ -132,16 +132,16 @@ class _MainCategoryState extends State<MainCategory> {
 
                   switch(index) {
                     case 0:
-                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "word", "", "");
+                      AnalyticsService().sendAnalyticsEvent("$PAGE_MAIN Word", null);
                       break;
                     case 1:
-                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "sentence", "", "");
+                      AnalyticsService().sendAnalyticsEvent("$PAGE_MAIN Sentence", null);
                       break;
                     case 2:
-                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "field_sentence", "", "");
+                      AnalyticsService().sendAnalyticsEvent("$PAGE_MAIN Field Sentence", null);
                       break;
                     case 3:
-                      AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "business_sentence", "", "");
+                      AnalyticsService().sendAnalyticsEvent("$PAGE_MAIN Business Sentence", null);
                       break;
                   }
                 }
@@ -154,7 +154,7 @@ class _MainCategoryState extends State<MainCategory> {
   }
 
   void _myPage() {
-    AnalyticsService().sendAnalyticsEvent(false, authServiceAdapter.userVO.premium == 0 ? false : true, PAGE_MAIN, "my", "", "");
+    AnalyticsService().sendAnalyticsEvent("$PAGE_MAIN My", null);
     Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 0);
   }
 

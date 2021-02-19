@@ -1,6 +1,7 @@
 
 import 'dart:ui';
 
+import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -11,31 +12,38 @@ import 'package:flutter/material.dart';
 class MemberShipDialog extends StatefulWidget {
   final double deviceWidth;
   final double deviceHeight;
+  final String callFrom;
 
 
-  MemberShipDialog({@required this.deviceWidth, @required this.deviceHeight});
+  MemberShipDialog({@required this.deviceWidth, @required this.deviceHeight, @required this.callFrom});
 
   @override
   _MemberShipDialogState createState() => _MemberShipDialogState();
 }
 
 class _MemberShipDialogState extends State<MemberShipDialog> {
+  static const String DIALOG_MEMBERSHIP = "Upgrade Popup";
   double deviceWidth, deviceHeight;
+  String _callFrom;
 
   @override
   void initState() {
     deviceWidth = widget.deviceWidth;
     deviceHeight = widget.deviceHeight;
+    _callFrom = widget.callFrom;
+
+    AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$DIALOG_MEMBERSHIP", <String, dynamic> {'from': _callFrom});
+
     super.initState();
   }
 
   void _dismissDialog() {
-    //AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "close", "", "");
+    AnalyticsService().sendAnalyticsEvent("UP Close", <String, dynamic> {'from': _callFrom});
     Navigator.of(context).pop();
   }
 
   void _joinMembership() {
-    //AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, DIALOG_UPGRADE, "enrollment", "", "");
+    AnalyticsService().sendAnalyticsEvent("UP Enrollment", <String, dynamic> {'from': _callFrom});
     _dismissDialog();
     Navigator.pushNamed(context, GetRoutesName.ROUTE_MYPAGE, arguments: 2);
   }
@@ -47,7 +55,13 @@ class _MemberShipDialogState extends State<MemberShipDialog> {
         Positioned.fill(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 9.2, sigmaY: 9.2),
-            child: Container(color: Colors.black.withOpacity(0.1)),
+            child: GestureDetector(
+              child: Container(color: Colors.black.withOpacity(0.1)),
+              onTap: () {
+                AnalyticsService().sendAnalyticsEvent("UP Outside", <String, dynamic> {'from': _callFrom});
+                Navigator.of(context).pop();
+              },
+            ),
           ),
         ),
         Dialog(
