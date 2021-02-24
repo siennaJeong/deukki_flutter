@@ -87,9 +87,16 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     void _quizDone() {
       AnalyticsService().sendAnalyticsEvent("$PAGE_LEARN_COMPLETE OK", null);
-      categoryProvider.updateScore(acquiredStars, stageAvg);
-      categoryProvider.updatePreScore();
-      categoryProvider.setPremiumPopupCount();
+
+      if(categoryProvider.isRootBookmark) {
+        userProviderModel.updateBookmarkScore(acquiredStars, categoryProvider.selectStageIdx);
+      }else {
+        categoryProvider.updateScore(acquiredStars, stageAvg);
+        categoryProvider.updatePreScore();
+        categoryProvider.setPremiumPopupCount();
+      }
+
+      /// 무료 체험판 페이지로 이동
       if(!kDebugMode) {
         if(categoryProvider.premiumPopupCount >= 5) {
           if(userProviderModel.premiumPopupShow == 0) {

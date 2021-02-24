@@ -128,6 +128,7 @@ class _BookMarkState extends State<BookMark> {
                 pronunResult['wrongPronunciationList'],
                 PronunciationVO.fromJson(pronunResult['rightPronunciation'])
             );
+            categoryProvider.setSentenceId(_bookmarkList[index].sentenceId);
             categoryProvider.onSelectedStage(_bookmarkList[index].stage - 1, _bookmarkList[index].stageIdx);
             categoryProvider.setSentenceTitle(_bookmarkList[index].content);
             categoryProvider.initStepProgress();

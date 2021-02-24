@@ -29,6 +29,7 @@ class CategoryProvider with ChangeNotifier {
   double stageAvgScore;
   String _largeId;
   String _sentenceTitle;
+  String sentenceId;
   CategoryMediumVO _categoryMediumVO;
   SentenceVO selectedSentence;
   PronunciationVO _rightPronunciation;
@@ -42,6 +43,7 @@ class CategoryProvider with ChangeNotifier {
   CategoryProvider(this._categoryLargeList, {this.dbHelper, this.sharedHelper, this.audioPlayer}) {
     this.isPlaying = false;
     this.playCount = 0;
+    this.sentenceId = "";
     this.selectLargeIndex = -1;
     this.selectStageIndex = -1;
     this.selectStageIdx = -1;
@@ -173,6 +175,11 @@ class CategoryProvider with ChangeNotifier {
 
   void onSelectedSentence(SentenceVO sentenceVO) {
     this.selectedSentence = sentenceVO;
+    notifyListeners();
+  }
+
+  void setSentenceId(String sentenceId) {
+    this.sentenceId = sentenceId;
     notifyListeners();
   }
 

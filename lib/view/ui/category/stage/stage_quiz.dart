@@ -52,6 +52,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   var deviceWidth;
   var deviceHeight;
   String resultBgImage, resultText;
+  String sentenceId;
 
   List<BookmarkVO> _bookmarkList = [];
   Future<void> analyticsResult;
@@ -100,10 +101,12 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     categoryProvider = Provider.of<CategoryProvider>(context);
     stageProvider = Provider.of<StageProvider>(context);
 
+    sentenceId ??= categoryProvider.isRootBookmark ? categoryProvider.sentenceId : categoryProvider.selectedSentence.id;
+
     analyticsResult ??= AnalyticsService().sendAnalyticsEvent(
       "${AnalyticsService.VISIT}$PAGE_LEARNING",
       <String, dynamic> {
-        'sentence_id': categoryProvider.selectedSentence.id,
+        'sentence_id': sentenceId,
         'stage_number': categoryProvider.selectStageIndex
       },
     );
@@ -798,7 +801,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,
-            categoryProvider.selectedSentence.id,
+            sentenceId,
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
           userProviderModel.setLearnGuide();

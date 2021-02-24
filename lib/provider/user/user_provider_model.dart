@@ -94,8 +94,11 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     notifyListeners();
   }
 
-  void setBookmarkScore(int score) {
-
+  void updateBookmarkScore(int score, int stageIdx) {
+    final bookmark = this.currentBookmarkList.firstWhere((element) => element.stageIdx == stageIdx);
+    bookmark.score = score;
+    setCurrentBookmarkList(this.currentBookmarkList);
+    notifyListeners();
   }
 
   Future<void> getUserInfo(String authJWT, AuthServiceAdapter authServiceAdapter) async {
