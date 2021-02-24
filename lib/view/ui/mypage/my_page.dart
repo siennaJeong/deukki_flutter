@@ -34,6 +34,8 @@ class _MyPageState extends State<MyPage> {
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    userProviderModel.getStageGuide();
+    userProviderModel.getLearnGuide();
     super.initState();
   }
 
