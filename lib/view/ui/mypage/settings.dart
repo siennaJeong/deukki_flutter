@@ -401,6 +401,7 @@ class _SettingsState extends State<Settings> {
                 topPadding: 0,
                 onChanged: (String val) {
                   if(defaultVoice != val) {
+                    AnalyticsService().sendAnalyticsEvent("MYS Voice", <String, dynamic> {'voice_type': 'M'});
                     setState(() {
                       defaultVoice = val;
                       _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "M");
@@ -416,6 +417,7 @@ class _SettingsState extends State<Settings> {
                 topPadding: 0,
                 onChanged: (String val) {
                   if(defaultVoice != val) {
+                    AnalyticsService().sendAnalyticsEvent("MYS Voice", <String, dynamic> {'voice_type': 'F'});
                     setState(() {
                       defaultVoice = val;
                       _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "F");
