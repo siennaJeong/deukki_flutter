@@ -79,6 +79,8 @@ class Strings {
 
   static const String stage_script = '올바른 발음과 틀린 발음 중에 하나를 랜덤으로 들려주면 어떤 발음인지 맞춰보자!';
 
+  static const String bookmark_done = '북마크 되었습니다';
+  static const String bookmark_cancel = '북마크가 취소되었습니다';
   static const String play_speed_15 = 'x1.2';
   static const String play_speed_20 = 'x1.4';
   static const String play_speed_25 = 'x1.6';

@@ -36,6 +36,7 @@ class StageQuiz extends StatefulWidget {
 
 class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   static const String PAGE_LEARNING = "Learning";
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -224,9 +225,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
             userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
             userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
+            scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(Strings.bookmark_cancel), duration: Duration(seconds: 2)));
           }else {
             categoryProvider.onBookMark(true);
             userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
+            scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(Strings.bookmark_done), duration: Duration(seconds: 2)));
           }
         },
       ),
@@ -927,6 +932,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         return false;
       },
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         body: SafeArea(
           left: false,
