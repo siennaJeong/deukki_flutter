@@ -226,12 +226,12 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
             userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
             scaffoldKey.currentState.showSnackBar(
-                SnackBar(content: Text(Strings.bookmark_cancel), duration: Duration(seconds: 2)));
+                SnackBar(content: Text(Strings.bookmark_cancel), duration: Duration(seconds: 1)));
           }else {
             categoryProvider.onBookMark(true);
             userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
             scaffoldKey.currentState.showSnackBar(
-                SnackBar(content: Text(Strings.bookmark_done), duration: Duration(seconds: 2)));
+                SnackBar(content: Text(Strings.bookmark_done), duration: Duration(seconds: 1)));
           }
         },
       ),
