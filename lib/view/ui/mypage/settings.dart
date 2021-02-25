@@ -8,6 +8,7 @@ import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/data/service/signin/kakao_auth_service.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
+import 'package:deukki/view/ui/base/custom_radio_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
@@ -18,7 +19,6 @@ import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk/all.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
-import 'package:volume/volume.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -34,6 +34,7 @@ class _SettingsState extends State<Settings> {
   bool _kakaoNotification, _clickEnable;
   int _loginMethod;
   String _email;
+  String defaultVoice;
 
   PackageInfo _packageInfo;
 
@@ -49,6 +50,12 @@ class _SettingsState extends State<Settings> {
     _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
     getPackageInfo();
     _clickEnable ??= true;
+
+    if(_userProviderModel.userVOForHttp != null) {
+      _loginMethod = _userProviderModel.userVOForHttp.loginMethod;
+      _email = _userProviderModel.userVOForHttp.email;
+      defaultVoice = _userProviderModel.userVOForHttp.defaultVoice == "F" ? Strings.gender_female : Strings.gender_male;
+    }
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_SETTINGS", null);
     super.initState();
@@ -230,7 +237,7 @@ class _SettingsState extends State<Settings> {
     );
   }
 
-  Widget _updateButton() {
+  /*Widget _updateButton() {
     return GestureDetector(
       child: Container(
         padding: EdgeInsets.only(left: 16, right: 2),
@@ -246,7 +253,7 @@ class _SettingsState extends State<Settings> {
         ),
       ),
     );
-  }
+  }*/
 
   Widget _otherSettingWidget() {
     return Card(
@@ -257,99 +264,176 @@ class _SettingsState extends State<Settings> {
         padding: EdgeInsets.only(top: 24, bottom: 24, left: 20, right: 24),
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.notifications,
-                    color: MainColors.green_100,
-                    size: 25,
-                  ),
-                ),
-                SizedBox(width: 13),
-                Expanded(
-                  child: Container(
-                    alignment: AlignmentDirectional.centerStart,
-                    child: Text(
-                      Strings.mypage_setting_kakao_alert,
-                      style: TextStyle(
-                          color: MainColors.grey_100,
-                          fontFamily: "NotoSansKR",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16
-                      ),
-                    ),
-                  ),
-                ),
-                Transform.scale(
-                  scale: 0.8,
-                  child: CupertinoSwitch(                         //  카카오톡 학습 알림
-                    activeColor: MainColors.purple_100,
-                    value: _kakaoNotification,
-                    onChanged: (value) {
-                      setState(() {
-                        if(_clickEnable) {
-                          AnalyticsService().sendAnalyticsEvent("MYS Alert", <String, dynamic> {'enable': value});
-                          _kakaoNotification = value;
-                          _setKakaoAlarm();
-                        }
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
+            _kakaoAlertWidget(),
             SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.check_circle,
-                    color: MainColors.green_100,
-                    size: 25,
-                  ),
-                ),
-                SizedBox(width: 13),
-                Container(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    Strings.mypage_setting_version,
-                    style: TextStyle(
-                        color: MainColors.grey_100,
-                        fontFamily: "NotoSansKR",
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16
-                    ),
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Container(
-                    child: Text(
-                      _packageInfo != null ? _packageInfo.version : "",
-                      style: TextStyle(
-                        color: MainColors.grey_100,
-                        fontFamily: "NotoSansKR",
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ),
-                //_updateButton()
-              ],
-            ),
+            _appVersionWidget(),
+            SizedBox(height: 25),
+            _voiceWidget()
           ],
         ),
       ),
     );
   }
 
+  Widget _kakaoAlertWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          child: Icon(
+            Icons.notifications,
+            color: MainColors.green_100,
+            size: 25,
+          ),
+        ),
+        SizedBox(width: 13),
+        Expanded(
+          child: Container(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              Strings.mypage_setting_kakao_alert,
+              style: TextStyle(
+                  color: MainColors.grey_100,
+                  fontFamily: "NotoSansKR",
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16
+              ),
+            ),
+          ),
+        ),
+        Transform.scale(
+          scale: 0.8,
+          child: CupertinoSwitch(                         //  카카오톡 학습 알림
+            activeColor: MainColors.purple_100,
+            value: _kakaoNotification,
+            onChanged: (value) {
+              setState(() {
+                if(_clickEnable) {
+                  AnalyticsService().sendAnalyticsEvent("MYS Alert", <String, dynamic> {'enable': value});
+                  _kakaoNotification = value;
+                  _setKakaoAlarm();
+                }
+              });
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _appVersionWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          child: Icon(
+            Icons.check_circle,
+            color: MainColors.green_100,
+            size: 25,
+          ),
+        ),
+        SizedBox(width: 13),
+        Container(
+          alignment: AlignmentDirectional.centerStart,
+          child: Text(
+            Strings.mypage_setting_version,
+            style: TextStyle(
+                color: MainColors.grey_100,
+                fontFamily: "NotoSansKR",
+                fontWeight: FontWeight.w700,
+                fontSize: 16
+            ),
+          ),
+        ),
+        SizedBox(width: 16),
+        Expanded(
+          child: Container(
+            child: Text(
+              _packageInfo != null ? _packageInfo.version : "",
+              style: TextStyle(
+                color: MainColors.grey_100,
+                fontFamily: "NotoSansKR",
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+        //_updateButton()
+      ],
+    );
+  }
+
+  Widget _voiceWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Container(
+          child: Icon(
+            Icons.mic_sharp,
+            color: MainColors.green_100,
+            size: 25,
+          ),
+        ),
+        SizedBox(width: 13),
+        Expanded(
+          child: Container(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+              Strings.mypage_setting_voice,
+              style: TextStyle(
+                  color: MainColors.grey_100,
+                  fontFamily: "NotoSansKR",
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16
+              ),
+            ),
+          ),
+        ),
+        Container(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              CustomRadioWidget(
+                title: Strings.gender_male,
+                value: Strings.gender_male,
+                groupValue: defaultVoice,
+                topPadding: 0,
+                onChanged: (String val) {
+                  if(defaultVoice != val) {
+                    setState(() {
+                      defaultVoice = val;
+                      _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "M");
+                    });
+                  }
+                },
+              ),
+              SizedBox(width: 24),
+              CustomRadioWidget(
+                title: Strings.gender_female,
+                value: Strings.gender_female,
+                groupValue: defaultVoice,
+                topPadding: 0,
+                onChanged: (String val) {
+                  if(defaultVoice != val) {
+                    setState(() {
+                      defaultVoice = val;
+                      _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "F");
+                    });
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 5),
+      ],
+    );
+  }
+
   Widget _showTerms() {
     return Container(
-      margin: EdgeInsets.only(top: 16, left: 20, right: 20),
+      margin: EdgeInsets.only(top: 16, bottom: 20, left: 20, right: 20),
       child: Stack(
         children: <Widget>[
           Row(
@@ -498,11 +582,6 @@ class _SettingsState extends State<Settings> {
       _kakaoNotification ??= _authServiceAdapter.kakaoNoti == "true" ? true : false;
     }else {
       _kakaoNotification ??= _userProviderModel.userVOForHttp.loginMethod == LoginMethod.kakao ? true : false;
-    }
-
-    if(_userProviderModel.userVOForHttp != null) {
-      _loginMethod = _userProviderModel.userVOForHttp.loginMethod;
-      _email = _userProviderModel.userVOForHttp.email;
     }
 
     return Scaffold(

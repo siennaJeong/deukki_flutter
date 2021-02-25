@@ -22,6 +22,7 @@ class HttpUrls {
   static const String LOGOUT = "$SERVER_URL/auth";
   static const String MARKETING_AGREEMENT = "$SERVER_URL/users/marketing-agree";
   static const String VERIFY_TOKEN = "$SERVER_URL/auth/verify";
+  static const String UPDATE_VOICE = "$SERVER_URL/users/default-voice";
 
   static const String CATEGORY = "$SERVER_URL/categories";
   static const String CATEGORY_LARGE = "$CATEGORY/large";

@@ -150,6 +150,11 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
   }
 
+  Future<void> updateVoice(String authJWT, String defaultVoice) async {
+    final updateVoice = _userRepository.updateVoice(authJWT, defaultVoice);
+    await value.updateVoice.set(updateVoice, notifyListeners);
+  }
+
   Future<void> getPremiumPopup() async {
     if(_sharedHelper != null) {
       premiumPopupShow = await _sharedHelper.getIntSharedPref(PREMIUM_POPUP);

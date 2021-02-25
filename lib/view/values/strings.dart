@@ -31,6 +31,8 @@ class Strings {
   static const String common_btn_close = '닫기';
   static const String common_btn_stay = '머무르기';
   static const String common_btn_exit = '나가기';
+  static const String gender_male = '남자';
+  static const String gender_female = '여자';
 
   static const String dialog_title_update = '새로운 버전으로 업데이트가 필요합니다.\n업데이트를 해야 이용이 가능합니다.';
   static const String dialog_btn_update_ok = '업데이트 하기';
@@ -58,8 +60,6 @@ class Strings {
   static const String sign_up_year = 'YYYY';
   static const String sign_up_month = 'MM';
   static const String sign_up_gender = '성별';
-  static const String sign_up_gender_male = '남자';
-  static const String sign_up_gender_female = '여자';
   static const String sign_up_email_invalid = '이메일 형식이 잘못되었습니다.';
   static const String sign_up_name_invalid = '1글자 이상, 특수기호를 제외하고 입력해주세요.';
   static const String sign_up_year_invalid = '잘못되었습니다.';
