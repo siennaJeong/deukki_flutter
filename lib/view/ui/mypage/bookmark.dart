@@ -39,7 +39,6 @@ class _BookMarkState extends State<BookMark> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_BOOKMARK", null);
 
@@ -48,7 +47,8 @@ class _BookMarkState extends State<BookMark> {
 
   @override
   void didChangeDependencies() {
-    _bookmarkList = widget.bookmarkList;
+    userProviderModel = Provider.of<UserProviderModel>(context);
+    _bookmarkList = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
   }
 
