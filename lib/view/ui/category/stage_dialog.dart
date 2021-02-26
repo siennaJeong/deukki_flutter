@@ -64,11 +64,12 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARNING_STAGE", <String, dynamic> {'sentence_id': _sentenceId});
 
-    super.initState();
     _controller = AnimationController(
         duration: Duration(milliseconds: 800),
         vsync: this)
       ..repeat(reverse: true);
+
+    super.initState();
   }
 
   @override

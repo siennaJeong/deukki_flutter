@@ -256,9 +256,10 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   CustomRadioWidget(
-                                    title: Strings.sign_up_gender_male,
-                                    value: Strings.sign_up_gender_male,
+                                    title: Strings.gender_male,
+                                    value: Strings.gender_male,
                                     groupValue: selectGender,
+                                    topPadding: 20,
                                     onChanged: (String val) {
                                       setState(() {
                                         selectGender = val;
@@ -268,8 +269,9 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
                                   ),
                                   SizedBox(width: 24),
                                   CustomRadioWidget(
-                                    title: Strings.sign_up_gender_female,
-                                    value: Strings.sign_up_gender_female,
+                                    title: Strings.gender_female,
+                                    value: Strings.gender_female,
+                                    topPadding: 20,
                                     groupValue: selectGender,
                                     onChanged: (String val) {
                                       setState(() {

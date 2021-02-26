@@ -23,4 +23,5 @@ abstract class UserRepository {
   Future<Result<ReportVO>> getReports(String authJWT);
   Future<Result<VerifyTokenVO>> verifyToken(String authJWT);
   Future<Result<CommonResultVO>> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken);
+  Future<Result<CommonResultVO>> updateVoice(String authJWT, String defaultVoice);
 }

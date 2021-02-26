@@ -94,8 +94,11 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     notifyListeners();
   }
 
-  void setBookmarkScore(int score) {
-
+  void updateBookmarkScore(int score, int stageIdx) {
+    final bookmark = this.currentBookmarkList.firstWhere((element) => element.stageIdx == stageIdx);
+    bookmark.score = score;
+    setCurrentBookmarkList(this.currentBookmarkList);
+    notifyListeners();
   }
 
   Future<void> getUserInfo(String authJWT, AuthServiceAdapter authServiceAdapter) async {
@@ -145,6 +148,11 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   Future<void> saveDeviceInfo(String authJWT, String platform, String deviceId, String deviceModel, String manufacturer, String osVersion, String appVersion, String fcmToken) async {
     final saveDeviceInfo = _userRepository.saveDeviceInfo(authJWT, platform, deviceId, deviceModel, manufacturer, osVersion, appVersion, fcmToken);
     await value.saveDeviceInfo.set(saveDeviceInfo, notifyListeners);
+  }
+
+  Future<void> updateVoice(String authJWT, String defaultVoice) async {
+    final updateVoice = _userRepository.updateVoice(authJWT, defaultVoice);
+    await value.updateVoice.set(updateVoice, notifyListeners);
   }
 
   Future<void> getPremiumPopup() async {
