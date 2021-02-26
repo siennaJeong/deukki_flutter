@@ -39,7 +39,6 @@ class _BookMarkState extends State<BookMark> {
     resourceProviderModel = Provider.of<ResourceProviderModel>(context, listen: false);
     categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_MY_BOOKMARK", null);
 
@@ -48,7 +47,8 @@ class _BookMarkState extends State<BookMark> {
 
   @override
   void didChangeDependencies() {
-    _bookmarkList = widget.bookmarkList;
+    userProviderModel = Provider.of<UserProviderModel>(context);
+    _bookmarkList = userProviderModel.currentBookmarkList;
     super.didChangeDependencies();
   }
 
@@ -71,25 +71,6 @@ class _BookMarkState extends State<BookMark> {
   }
 
   Widget _listItemWidget(int index, double deviceWidth, double deviceHeight) {
-    String firstStar, secondStar, thirdStar;
-    if(_bookmarkList[index].score == 1) {
-      firstStar = AppImages.fullStar;
-      secondStar = AppImages.emptyStar;
-      thirdStar = AppImages.emptyStar;
-    }else if(_bookmarkList[index].score == 2) {
-      firstStar = AppImages.fullStar;
-      secondStar = AppImages.fullStar;
-      thirdStar = AppImages.emptyStar;
-    }else if(_bookmarkList[index].score == 3) {
-      firstStar = AppImages.fullStar;
-      secondStar = AppImages.fullStar;
-      thirdStar = AppImages.fullStar;
-    }else {
-      firstStar = AppImages.emptyStar;
-      secondStar = AppImages.emptyStar;
-      thirdStar = AppImages.emptyStar;
-    }
-
     return GestureDetector(
       child: Card(
         color: Colors.white,
@@ -124,16 +105,7 @@ class _BookMarkState extends State<BookMark> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(left: 76),
-                child: Row(
-                  children: <Widget>[
-                    Image.asset(firstStar, width: 20,),
-                    Image.asset(secondStar, width: 20,),
-                    Image.asset(thirdStar, width: 20,),
-                  ],
-                ),
-              ),
+              _scoreWidget(_bookmarkList[index].score),
             ],
           ),
         ),
@@ -156,6 +128,7 @@ class _BookMarkState extends State<BookMark> {
                 pronunResult['wrongPronunciationList'],
                 PronunciationVO.fromJson(pronunResult['rightPronunciation'])
             );
+            categoryProvider.setSentenceId(_bookmarkList[index].sentenceId);
             categoryProvider.onSelectedStage(_bookmarkList[index].stage - 1, _bookmarkList[index].stageIdx);
             categoryProvider.setSentenceTitle(_bookmarkList[index].content);
             categoryProvider.initStepProgress();
@@ -167,6 +140,41 @@ class _BookMarkState extends State<BookMark> {
         }
       },
     );
+  }
+
+  Widget _scoreWidget(int score) {
+    String firstStar, secondStar, thirdStar;
+    if(score != null) {
+      switch(score) {
+        case 1:
+          firstStar = AppImages.fullStar;
+          secondStar = AppImages.emptyStar;
+          thirdStar = AppImages.emptyStar;
+          break;
+        case 2:
+          firstStar = AppImages.fullStar;
+          secondStar = AppImages.fullStar;
+          thirdStar = AppImages.emptyStar;
+          break;
+        case 3:
+          firstStar = AppImages.fullStar;
+          secondStar = AppImages.fullStar;
+          thirdStar = AppImages.fullStar;
+          break;
+      }
+      return Container(
+        margin: EdgeInsets.only(left: 76),
+        child: Row(
+          children: <Widget>[
+            Image.asset(firstStar, width: 20,),
+            Image.asset(secondStar, width: 20,),
+            Image.asset(thirdStar, width: 20,),
+          ],
+        ),
+      );
+    }else {
+      return Container();
+    }
   }
 
   Widget _noListWidget() {

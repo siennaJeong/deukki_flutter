@@ -232,6 +232,23 @@ class UserRestRepository implements UserRepository {
     }
   }
 
+  @override
+  Future<Result<CommonResultVO>> updateVoice(String authJWT, String defaultVoice) async {
+    final updateVoice = await _httpClient.patchRequest(HttpUrls.UPDATE_VOICE, HttpUrls.postHeaders(authJWT), <String, dynamic> {'defaultVoice': defaultVoice});
+    if(updateVoice.isValue) {
+      final status = updateVoice.asValue.value['status'];
+      if(status == 200) {
+        return Result.value(CommonResultVO.fromJson(updateVoice.asValue.value));
+      }else if(status == 422){
+        return Result.error(ExceptionMapper.toErrorMessage(ClientErrorException()));
+      }else {
+        return Result.error(ExceptionMapper.toErrorMessage(ServerErrorException()));
+      }
+    }else {
+      return Result.error(ExceptionMapper.toErrorMessage(EmptyResultException()));
+    }
+  }
+
 
 
 }

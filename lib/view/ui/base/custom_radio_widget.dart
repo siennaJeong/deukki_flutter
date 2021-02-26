@@ -9,14 +9,15 @@ class CustomRadioWidget<T> extends StatelessWidget {
   final ValueChanged<T> onChanged;
   final double width;
   final double height;
+  final double topPadding;
   final String title;
 
-  CustomRadioWidget({ this.value, this.groupValue, this.onChanged, this.width = 24, this.height = 24, this.title });
+  CustomRadioWidget({ this.value, this.groupValue, this.onChanged, this.width = 24, this.height = 24, this.topPadding, this.title });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20),
+      padding: EdgeInsets.only(top: topPadding),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[

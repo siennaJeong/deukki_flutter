@@ -22,4 +22,5 @@ class UserProviderState {
   final getReports = ProviderModelResult<ReportVO>();
   final verifyToken = ProviderModelResult<VerifyTokenVO>();
   final saveDeviceInfo = ProviderModelResult<CommonResultVO>();
+  final updateVoice = ProviderModelResult<CommonResultVO>();
 }

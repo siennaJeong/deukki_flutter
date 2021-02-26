@@ -35,6 +35,7 @@ class StageQuiz extends StatefulWidget {
 
 class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   static const String PAGE_LEARNING = "Learning";
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
   AuthServiceAdapter authServiceAdapter;
@@ -51,6 +52,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   var deviceWidth;
   var deviceHeight;
   String resultBgImage, resultText;
+  String sentenceId;
 
   List<BookmarkVO> _bookmarkList = [];
   Future<void> analyticsResult;
@@ -82,10 +84,12 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     categoryProvider = Provider.of<CategoryProvider>(context);
     stageProvider = Provider.of<StageProvider>(context);
 
+    sentenceId ??= categoryProvider.isRootBookmark ? categoryProvider.sentenceId : categoryProvider.selectedSentence.id;
+
     analyticsResult ??= AnalyticsService().sendAnalyticsEvent(
       "${AnalyticsService.VISIT}$PAGE_LEARNING",
       <String, dynamic> {
-        'sentence_id': categoryProvider.selectedSentence.id,
+        'sentence_id': sentenceId,
         'stage_number': categoryProvider.selectStageIndex
       },
     );
@@ -181,9 +185,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
             userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
             userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
+            scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(Strings.bookmark_cancel), duration: Duration(seconds: 1)));
           }else {
             categoryProvider.onBookMark(true);
             userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
+            scaffoldKey.currentState.showSnackBar(
+                SnackBar(content: Text(Strings.bookmark_done), duration: Duration(seconds: 1)));
           }
         },
       ),
@@ -758,7 +766,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         stageProvider.stopLearnTime();
         userProviderModel.recordLearning(
             authServiceAdapter.authJWT,
-            categoryProvider.selectedSentence.id,
+            sentenceId,
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
           userProviderModel.setLearnGuide();
@@ -884,6 +892,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         return false;
       },
       child: Scaffold(
+        key: scaffoldKey,
         backgroundColor: Colors.white,
         body: SafeArea(
           left: false,

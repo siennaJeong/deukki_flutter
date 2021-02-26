@@ -35,7 +35,6 @@ class _MemberShipState extends State<MemberShip> {
   MyPageProvider _myPageProvider;
 
   Future<void> paymentPreRequestInit;
-  var initPaymentPreRequest;
 
   List<ProductDetails> _products = [];
 
@@ -43,7 +42,8 @@ class _MemberShipState extends State<MemberShip> {
 
   double deviceWidth, deviceHeight;
   int _premium;
-  String _paymentId, _premiumEndAt;
+  String _paymentId = "";
+  String _premiumEndAt;
   String _premiumType;    //  Amplitude 를 위한 변수 (월간인지 연간인지 구분)
   bool _isAvailable = false;
   bool _autoConsume = true;
@@ -106,7 +106,6 @@ class _MemberShipState extends State<MemberShip> {
       child: ListView.builder(
         shrinkWrap: true,
         primary: false,
-        reverse: true,
         scrollDirection: Axis.horizontal,
         itemCount: _userProviderModel.productList.length,
         itemBuilder: (BuildContext context, i) {
@@ -282,6 +281,7 @@ class _MemberShipState extends State<MemberShip> {
           _myPageProvider.setIsPaying(false);
           scaffoldKey.currentState.showSnackBar(
               SnackBar(content: Text(Strings.payment_error_canceled)));
+          paymentPreRequestInit = null;
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {                //  결제 완료
           _deliverProduct(purchaseDetails.verificationData.localVerificationData);
         }
@@ -300,9 +300,9 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _deliverProduct(String receipt) {
-    initPaymentPreRequest ??= _paymentProviderModel.value.paymentPreRequest;
+    final initPaymentPreRequest = _paymentProviderModel.value.paymentPreRequest;
     if(initPaymentPreRequest.hasData && initPaymentPreRequest.result.isValue) {
-      _paymentId ??= initPaymentPreRequest.result.asValue.value;
+      _paymentId = initPaymentPreRequest.result.asValue.value;
       if(_paymentId.length > 3) {
         _paymentProviderModel.paymentValidation(_authServiceAdapter.authJWT, Platform.isIOS ? "Apple" : "Google", receipt, _paymentId).then((value) {
           final validation = _paymentProviderModel.value.paymentValidation;
@@ -320,14 +320,17 @@ class _MemberShipState extends State<MemberShip> {
 
           }else if(validation.result.asValue.value.status == 400) {
             scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error), duration: Duration(seconds: 1)));
+            paymentPreRequestInit = null;
           }else {
             scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+            paymentPreRequestInit = null;
           }
           _myPageProvider.setIsPaying(false);
         });
       }else if(_paymentId as int == 400) {
         _myPageProvider.setIsPaying(false);
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_wrong_request), duration: Duration(seconds: 1)));
+        paymentPreRequestInit = null;
       }else if(_paymentId as int == 401) {
         _myPageProvider.setIsPaying(false);
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_token_valid_fail), duration: Duration(seconds: 1)));
@@ -336,15 +339,19 @@ class _MemberShipState extends State<MemberShip> {
           _userProviderModel.logout(_authServiceAdapter.authJWT);
           RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
         });
+        paymentPreRequestInit = null;
       }else if(_paymentId as int == 404) {
         _myPageProvider.setIsPaying(false);
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error), duration: Duration(seconds: 1)));
+        paymentPreRequestInit = null;
       }else if(_paymentId as int == 500) {
         _myPageProvider.setIsPaying(false);
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+        paymentPreRequestInit = null;
       }else {
         _myPageProvider.setIsPaying(false);
         scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+        paymentPreRequestInit = null;
       }
     }
 
