@@ -146,7 +146,6 @@ class _CouponRegistrationState extends State<CouponRegistration> with Validator 
       children: <Widget>[
         Scaffold(
           backgroundColor: Colors.white,
-          resizeToAvoidBottomPadding: false,
           resizeToAvoidBottomInset: false,
           body: SafeArea(
             left: false,
