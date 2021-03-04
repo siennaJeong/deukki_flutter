@@ -79,6 +79,9 @@ dependencies:
   # ======== Amplitude ======== #
   amplitude_flutter: ^2.0.0
 
+  # ======== In-App Review ======== #
+  in_app_review: ^1.0.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
