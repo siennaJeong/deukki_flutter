@@ -44,6 +44,8 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
           categoryRepository: CategoryRestRepository(),
           dbHelper: DBHelper());
 
+  List<AudioFilePathVO> get audioFilePath => _audioFilePath;
+
   Future<void> _initData() async {
     final initData = _versionRepository.initData();
     initData.then((value) {
@@ -228,10 +230,10 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
       filePath = "$fileId-${rightPronun.pIdx.toString()}-$voice.mp3";
       dbFilePath = "$fileDir/$filePath";
       if(File(dbFilePath).existsSync()) {
-        setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
+        _setAudioFilePath(sentenceId, rightPronun.pIdx, dbFilePath);
       }else {
-        saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
-        setAudioFile(sentenceId, rightPronun.pIdx, dbFilePath);
+        _saveAudioFile(fileDir, rightPronun.downloadUrl, filePath);
+        _setAudioFilePath(sentenceId, rightPronun.pIdx, dbFilePath);
       }
 
       wrongList = result['wrongPronunciationList'] as List;
@@ -240,27 +242,25 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
         filePath = "$fileId-${pronunciationVO.pIdx.toString()}-$voice.mp3";
         dbFilePath = "$fileDir/$filePath";
         if(File(dbFilePath).existsSync()) {
-          setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
+          _setAudioFilePath(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }else {
-          saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
-          setAudioFile(sentenceId, pronunciationVO.pIdx, dbFilePath);
+          _saveAudioFile(fileDir, pronunciationVO.downloadUrl, filePath);
+          _setAudioFilePath(sentenceId, pronunciationVO.pIdx, dbFilePath);
         }
       });
     });
     await value.getPronunciation.set(getPronunciation, notifyListeners);
   }
 
-  Future<void> saveAudioFile(String dir, String url, String fileName) async {
+  Future<void> _saveAudioFile(String dir, String url, String fileName) async {
     final saveAudioFile = _categoryRepository.saveAudioFile(dir, url, fileName);
     await value.saveAudioFile.set(saveAudioFile, notifyListeners);
   }
 
-  void setAudioFile(String sentenceId, int pIdx, String path) {
+  void _setAudioFilePath(String sentenceId, int pIdx, String path) {
     _audioFilePath.add(AudioFilePathVO(sentenceId, pIdx, path));
     notifyListeners();
   }
-
-  List<AudioFilePathVO> get audioFilePath => _audioFilePath;
 
   Future<void> recordUpload(String authJWT, File file, int stage, int round, String sentenceId) async {
     final recordUpload = _categoryRepository.recordUploadLink(authJWT, file, stage, round, sentenceId);

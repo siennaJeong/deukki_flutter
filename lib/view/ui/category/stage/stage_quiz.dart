@@ -62,6 +62,8 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   bool _isPlayAnimation = true;
   bool _isAnswerAnimation = true;
 
+  int _audioFileLength = 0;
+
   @override
   void initState() {
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
@@ -324,14 +326,14 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
 
   Widget _playButtonContainer(double width) {              //  Play button
     String playSpeed;
-    String soundIcons;    // speed : 0.8, 0.95, 1.1, 1.25, 1.4
-    if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
+    String soundIcons;    // speed : 0.8, 1.1, 1.4, 1.7, 2.0
+    if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.4) {
       playSpeed = Strings.play_speed_15;
-    }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
+    }else if(stageProvider.playRate >= 1.4 && stageProvider.playRate < 1.7) {
       playSpeed = Strings.play_speed_20;
-    }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
+    }else if(stageProvider.playRate >= 1.7 && stageProvider.playRate < 2.0){
       playSpeed = Strings.play_speed_25;
-    }else if(stageProvider.playRate >= 1.4) {
+    }else if(stageProvider.playRate >= 2.0) {
       playSpeed = Strings.play_speed_30;
     }else {
       playSpeed = "";
@@ -447,37 +449,39 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _listWidget(double width) {            //  ListView
     int crossAxisCount;
     double mainAxisCellCount;
-    PronunciationVO rightPronunciation = categoryProvider.getRightPronun();
-    if(categoryProvider.pronunciationList.length > 2) {
-      if(categoryProvider.pronunciationList.length % 2 == 0) {
-        crossAxisCount = 2;
-        mainAxisCellCount = (width - 16) * 0.44;
-      }else {
-        crossAxisCount = 1;
-        mainAxisCellCount = (width - 32) * 0.28;
-      }
-    }else {
-      crossAxisCount = 1;
-      mainAxisCellCount = (width - 16) * 0.44;
-    }
+    PronunciationVO rightPronunciation = categoryProvider.getRightPron();
     return Selector<CategoryProvider, List<PronunciationVO>>(
-      selector: (context, categoryProvider) => categoryProvider.pronunciationList,
+      selector: (context, categoryProvider) => categoryProvider.stepPronList,
       builder: (context, pronunciations, child) {
+
+        if(pronunciations.length > 2) {
+          if(pronunciations.length % 2 == 0) {
+            crossAxisCount = 2;
+            mainAxisCellCount = (width - 16) * 0.44;
+          }else {
+            crossAxisCount = 1;
+            mainAxisCellCount = (width - 32) * 0.28;
+          }
+        }else {
+          crossAxisCount = 1;
+          mainAxisCellCount = (width - 16) * 0.44;
+        }
+
         return Expanded(
-          child: StaggeredGridView.countBuilder(
+          child: new StaggeredGridView.countBuilder(
+            key: ObjectKey(crossAxisCount),
             primary: false,
             shrinkWrap: true,
             padding: EdgeInsets.only(left: 0),
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: 18,
-            mainAxisSpacing: 18,
             scrollDirection: Axis.horizontal,
             itemCount: pronunciations.length,
             itemBuilder: (BuildContext context, index) {
               return _listItemWidget(pronunciations[index], rightPronunciation.pronunciation, index);
             },
-            staggeredTileBuilder: (index) => StaggeredTile.extent(crossAxisCount, mainAxisCellCount),
+            staggeredTileBuilder: (index) => new StaggeredTile.extent(1, mainAxisCellCount),
           ),
         );
       },
@@ -526,6 +530,16 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
               }
             );
             stageProvider.historyInit(randomPath.stageIdx);
+
+            if(categoryProvider.initPronList.length <= categoryProvider.stepPronList.length) {
+              stageProvider.setPlayRate();
+            }
+
+            if(categoryProvider.initPronList.length > categoryProvider.stepPronList.length) {
+              categoryProvider.addStepPronList();
+              _audioFileLength++;
+            }
+
           }else {
             AnalyticsService().sendAnalyticsEvent(
               "$PAGE_LEARNING Wrong",
@@ -564,7 +578,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _itemWidget(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
     return Card(
       elevation: 0,
-      margin: EdgeInsets.all(0),
+      margin: EdgeInsets.only(left: 9, right: 9),
       color: cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Stack(
@@ -745,7 +759,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       stageProvider.addHistory();
       _showResultDialog(resultBgImage, resultText);
       stageProvider.setLevel();
-      stageProvider.setPlayRate();
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }else {
@@ -754,7 +767,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }
-    randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+    randomPath = resourceProviderModel.audioFilePath[random.nextInt(_audioFileLength)];
   }
 
   void _showResultDialog(String bgImages, String answerResult) {
@@ -916,8 +929,9 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     var ratioWidth = deviceWidth * 0.6;
 
     if(randomPath == null) {
-      if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
-        randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+      if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.initPronList.length > 0) {
+        _audioFileLength = resourceProviderModel.audioFilePath.length - 2;
+        randomPath = resourceProviderModel.audioFilePath[random.nextInt(_audioFileLength)];
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }
     }

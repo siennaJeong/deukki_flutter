@@ -299,7 +299,7 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
       ).then((value) {
         final commonResult = resourceProviderModel.value.getPronunciation;
         final pronunResult = commonResult.result.asValue.value.result;
-        categoryProvider.setPronunciationList(
+        categoryProvider.initPronunciationList(
             pronunResult['wrongPronunciationList'],
             PronunciationVO.fromJson(pronunResult['rightPronunciation'])
         );

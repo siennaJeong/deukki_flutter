@@ -29,6 +29,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   static const String PREMIUM_POPUP = "premiumPopup";
   static const String STAGE_GUIDE = "stageGuide";
   static const String LEARN_GUIDE = "learnGuide";
+  static const String ATTEND_DATE = "attendDate";
+  static const String LEARN_COUNT = "learnCount";
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   List<ProductionVO> trialProductList = [];
@@ -37,6 +39,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   int bookmarkScore = 0;
   int premiumPopupShow = 0;
   int stageGuide, learnGuide = 0;
+  String attendDate = "";
+  int learnCount = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -173,6 +177,18 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     }
   }
 
+  Future<void> getAttendDate() async {
+    if(_sharedHelper != null) {
+      attendDate = await _sharedHelper.getStringSharedPref(ATTEND_DATE);
+    }
+  }
+
+  Future<void> getLearnCount() async {
+    if(_sharedHelper != null) {
+      learnCount = await _sharedHelper.getIntSharedPref(LEARN_COUNT);
+    }
+  }
+
   void setUserPremium(String expiredDate) async {
     userVOForHttp.premium = 1;
     userVOForHttp.premiumEndAt = expiredDate;
@@ -191,5 +207,16 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   void setLearnGuide() async {
     await _sharedHelper.setIntSharedPref(LEARN_GUIDE, 1);
     getLearnGuide();
+  }
+
+  void setAttendDate() async {
+    print("current time millisecond : ${DateTime.now().millisecondsSinceEpoch}");
+    //await _sharedHelper.setStringSharedPref(ATTEND_DATE, attendDate);
+    //getAttendDate();
+  }
+
+  void setLearnCount(int learnCount) async {
+    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount);
+    getLearnCount();
   }
 }

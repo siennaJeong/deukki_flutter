@@ -163,6 +163,8 @@ PODS:
     - Flutter
   - in_app_purchase (0.0.1):
     - Flutter
+  - in_app_review (0.2.0):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - kakao_flutter_sdk (0.5.2):
@@ -209,6 +211,7 @@ DEPENDENCIES:
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - hardware_buttons (from `.symlinks/plugins/hardware_buttons/ios`)
   - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
+  - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - kakao_flutter_sdk (from `.symlinks/plugins/kakao_flutter_sdk/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -276,6 +279,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/hardware_buttons/ios"
   in_app_purchase:
     :path: ".symlinks/plugins/in_app_purchase/ios"
+  in_app_review:
+    :path: ".symlinks/plugins/in_app_review/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   kakao_flutter_sdk:
@@ -321,7 +326,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
   FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
   FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_audio_recorder: eb998d4e75e59b39d9e3ca1818a5e0f3a82f5836
   flutter_facebook_auth: 85c86b1f574faa5eaacd6de0db6b416fa94b326c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
@@ -334,6 +339,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   hardware_buttons: 014f502132c734dc391a47e2b708728b1dd8bf32
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
+  in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   kakao_flutter_sdk: c314c15347e033a31279acaa3c5efb5cad1426eb
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
