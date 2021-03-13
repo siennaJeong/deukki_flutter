@@ -1,3 +1,4 @@
+
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
@@ -14,23 +15,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserProviderModel extends ProviderModel<UserProviderState> {
+  static const String PREMIUM_POPUP = "premiumPopup";
+  static const String STAGE_GUIDE = "stageGuide";
+  static const String LEARN_GUIDE = "learnGuide";
+  static const String FIRST_ATTEND_DATE = "firstAttendDate";
+  static const String LAST_ATTEND_DATE = "lastAttendDate";
+  static const String LEARN_COUNT = "learnCount";
+  static const String AVAILABLE_REVIEW = "availableReview";
   DBHelper _dbHelper;
   SharedHelper _sharedHelper;
+  var reviewPeriod;
 
   UserProviderModel({@required UserRepository userRepository, @required DBHelper dbHelper, @required SharedHelper sharedHelper})
       : assert(userRepository != null),
         _userRepository = userRepository,
         _dbHelper = dbHelper,
         _sharedHelper = sharedHelper,
+        reviewPeriod = DateTime(2021, 3, 15),
         super(UserProviderState());
 
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
   final UserRepository _userRepository;
-  static const String PREMIUM_POPUP = "premiumPopup";
-  static const String STAGE_GUIDE = "stageGuide";
-  static const String LEARN_GUIDE = "learnGuide";
-  static const String ATTEND_DATE = "attendDate";
-  static const String LEARN_COUNT = "learnCount";
+
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   List<ProductionVO> trialProductList = [];
@@ -39,8 +45,9 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   int bookmarkScore = 0;
   int premiumPopupShow = 0;
   int stageGuide, learnGuide = 0;
-  String attendDate = "";
-  int learnCount = 0;
+  int firstAttendDate, lastAttendDate = 0;
+  int learnCount, availableReview = 0;
+  int attendPeriod = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -177,15 +184,15 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     }
   }
 
-  Future<void> getAttendDate() async {
-    if(_sharedHelper != null) {
-      attendDate = await _sharedHelper.getStringSharedPref(ATTEND_DATE);
-    }
-  }
-
   Future<void> getLearnCount() async {
     if(_sharedHelper != null) {
       learnCount = await _sharedHelper.getIntSharedPref(LEARN_COUNT);
+    }
+  }
+
+  Future<void> getAvailableReview() async {
+    if(_sharedHelper != null) {
+      availableReview = await _sharedHelper.getIntSharedPref(AVAILABLE_REVIEW);
     }
   }
 
@@ -210,13 +217,27 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   }
 
   void setAttendDate() async {
-    print("current time millisecond : ${DateTime.now().millisecondsSinceEpoch}");
-    //await _sharedHelper.setStringSharedPref(ATTEND_DATE, attendDate);
-    //getAttendDate();
+    var nowDate = DateTime.now().millisecondsSinceEpoch;
+    if(_sharedHelper.getStringSharedPref(FIRST_ATTEND_DATE) != null) {
+      firstAttendDate = await _sharedHelper.getIntSharedPref(FIRST_ATTEND_DATE);
+      lastAttendDate = nowDate;
+      attendPeriod = (lastAttendDate - firstAttendDate) / 1000 / 60 / 60 / 24 as int;    // 일로 계산
+      await _sharedHelper.setIntSharedPref(LAST_ATTEND_DATE, nowDate);
+    }else {
+      firstAttendDate = nowDate;
+      lastAttendDate = nowDate;
+      await _sharedHelper.setIntSharedPref(FIRST_ATTEND_DATE, nowDate);
+      await _sharedHelper.setIntSharedPref(LAST_ATTEND_DATE, nowDate);
+    }
   }
 
-  void setLearnCount(int learnCount) async {
-    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount);
+  void setLearnCount() async {
+    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount++);
     getLearnCount();
+  }
+
+  void setAvailableReview() async {
+    await _sharedHelper.setIntSharedPref(AVAILABLE_REVIEW, 1);
+    getAvailableReview();
   }
 }

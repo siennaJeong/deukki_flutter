@@ -451,7 +451,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     double mainAxisCellCount;
     PronunciationVO rightPronunciation = categoryProvider.getRightPron();
     return Selector<CategoryProvider, List<PronunciationVO>>(
-      selector: (context, categoryProvider) => categoryProvider.stepPronList,
+      selector: (context, categoryProvider) => categoryProvider.initPronList.length > 2 ? categoryProvider.stepPronList : categoryProvider.initPronList,
       builder: (context, pronunciations, child) {
 
         if(pronunciations.length > 2) {
@@ -531,13 +531,18 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             );
             stageProvider.historyInit(randomPath.stageIdx);
 
-            if(categoryProvider.initPronList.length <= categoryProvider.stepPronList.length) {
-              stageProvider.setPlayRate();
-            }
+            if(categoryProvider.initPronList.length > 2) {
+              if(categoryProvider.initPronList.length <= categoryProvider.stepPronList.length) {
+                stageProvider.setPlayRate();
+              }
 
-            if(categoryProvider.initPronList.length > categoryProvider.stepPronList.length) {
-              categoryProvider.addStepPronList();
-              _audioFileLength++;
+              if(categoryProvider.initPronList.length > categoryProvider.stepPronList.length) {
+                categoryProvider.addStepPronList();
+                _audioFileLength++;
+              }
+
+            }else {
+              stageProvider.setPlayRate();
             }
 
           }else {
@@ -823,6 +828,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
           userProviderModel.setLearnGuide();
+          userProviderModel.setLearnCount();
           RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
         });
       });
@@ -930,7 +936,11 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
 
     if(randomPath == null) {
       if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.initPronList.length > 0) {
-        _audioFileLength = resourceProviderModel.audioFilePath.length - 2;
+        if(categoryProvider.initPronList.length > 2) {
+          _audioFileLength = resourceProviderModel.audioFilePath.length - 2;
+        }else {
+          _audioFileLength = categoryProvider.initPronList.length;
+        }
         randomPath = resourceProviderModel.audioFilePath[random.nextInt(_audioFileLength)];
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }

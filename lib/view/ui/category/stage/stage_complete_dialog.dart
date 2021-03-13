@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 
 class StageCompleteDialog extends StatefulWidget {
@@ -25,6 +27,8 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
 
+  final random = Random();
+  final InAppReview _inAppReview = InAppReview.instance;
   double deviceWidth, deviceHeight;
 
   @override
@@ -120,6 +124,25 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
         }else {
           Navigator.pop(context);
         }
+      }
+
+      /// 평점 요청
+      /// 한달 단위로 A, B, C type 으로 A/B test 진행
+      if(!kDebugMode) {
+        if(userProviderModel.availableReview == 0) {
+          var periodDays = DateTime.now().difference(userProviderModel.reviewPeriod);
+          if(periodDays.inDays >= 0 && periodDays.inDays < 31) {       /// A Type
+
+          }else if(periodDays.inDays >= 31 && periodDays.inDays < 62) {     /// B Type
+
+          }else if(periodDays.inDays >= 62 && periodDays.inDays < 93) {     /// C Type
+
+          }else {
+
+          }
+        }
+      }else {
+
       }
     }
 

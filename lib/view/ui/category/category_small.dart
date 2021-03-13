@@ -52,6 +52,9 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel.getStageGuide();
     userProviderModel.getLearnGuide();
+    userProviderModel.getLearnCount();
+    userProviderModel.getAvailableReview();
+    userProviderModel.setAttendDate();
 
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.repeat(reverse: true);
