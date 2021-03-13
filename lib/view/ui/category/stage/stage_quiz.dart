@@ -451,7 +451,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     double mainAxisCellCount;
     PronunciationVO rightPronunciation = categoryProvider.getRightPron();
     return Selector<CategoryProvider, List<PronunciationVO>>(
-      selector: (context, categoryProvider) => categoryProvider.initPronList.length > 2 ? categoryProvider.stepPronList : categoryProvider.initPronList,
+      selector: (context, categoryProvider) => categoryProvider.stepPronList,
       builder: (context, pronunciations, child) {
 
         if(pronunciations.length > 2) {
