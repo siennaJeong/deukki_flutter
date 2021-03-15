@@ -31,7 +31,7 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
         _userRepository = userRepository,
         _dbHelper = dbHelper,
         _sharedHelper = sharedHelper,
-        reviewPeriod = DateTime(2021, 3, 15),
+        reviewPeriod = DateTime(2021, 3, 14),
         super(UserProviderState());
 
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
@@ -232,8 +232,8 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   }
 
   void setLearnCount() async {
-    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount++);
-    getLearnCount();
+    learnCount = learnCount + 1;
+    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount);
   }
 
   void setAvailableReview() async {

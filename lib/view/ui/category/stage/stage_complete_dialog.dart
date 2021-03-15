@@ -90,6 +90,15 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
         break;
     }
 
+    /// 평점 요청
+    /// 한달 단위로 A, B, C type 으로 A/B test 진행
+    void _requestAppReview() {
+      if(userProviderModel.learnCount >= 3) {
+        _inAppReview.requestReview();
+        userProviderModel.setAvailableReview();
+      }
+    }
+
     void _quizDone() {
       AnalyticsService().sendAnalyticsEvent("$PAGE_LEARN_COMPLETE OK", null);
 
@@ -109,40 +118,27 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
           if(userProviderModel.premiumPopupShow == 0) {
             if(userProviderModel.userVOForHttp.premium == 1) {
               Navigator.pop(context);
+              _requestAppReview();
             }else {
               RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+              _requestAppReview();
             }
           }else {
             Navigator.pop(context);
+            _requestAppReview();
           }
         }else {
           Navigator.pop(context);
+          _requestAppReview();
         }
       }else {
         if(categoryProvider.premiumPopupCount >= 1) {
           RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+          _requestAppReview();
         }else {
           Navigator.pop(context);
+          _requestAppReview();
         }
-      }
-
-      /// 평점 요청
-      /// 한달 단위로 A, B, C type 으로 A/B test 진행
-      if(!kDebugMode) {
-        if(userProviderModel.availableReview == 0) {
-          var periodDays = DateTime.now().difference(userProviderModel.reviewPeriod);
-          if(periodDays.inDays >= 0 && periodDays.inDays < 31) {       /// A Type
-
-          }else if(periodDays.inDays >= 31 && periodDays.inDays < 62) {     /// B Type
-
-          }else if(periodDays.inDays >= 62 && periodDays.inDays < 93) {     /// C Type
-
-          }else {
-
-          }
-        }
-      }else {
-
       }
     }
 

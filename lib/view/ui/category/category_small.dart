@@ -54,7 +54,7 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
     userProviderModel.getLearnGuide();
     userProviderModel.getLearnCount();
     userProviderModel.getAvailableReview();
-    userProviderModel.setAttendDate();
+    //userProviderModel.setAttendDate();
 
     _animationController = new AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _animationController.repeat(reverse: true);
