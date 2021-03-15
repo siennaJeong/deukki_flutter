@@ -92,10 +92,12 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
     /// 평점 요청
     /// 한달 단위로 A, B, C type 으로 A/B test 진행
-    void _requestAppReview() {
-      if(userProviderModel.learnCount >= 3) {
-        _inAppReview.requestReview();
-        userProviderModel.setAvailableReview();
+    void _requestAppReview(int count) {
+      if(userProviderModel.availableReview == 0) {
+        if(userProviderModel.learnCount >= count) {
+          _inAppReview.requestReview();
+          userProviderModel.setAvailableReview();
+        }
       }
     }
 
@@ -118,26 +120,26 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
           if(userProviderModel.premiumPopupShow == 0) {
             if(userProviderModel.userVOForHttp.premium == 1) {
               Navigator.pop(context);
-              _requestAppReview();
+              _requestAppReview(3);
             }else {
               RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
-              _requestAppReview();
+              _requestAppReview(3);
             }
           }else {
             Navigator.pop(context);
-            _requestAppReview();
+            _requestAppReview(3);
           }
         }else {
           Navigator.pop(context);
-          _requestAppReview();
+          _requestAppReview(3);
         }
       }else {
         if(categoryProvider.premiumPopupCount >= 1) {
           RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
-          _requestAppReview();
+          _requestAppReview(1);
         }else {
           Navigator.pop(context);
-          _requestAppReview();
+          _requestAppReview(1);
         }
       }
     }
