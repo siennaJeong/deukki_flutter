@@ -91,9 +91,11 @@ class _LoginState extends State<Login> {
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.log_in_cancel)));
       }else if(value == "invalid token") {
+        authServiceAdapter.setIsSigning(false);
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.kakao_invalid_token)));
       }else {
+        authServiceAdapter.setIsSigning(false);
         scaffoldKey.currentState.showSnackBar(
             SnackBar(content: Text(Strings.no_email)));
       }
