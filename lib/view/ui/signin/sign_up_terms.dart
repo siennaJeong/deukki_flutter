@@ -75,6 +75,7 @@ class _SignUpTermsState extends State<SignUpTerms> {
         authServiceAdapter.signUpDone(signUpResult.result.asValue.value.result);
       }else if(signUpResult.result.asValue.value.status > 200 || signUpResult.result.isError) {
         print("sign up error : " + signUpResult.result.asError.error.toString());
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.login_server_error)));
       }
     });
   }
