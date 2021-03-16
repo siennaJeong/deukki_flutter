@@ -10,6 +10,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
+import 'package:deukki/view/ui/base/membership_dialog_widget.dart';
 import 'package:deukki/view/ui/base/ripple_animation.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -77,6 +78,16 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
     categoryProvider = Provider.of<CategoryProvider>(context);
     categoryProvider.setSentenceTitle(_title);
     super.didChangeDependencies();
+  }
+
+  void _membershipDialog() {
+    showDialog(
+        context: context,
+        useSafeArea: false,
+        builder: (BuildContext context) {
+          return MemberShipDialog(deviceWidth: deviceWidth, deviceHeight: deviceHeight, callFrom: PAGE_LEARNING_STAGE);
+        }
+    );
   }
 
   Widget _listWidget() {
@@ -172,9 +183,21 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
     Color bgColor, borderColor, textColor;
     if(stageVO.score == null) {
       if(categoryProvider.selectStageIndex == index) {
-        bgColor = MainColors.blue_100;
-        textColor = Colors.white;
-        borderColor = MainColors.blue_100;
+        if(userProviderModel.userVOForHttp.premium == 0) {
+          if(stageVO.premium == 0) {
+            bgColor = MainColors.blue_100;
+            textColor = Colors.white;
+            borderColor = MainColors.blue_100;
+          }else {
+            bgColor = MainColors.grey_google;
+            textColor = MainColors.grey_40;
+            borderColor = MainColors.grey_google;
+          }
+        }else {
+          bgColor = MainColors.blue_100;
+          textColor = Colors.white;
+          borderColor = MainColors.blue_100;
+        }
       }else {
         bgColor = MainColors.grey_google;
         textColor = MainColors.grey_40;
@@ -182,9 +205,21 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
       }
     }else {
       if(categoryProvider.selectStageIndex == index) {
-        bgColor = MainColors.blue_100;
-        textColor = Colors.white;
-        borderColor = MainColors.blue_100;
+        if(userProviderModel.userVOForHttp.premium == 0) {
+          if(stageVO.premium == 0) {
+            bgColor = MainColors.blue_100;
+            textColor = Colors.white;
+            borderColor = MainColors.blue_100;
+          }else {
+            bgColor = MainColors.grey_google;
+            textColor = MainColors.grey_40;
+            borderColor = MainColors.grey_google;
+          }
+        }else {
+          bgColor = MainColors.blue_100;
+          textColor = Colors.white;
+          borderColor = MainColors.blue_100;
+        }
       }else {
         bgColor = Colors.white;
         textColor = MainColors.blue_100;
@@ -195,28 +230,44 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
       child: Card(
         elevation: 0,
         color: bgColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(deviceWidth > 700 ? 30 : 24), side: BorderSide(width: 2, color: borderColor)),
-        child: Container(
-          width: deviceWidth * 0.11,
-          height: deviceWidth * 0.11,
-          alignment: AlignmentDirectional.center,
-          child: Text(
-            stageVO.stage.toString(),
-            style: TextStyle(
-              fontSize: (deviceWidth * 0.11) * 0.36,
-              fontFamily: "TmoneyRound",
-              fontWeight: FontWeight.w700,
-              color: textColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(deviceWidth > 700 ? 30 : 24)),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              child: Container(
+                width: deviceWidth * 0.11,
+                height: deviceWidth * 0.11,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(deviceWidth > 700 ? 30 : 24),
+                  border: Border.all(width: 2, color: borderColor)
+                ),
+                alignment: AlignmentDirectional.center,
+                child: Text(
+                  stageVO.stage.toString(),
+                  style: TextStyle(
+                    fontSize: (deviceWidth * 0.11) * 0.36,
+                    fontFamily: "TmoneyRound",
+                    fontWeight: FontWeight.w700,
+                    color: textColor,
+                  ),
+                ),
+              ),
             ),
-          ),
-        ),
+            Positioned(
+              child: _premiumTagWidget(stageVO.premium),
+            ),
+          ],
+        )
       ),
       onTap: () {
         if(categoryProvider.preScoreList[index].isPreScoreExist) {
-          _selectedIndex = index;
-          _selectedStageIdx = stageVO.stageIdx;
-          _onSelectedStage();
-
+          if(userProviderModel.userVOForHttp.premium == 0 && userProviderModel.userVOForHttp.premium < stageVO.premium) {
+            _membershipDialog();
+          }else {
+            _selectedIndex = index;
+            _selectedStageIdx = stageVO.stageIdx;
+            _onSelectedStage();
+          }
           if(index == categoryProvider.currentStageIndex) {
             AnalyticsService().sendAnalyticsEvent("LS Current Stage", <String, dynamic> {'stage_number': index});
           }else {
@@ -227,6 +278,23 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
         }
       },
     );
+  }
+
+  Widget _premiumTagWidget(int premium) {
+    if(userProviderModel.userVOForHttp.premium == 0 && userProviderModel.userVOForHttp.premium < premium) {
+      return Container(
+          width: deviceWidth * 0.11,
+          height: deviceWidth * 0.11,
+          alignment: AlignmentDirectional.center,
+          decoration: BoxDecoration(
+            color: MainColors.black_50,
+            borderRadius: BorderRadius.circular(deviceWidth > 700 ? 30 : 24),
+          ),
+          child: Icon(Icons.lock, size: 28, color: Colors.white,)
+      );
+    }else {
+      return Container();
+    }
   }
 
   Widget _backButtonWidget() {
@@ -286,32 +354,45 @@ class _StageDialogState extends State<StageDialog> with TickerProviderStateMixin
     categoryProvider.onRootBookmark(false);
   }
 
+  void _premiumStart() {
+    _isClick = true;
+    resourceProviderModel.getPronunciation(
+        authServiceAdapter.authJWT,
+        categoryProvider.selectedSentence.id,
+        categoryProvider.selectStageIdx,
+        categoryProvider.selectStageIndex == 0 ? true : false,
+        userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
+    ).then((value) {
+      final commonResult = resourceProviderModel.value.getPronunciation;
+      final pronunResult = commonResult.result.asValue.value.result;
+      categoryProvider.initPronunciationList(
+          pronunResult['wrongPronunciationList'],
+          PronunciationVO.fromJson(pronunResult['rightPronunciation'])
+      );
+      categoryProvider.initStepProgress();
+      categoryProvider.playCount = 0;
+      categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
+      RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
+
+      _isClick = false;
+      userProviderModel.setStageGuide();
+      _controller?.stop();
+    });
+  }
+
   void _stageStart() {        //  Start Click
     if(!_isClick) {
       AnalyticsService().sendAnalyticsEvent("LS Start", <String, dynamic> {'stage_number': categoryProvider.selectStageIndex});
-      _isClick = true;
-      resourceProviderModel.getPronunciation(
-          authServiceAdapter.authJWT,
-          categoryProvider.selectedSentence.id,
-          categoryProvider.selectStageIdx,
-          categoryProvider.selectStageIndex == 0 ? true : false,
-          userProviderModel.userVOForHttp.defaultVoice       //  가입시 사용자가 선택한 성별로
-      ).then((value) {
-        final commonResult = resourceProviderModel.value.getPronunciation;
-        final pronunResult = commonResult.result.asValue.value.result;
-        categoryProvider.initPronunciationList(
-            pronunResult['wrongPronunciationList'],
-            PronunciationVO.fromJson(pronunResult['rightPronunciation'])
-        );
-        categoryProvider.initStepProgress();
-        categoryProvider.playCount = 0;
-        categoryProvider.onBookMark((userProviderModel.currentBookmarkList.singleWhere((it) => it.stageIdx == categoryProvider.selectStageIdx, orElse: () => null)) != null);
-        RouteNavigator().go(GetRoutesName.ROUTE_STAGE_QUIZ, context);
-
-        _isClick = false;
-        userProviderModel.setStageGuide();
-        _controller?.stop();
-      });
+      if(userProviderModel.userVOForHttp.premium == 0) {
+        if(categoryProvider.stageList[categoryProvider.selectStageIndex].premium == 0) {
+          _premiumStart();
+        }else {
+          _isClick = false;
+          _membershipDialog();
+        }
+      }else {
+        _premiumStart();
+      }
     }
   }
 

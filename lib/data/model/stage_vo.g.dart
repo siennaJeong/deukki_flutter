@@ -11,6 +11,7 @@ StageVO _$StageVOFromJson(Map<String, dynamic> json) {
     json['stageIdx'] as int,
     json['stage'] as int,
     json['score'] as int,
+    json['premium'] as int,
   );
 }
 
@@ -18,4 +19,5 @@ Map<String, dynamic> _$StageVOToJson(StageVO instance) => <String, dynamic>{
       'stageIdx': instance.stageIdx,
       'stage': instance.stage,
       'score': instance.score,
+      'premium': instance.premium,
     };
