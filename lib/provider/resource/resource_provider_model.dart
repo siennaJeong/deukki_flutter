@@ -215,7 +215,7 @@ class ResourceProviderModel extends ProviderModel<ResourceProviderState> {
     PronunciationVO rightPronun;
     String fileId = "$sentenceId";
     String filePath, dbFilePath;
-    final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice);
+    final getPronunciation = _categoryRepository.getPronunciation(authJWT, sentenceId, stageIdx, needRight, voice, 4);
 
     directory ??= await getApplicationDocumentsDirectory();
     String fileDir = directory.path;
