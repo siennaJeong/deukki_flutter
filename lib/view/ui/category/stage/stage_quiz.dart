@@ -123,13 +123,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       _volumeButtonEvent?.cancel();
     }
     stageProvider.stopLearnTime();
-    super.dispose();
     _playController?.dispose();
     _answerControllerUnder3?.dispose();
     _answerControllerUpper3?.dispose();
     _playController = null;
     _answerControllerUnder3 = null;
     _answerControllerUpper3 = null;
+    super.dispose();
   }
 
   Widget _header() {
