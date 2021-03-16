@@ -58,7 +58,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   List<BookmarkVO> _bookmarkList = [];
   Future<void> analyticsResult;
 
-  AnimationController _playController, _answerController;
+  AnimationController _playController, _answerControllerUnder3, _answerControllerUpper3;
   bool _isPlayAnimation = true;
   bool _isAnswerAnimation = true;
 
@@ -91,7 +91,11 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 800),
         vsync: this);
 
-    _answerController = AnimationController(
+    _answerControllerUnder3 = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this);
+
+    _answerControllerUpper3 = AnimationController(
         duration: Duration(milliseconds: 800),
         vsync: this);
 
@@ -115,9 +119,17 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     );
 
     if(_isAnswerAnimation && categoryProvider.playCount > 0 && !categoryProvider.isPlaying) {
-      _answerController.repeat(reverse: true);
+      if(categoryProvider.stepPronList.length > 3) {
+        _answerControllerUpper3.repeat(reverse: true);
+      }else {
+        _answerControllerUnder3.repeat(reverse: true);
+      }
     }else {
-      _answerController?.reset();
+      if(categoryProvider.stepPronList.length > 3) {
+        _answerControllerUpper3.reset();
+      }else {
+        _answerControllerUnder3.reset();
+      }
     }
 
     super.didChangeDependencies();
@@ -129,9 +141,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       _volumeButtonEvent?.cancel();
     }
     stageProvider.stopLearnTime();
-    _playController?.dispose();
-    _answerController?.dispose();
     super.dispose();
+    _playController?.dispose();
+    _answerControllerUnder3?.dispose();
+    _answerControllerUpper3?.dispose();
+    _playController = null;
+    _answerControllerUnder3 = null;
+    _answerControllerUpper3 = null;
   }
 
   Future<void> initVolume() async {
@@ -476,6 +492,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             physics: NeverScrollableScrollPhysics(),
             crossAxisCount: crossAxisCount,
             crossAxisSpacing: 18,
+            mainAxisSpacing: 18,
             scrollDirection: Axis.horizontal,
             itemCount: pronunciations.length,
             itemBuilder: (BuildContext context, index) {
@@ -515,7 +532,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     return GestureDetector(
       child: _listItemAnimation(pronunciationVO, rightPronunciation, index, cardColor, textColor),
       onTap: () {                   // List Item Click (Quiz answer click)
-        _answerController.reset();
         _isAnswerAnimation = false;
         if(!categoryProvider.isPlaying
             && categoryProvider.playCount > 0
@@ -570,7 +586,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _listItemAnimation(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
     if(userProviderModel.learnGuide == 0) {
       return RippleAnimation(
-        controller: _answerController,
+        controller: categoryProvider.stepPronList.length > 3 ? _answerControllerUpper3 : _answerControllerUnder3,
         color: MainColors.yellow_60,
         rippleTarget: _itemWidget(pronunciationVO, rightPronunciation, index, cardColor, textColor),
         radius: 24.0,
@@ -583,7 +599,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _itemWidget(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
     return Card(
       elevation: 0,
-      margin: EdgeInsets.only(left: 9, right: 9),
+      margin: EdgeInsets.all(0),
       color: cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Stack(

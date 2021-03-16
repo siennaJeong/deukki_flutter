@@ -32,7 +32,6 @@ class _RippleAnimationState extends State<RippleAnimation> {
 
   @override
   void dispose() {
-    _controller.dispose();
     super.dispose();
   }
 
