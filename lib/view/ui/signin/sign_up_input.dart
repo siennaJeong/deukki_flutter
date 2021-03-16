@@ -163,7 +163,6 @@ class _SignUpInputBirthState extends State<SignUpInputBirth> with Validator {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: false,
-      resizeToAvoidBottomPadding: false,
       body: GestureDetector(
         onTap: () {
           if(_focusNode.hasFocus) {

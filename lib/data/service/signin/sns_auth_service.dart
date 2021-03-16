@@ -47,7 +47,9 @@ class SNSAuthService {
         }
 
         if(userSignInMethods.first == 'google.com') {
-          GoogleSignInAccount googleAccount = await GoogleSignIn().signIn();
+          GoogleSignInAccount googleAccount = await GoogleSignIn(
+            scopes: [_GENDER_SCOPE, _BIRTH_SCOPE]
+          ).signIn();
           GoogleSignInAuthentication googleAuth = await googleAccount.authentication;
           GoogleAuthCredential googleAuthCredential = GoogleAuthProvider.credential(
             accessToken: googleAuth.accessToken,
@@ -115,20 +117,16 @@ class SNSAuthService {
         }else if(response['genders'][0]['value'] == "male") {
           _gender = "M";
         }else {
-          if(Platform.isIOS) {
-            _gender = "F";
-          }else {
-            _gender = "";
-          }
+          _gender = Platform.isIOS ? "F" : "";
         }
       }else {
-        _gender = "";
+        _gender = Platform.isIOS ? "F" : "";
       }
 
       if(response['birthdays'] != null) {
         if(response['birthdays'][0]['date'] != null) {
           var month = response['birthdays'][0]['date']['month'] as int < 10 ? "0${response['birthdays'][0]['date']['month']}" : "${response['birthdays'][0]['date']['month']}";
-          var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthday'][0]['date']['day']}";
+          var day = response['birthdays'][0]['date']['day'] as int < 10 ? "0${response['birthdays'][0]['date']['day']}" : "${response['birthdays'][0]['date']['day']}";
           _birthDate = "${response['birthdays'][0]['date']['year']}-$month-$day";
         }else {
           _birthDate = "";
@@ -136,7 +134,6 @@ class SNSAuthService {
       }else {
         _birthDate = "";
       }
-
 
       return googleUser.id;
     }else {

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
-import 'package:deukki/common/utils/http_util.dart';
 import 'package:deukki/common/utils/route_util.dart';
 import 'package:deukki/data/service/signin/auth_service.dart';
 import 'package:deukki/data/service/signin/auth_service_adapter.dart';
@@ -51,8 +50,7 @@ class _LoginState extends State<Login> {
     if(!Platform.isIOS) {
       if(authServiceType == AuthServiceType.Apple) {
         authServiceAdapter.setIsSigning(false);
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.apple_sign_in_only_ios), duration: Duration(seconds: 2)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.apple_sign_in_only_ios)));
         return;
       }
     }else {
@@ -61,8 +59,7 @@ class _LoginState extends State<Login> {
       if(authServiceType == AuthServiceType.Apple) {
         if(int.parse(iosDeviceInfo.systemVersion.substring(0, 2)) < 13) {
           authServiceAdapter.setIsSigning(false);
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.ios_low_version_apple_login)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.ios_low_version_apple_login)));
           return;
         }
       }
@@ -88,14 +85,13 @@ class _LoginState extends State<Login> {
         });
       }else if(value == "cancel") {
         authServiceAdapter.setIsSigning(false);
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.log_in_cancel)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.log_in_cancel)));
       }else if(value == "invalid token") {
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.kakao_invalid_token)));
+        authServiceAdapter.setIsSigning(false);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.kakao_invalid_token)));
       }else {
-        scaffoldKey.currentState.showSnackBar(
-            SnackBar(content: Text(Strings.no_email)));
+        authServiceAdapter.setIsSigning(false);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.no_email)));
       }
     });
   }
@@ -107,7 +103,7 @@ class _LoginState extends State<Login> {
         print('login no date');
       }
       if(loginResult.result.isValue) {
-        if(loginResult.result.asValue.value.message == HttpUrls.MESSAGE_SUCCESS) {
+        if(loginResult.result.asValue.value.status == 200) {
           signInProviderModel.saveDeviceInfo(
               loginResult.result.asValue.value.result,
               BaseWidget.platform,
@@ -125,6 +121,18 @@ class _LoginState extends State<Login> {
           }else {
             AnalyticsService().setUserProperties(false, authServiceAdapter.userVO.gender, authServiceAdapter.userVO.birthDate);
           }
+        }else if(loginResult.result.asValue.value.status == 401) {
+          authServiceAdapter.setIsSigning(false);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.verify_fail_error)));
+        }else if(loginResult.result.asValue.value.status == 404) {
+          authServiceAdapter.setIsSigning(false);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.not_found_account_error)));
+        }else if(loginResult.result.asValue.value.status == 422) {
+          authServiceAdapter.setIsSigning(false);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.no_exist_required_param)));
+        }else {
+          authServiceAdapter.setIsSigning(false);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.login_server_error)));
         }
       }
     });
@@ -265,7 +273,6 @@ class _LoginState extends State<Login> {
           key: scaffoldKey,
           backgroundColor: Colors.white,
           resizeToAvoidBottomInset: false,
-          resizeToAvoidBottomPadding: false,
           body: Center(
             child: SafeArea(
               child: Column(

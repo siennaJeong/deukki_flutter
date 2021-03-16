@@ -50,7 +50,7 @@ class StageProvider with ChangeNotifier{
   }
 
   void setPlayRate() {
-    this.playRate = this.playRate + 0.15;
+    this.playRate = this.playRate + 0.3;
     notifyListeners();
   }
 

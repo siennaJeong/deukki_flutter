@@ -50,7 +50,6 @@ class SignUpInputNameState extends State<SignUpInputName> with Validator {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: MainColors.yellow_100,
-        resizeToAvoidBottomPadding: false,
         resizeToAvoidBottomInset: false,
         body: GestureDetector(
           onTap: () {

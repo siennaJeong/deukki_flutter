@@ -13,14 +13,17 @@ class StageVO {
   @JsonKey(name: 'score')
   int score;
 
-  StageVO(this.stageIdx, this.stage, this.score);
+  @JsonKey(name: 'premium')
+  int premium;
+
+  StageVO(this.stageIdx, this.stage, this.score, this.premium);
 
   factory StageVO.fromJson(Map<String, dynamic> json) => _$StageVOFromJson(json);
   Map<String, dynamic> toJson() => _$StageVOToJson(this);
 
   @override
   String toString() {
-    return 'StageVO{stageIdx: $stageIdx, stage: $stage, score: $score}';
+    return 'StageVO{stageIdx: $stageIdx, stage: $stage, score: $score, premium: $premium}';
   }
 }
 

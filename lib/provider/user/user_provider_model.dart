@@ -1,3 +1,4 @@
+
 import 'package:deukki/common/storage/db_helper.dart';
 import 'package:deukki/common/storage/shared_helper.dart';
 import 'package:deukki/data/model/bookmark_vo.dart';
@@ -14,21 +15,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserProviderModel extends ProviderModel<UserProviderState> {
+  static const String PREMIUM_POPUP = "premiumPopup";
+  static const String STAGE_GUIDE = "stageGuide";
+  static const String LEARN_GUIDE = "learnGuide";
+  static const String FIRST_ATTEND_DATE = "firstAttendDate";
+  static const String LAST_ATTEND_DATE = "lastAttendDate";
+  static const String LEARN_COUNT = "learnCount";
+  static const String AVAILABLE_REVIEW = "availableReview";
   DBHelper _dbHelper;
   SharedHelper _sharedHelper;
+  var reviewPeriod;
 
   UserProviderModel({@required UserRepository userRepository, @required DBHelper dbHelper, @required SharedHelper sharedHelper})
       : assert(userRepository != null),
         _userRepository = userRepository,
         _dbHelper = dbHelper,
         _sharedHelper = sharedHelper,
+        reviewPeriod = DateTime(2021, 3, 14),
         super(UserProviderState());
 
   factory UserProviderModel.build() => UserProviderModel(userRepository: UserRestRepository(), dbHelper: DBHelper(), sharedHelper: SharedHelper());
   final UserRepository _userRepository;
-  static const String PREMIUM_POPUP = "premiumPopup";
-  static const String STAGE_GUIDE = "stageGuide";
-  static const String LEARN_GUIDE = "learnGuide";
+
   List<BookmarkVO> currentBookmarkList = [];
   List<ProductionVO> productList = [];
   List<ProductionVO> trialProductList = [];
@@ -37,6 +45,9 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   int bookmarkScore = 0;
   int premiumPopupShow = 0;
   int stageGuide, learnGuide = 0;
+  int firstAttendDate, lastAttendDate = 0;
+  int learnCount, availableReview = 0;
+  int attendPeriod = 0;
 
   Future<void> checkSignUp(String authType, String authId, String fbUid) async {
     final checkSignUp = _userRepository.checkUserSignUp(authType, authId, fbUid);
@@ -173,6 +184,18 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
     }
   }
 
+  Future<void> getLearnCount() async {
+    if(_sharedHelper != null) {
+      learnCount = await _sharedHelper.getIntSharedPref(LEARN_COUNT);
+    }
+  }
+
+  Future<void> getAvailableReview() async {
+    if(_sharedHelper != null) {
+      availableReview = await _sharedHelper.getIntSharedPref(AVAILABLE_REVIEW);
+    }
+  }
+
   void setUserPremium(String expiredDate) async {
     userVOForHttp.premium = 1;
     userVOForHttp.premiumEndAt = expiredDate;
@@ -191,5 +214,30 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
   void setLearnGuide() async {
     await _sharedHelper.setIntSharedPref(LEARN_GUIDE, 1);
     getLearnGuide();
+  }
+
+  void setAttendDate() async {
+    var nowDate = DateTime.now().millisecondsSinceEpoch;
+    if(_sharedHelper.getStringSharedPref(FIRST_ATTEND_DATE) != null) {
+      firstAttendDate = await _sharedHelper.getIntSharedPref(FIRST_ATTEND_DATE);
+      lastAttendDate = nowDate;
+      attendPeriod = (lastAttendDate - firstAttendDate) / 1000 / 60 / 60 / 24 as int;    // 일로 계산
+      await _sharedHelper.setIntSharedPref(LAST_ATTEND_DATE, nowDate);
+    }else {
+      firstAttendDate = nowDate;
+      lastAttendDate = nowDate;
+      await _sharedHelper.setIntSharedPref(FIRST_ATTEND_DATE, nowDate);
+      await _sharedHelper.setIntSharedPref(LAST_ATTEND_DATE, nowDate);
+    }
+  }
+
+  void setLearnCount() async {
+    learnCount = learnCount + 1;
+    await _sharedHelper.setIntSharedPref(LEARN_COUNT, learnCount);
+  }
+
+  void setAvailableReview() async {
+    await _sharedHelper.setIntSharedPref(AVAILABLE_REVIEW, 1);
+    getAvailableReview();
   }
 }

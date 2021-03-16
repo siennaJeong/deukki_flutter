@@ -84,8 +84,8 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   @override
-  Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice) async {
-    final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=$voice", HttpUrls.headers(authJWT));
+  Future<Result<CommonResultVO>> getPronunciation(String authJWT, String sentenceId, int stageIdx, bool needRight, String voice, int answer) async {
+    final pronunciationJson = await _httpClient.getRequest(HttpUrls.STAGE_PRONUNCIATION + "/$sentenceId/$stageIdx" + "?needRight=${needRight.toString()}&voice=$voice&answer=$answer", HttpUrls.headers(authJWT));
     if(pronunciationJson.isValue) {
       return Result.value(CommonResultVO.fromJson(pronunciationJson.asValue.value as Map<String, dynamic>));
     }else {

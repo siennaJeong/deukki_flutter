@@ -57,9 +57,11 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   List<BookmarkVO> _bookmarkList = [];
   Future<void> analyticsResult;
 
-  AnimationController _playController, _answerController;
+  AnimationController _playController, _answerControllerUnder3, _answerControllerUpper3;
   bool _isPlayAnimation = true;
   bool _isAnswerAnimation = true;
+
+  int _audioFileLength = 0;
 
   @override
   void initState() {
@@ -71,7 +73,11 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         duration: Duration(milliseconds: 800),
         vsync: this);
 
-    _answerController = AnimationController(
+    _answerControllerUnder3 = AnimationController(
+        duration: Duration(milliseconds: 800),
+        vsync: this);
+
+    _answerControllerUpper3 = AnimationController(
         duration: Duration(milliseconds: 800),
         vsync: this);
 
@@ -95,9 +101,17 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     );
 
     if(_isAnswerAnimation && categoryProvider.playCount > 0 && !categoryProvider.isPlaying) {
-      _answerController.repeat(reverse: true);
+      if(categoryProvider.stepPronList.length > 3) {
+        _answerControllerUpper3.repeat(reverse: true);
+      }else {
+        _answerControllerUnder3.repeat(reverse: true);
+      }
     }else {
-      _answerController?.reset();
+      if(categoryProvider.stepPronList.length > 3) {
+        _answerControllerUpper3.reset();
+      }else {
+        _answerControllerUnder3.reset();
+      }
     }
 
     super.didChangeDependencies();
@@ -109,9 +123,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       _volumeButtonEvent?.cancel();
     }
     stageProvider.stopLearnTime();
-    _playController?.dispose();
-    _answerController?.dispose();
     super.dispose();
+    _playController?.dispose();
+    _answerControllerUnder3?.dispose();
+    _answerControllerUpper3?.dispose();
+    _playController = null;
+    _answerControllerUnder3 = null;
+    _answerControllerUpper3 = null;
   }
 
   Widget _header() {
@@ -284,14 +302,14 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
 
   Widget _playButtonContainer(double width) {              //  Play button
     String playSpeed;
-    String soundIcons;    // speed : 0.8, 0.95, 1.1, 1.25, 1.4
-    if(stageProvider.playRate >= 0.95 && stageProvider.playRate < 1.1) {
+    String soundIcons;    // speed : 0.8, 1.1, 1.4, 1.7, 2.0
+    if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.4) {
       playSpeed = Strings.play_speed_15;
-    }else if(stageProvider.playRate >= 1.1 && stageProvider.playRate < 1.25) {
+    }else if(stageProvider.playRate >= 1.4 && stageProvider.playRate < 1.7) {
       playSpeed = Strings.play_speed_20;
-    }else if(stageProvider.playRate >= 1.25 && stageProvider.playRate < 1.4){
+    }else if(stageProvider.playRate >= 1.7 && stageProvider.playRate < 2.0){
       playSpeed = Strings.play_speed_25;
-    }else if(stageProvider.playRate >= 1.4) {
+    }else if(stageProvider.playRate >= 2.0) {
       playSpeed = Strings.play_speed_30;
     }else {
       playSpeed = "";
@@ -407,24 +425,27 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _listWidget(double width) {            //  ListView
     int crossAxisCount;
     double mainAxisCellCount;
-    PronunciationVO rightPronunciation = categoryProvider.getRightPronun();
-    if(categoryProvider.pronunciationList.length > 2) {
-      if(categoryProvider.pronunciationList.length % 2 == 0) {
-        crossAxisCount = 2;
-        mainAxisCellCount = (width - 16) * 0.44;
-      }else {
-        crossAxisCount = 1;
-        mainAxisCellCount = (width - 32) * 0.28;
-      }
-    }else {
-      crossAxisCount = 1;
-      mainAxisCellCount = (width - 16) * 0.44;
-    }
+    PronunciationVO rightPronunciation = categoryProvider.getRightPron();
     return Selector<CategoryProvider, List<PronunciationVO>>(
-      selector: (context, categoryProvider) => categoryProvider.pronunciationList,
+      selector: (context, categoryProvider) => categoryProvider.stepPronList,
       builder: (context, pronunciations, child) {
+
+        if(pronunciations.length > 2) {
+          if(pronunciations.length % 2 == 0) {
+            crossAxisCount = 2;
+            mainAxisCellCount = (width - 16) * 0.44;
+          }else {
+            crossAxisCount = 1;
+            mainAxisCellCount = (width - 32) * 0.28;
+          }
+        }else {
+          crossAxisCount = 1;
+          mainAxisCellCount = (width - 16) * 0.44;
+        }
+
         return Expanded(
-          child: StaggeredGridView.countBuilder(
+          child: new StaggeredGridView.countBuilder(
+            key: ObjectKey(crossAxisCount),
             primary: false,
             shrinkWrap: true,
             padding: EdgeInsets.only(left: 0),
@@ -437,7 +458,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             itemBuilder: (BuildContext context, index) {
               return _listItemWidget(pronunciations[index], rightPronunciation.pronunciation, index);
             },
-            staggeredTileBuilder: (index) => StaggeredTile.extent(crossAxisCount, mainAxisCellCount),
+            staggeredTileBuilder: (index) => new StaggeredTile.extent(1, mainAxisCellCount),
           ),
         );
       },
@@ -471,7 +492,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     return GestureDetector(
       child: _listItemAnimation(pronunciationVO, rightPronunciation, index, cardColor, textColor),
       onTap: () {                   // List Item Click (Quiz answer click)
-        _answerController.reset();
         _isAnswerAnimation = false;
         if(!categoryProvider.isPlaying
             && categoryProvider.playCount > 0
@@ -486,6 +506,21 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
               }
             );
             stageProvider.historyInit(randomPath.stageIdx);
+
+            if(categoryProvider.initPronList.length > 2) {
+              if(categoryProvider.initPronList.length <= categoryProvider.stepPronList.length) {
+                stageProvider.setPlayRate();
+              }
+
+              if(categoryProvider.initPronList.length > categoryProvider.stepPronList.length) {
+                categoryProvider.addStepPronList();
+                _audioFileLength++;
+              }
+
+            }else {
+              stageProvider.setPlayRate();
+            }
+
           }else {
             AnalyticsService().sendAnalyticsEvent(
               "$PAGE_LEARNING Wrong",
@@ -511,7 +546,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   Widget _listItemAnimation(PronunciationVO pronunciationVO, String rightPronunciation, int index, Color cardColor, Color textColor) {
     if(userProviderModel.learnGuide == 0) {
       return RippleAnimation(
-        controller: _answerController,
+        controller: categoryProvider.stepPronList.length > 3 ? _answerControllerUpper3 : _answerControllerUnder3,
         color: MainColors.yellow_60,
         rippleTarget: _itemWidget(pronunciationVO, rightPronunciation, index, cardColor, textColor),
         radius: 24.0,
@@ -705,7 +740,6 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       stageProvider.addHistory();
       _showResultDialog(resultBgImage, resultText);
       stageProvider.setLevel();
-      stageProvider.setPlayRate();
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }else {
@@ -714,7 +748,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
       stageProvider.historyInit(randomPath.stageIdx);
       stageProvider.initSelectAnswer();
     }
-    randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+    randomPath = resourceProviderModel.audioFilePath[random.nextInt(_audioFileLength)];
   }
 
   void _showResultDialog(String bgImages, String answerResult) {
@@ -770,6 +804,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             stageProvider.generateLearningRecord(categoryProvider.selectStageIdx)
         ).then((value) {
           userProviderModel.setLearnGuide();
+          userProviderModel.setLearnCount();
           RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
         });
       });
@@ -876,8 +911,13 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
     var ratioWidth = deviceWidth * 0.6;
 
     if(randomPath == null) {
-      if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.pronunciationList.length > 0) {
-        randomPath = resourceProviderModel.audioFilePath[random.nextInt(resourceProviderModel.audioFilePath.length)];
+      if(resourceProviderModel.audioFilePath.length > 0 && categoryProvider.initPronList.length > 0) {
+        if(categoryProvider.initPronList.length > 2) {
+          _audioFileLength = resourceProviderModel.audioFilePath.length - 2;
+        }else {
+          _audioFileLength = categoryProvider.initPronList.length;
+        }
+        randomPath = resourceProviderModel.audioFilePath[random.nextInt(_audioFileLength)];
         stageProvider.setPlayPIdx(randomPath.stageIdx);
       }
     }

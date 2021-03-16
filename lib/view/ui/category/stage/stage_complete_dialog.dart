@@ -1,5 +1,6 @@
 
 import 'dart:io';
+import 'dart:math';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 
 class StageCompleteDialog extends StatefulWidget {
@@ -25,6 +27,8 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   CategoryProvider categoryProvider;
   UserProviderModel userProviderModel;
 
+  final random = Random();
+  final InAppReview _inAppReview = InAppReview.instance;
   double deviceWidth, deviceHeight;
 
   @override
@@ -86,6 +90,17 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
         break;
     }
 
+    /// 평점 요청
+    /// 한달 단위로 A, B, C type 으로 A/B test 진행
+    void _requestAppReview(int count) {
+      if(userProviderModel.availableReview == 0) {
+        if(userProviderModel.learnCount >= count) {
+          _inAppReview.requestReview();
+          userProviderModel.setAvailableReview();
+        }
+      }
+    }
+
     void _quizDone() {
       AnalyticsService().sendAnalyticsEvent("$PAGE_LEARN_COMPLETE OK", null);
 
@@ -105,20 +120,26 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
           if(userProviderModel.premiumPopupShow == 0) {
             if(userProviderModel.userVOForHttp.premium == 1) {
               Navigator.pop(context);
+              _requestAppReview(3);
             }else {
               RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+              _requestAppReview(3);
             }
           }else {
             Navigator.pop(context);
+            _requestAppReview(3);
           }
         }else {
           Navigator.pop(context);
+          _requestAppReview(3);
         }
       }else {
         if(categoryProvider.premiumPopupCount >= 1) {
           RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
+          _requestAppReview(1);
         }else {
           Navigator.pop(context);
+          _requestAppReview(1);
         }
       }
     }

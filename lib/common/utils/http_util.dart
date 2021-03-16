@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 class HttpUrls {
   static const String MESSAGE_SUCCESS = "Success";
   static const String SERVER_URL = kDebugMode ? "https://dev-api.deukki.com" : "https://api.deukki.com";
-  //static const String SERVER_URL = "https://dev-api.deukki.com";
+  //static const String SERVER_URL = "https://api.deukki.com";
 
   static const String CHECK_ALL_VERSION = "$SERVER_URL/versions";
   static const String CHECK_APP_VERSION = "$SERVER_URL/versions/app";

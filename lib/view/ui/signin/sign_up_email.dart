@@ -49,7 +49,6 @@ class SignUpInputEmailState extends State<SignUpInputEmail> with Validator {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: MainColors.yellow_100,
-        resizeToAvoidBottomPadding: false,
         resizeToAvoidBottomInset: false,
         body: GestureDetector(
           onTap: () {

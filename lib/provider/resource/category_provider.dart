@@ -37,7 +37,8 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryMediumVO> _categoryMediumList = [];
   List<SentenceVO> _sentenceList = [];
   List<StageVO> _stageList = [];
-  List<PronunciationVO> _pronunciationList = [];
+  List<PronunciationVO> _initPronList = [];
+  List<PronunciationVO> _stepPronList = [];
   List<PreScoreVO> _preScoreList;
 
   CategoryProvider(this._categoryLargeList, {this.dbHelper, this.sharedHelper, this.audioPlayer}) {
@@ -65,18 +66,19 @@ class CategoryProvider with ChangeNotifier {
   List<CategoryLargeVO> get categoryLargeList => [..._categoryLargeList];
   List<SentenceVO> get sentenceList => [..._sentenceList];
   List<StageVO> get stageList => [..._stageList];
-  List<PronunciationVO> get pronunciationList => [..._pronunciationList];
+  List<PronunciationVO> get initPronList => [..._initPronList];
+  List<PronunciationVO> get stepPronList => [..._stepPronList];
   List<PreScoreVO> get preScoreList => [..._preScoreList];
 
   getLargeId() => _largeId;
   getSentenceTitle() => _sentenceTitle;
   CategoryMediumVO getCurrentMedium() => _categoryMediumVO;
-  PronunciationVO getRightPronun() => _rightPronunciation;
+  PronunciationVO getRightPron() => _rightPronunciation;
 
   setLargeId(String largeId) => _largeId = largeId;
   setSentenceTitle(String sentenceTitle) => _sentenceTitle = sentenceTitle;
   setCurrentMedium(CategoryMediumVO categoryMediumVO) => _categoryMediumVO = categoryMediumVO;
-  setRightPronun(PronunciationVO rightPronun) => _rightPronunciation = rightPronun;
+  setRightPron(PronunciationVO rightPron) => _rightPronunciation = rightPron;
 
   Future<void> fetchAndSetLargeCategory() async {
     if(dbHelper.database != null && _categoryLargeList.length <= 0) {
@@ -207,16 +209,32 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setPronunciationList(List<dynamic> pronunList, PronunciationVO rightPronunciation) async {
-    if(this._pronunciationList.length > 0) {
-      this._pronunciationList.clear();
+  Future<void> initPronunciationList(List<dynamic> pronList, PronunciationVO rightPronunciation) async {
+    if(this._initPronList.length > 0) {
+      this._initPronList.clear();
     }
-    setRightPronun(rightPronunciation);
-    this._pronunciationList.add(rightPronunciation);
-    pronunList.forEach((element) {
+    setRightPron(rightPronunciation);
+    this._initPronList.add(rightPronunciation);
+    pronList.forEach((element) {
       PronunciationVO pronunciationVO = PronunciationVO.fromJson(element);
-      this._pronunciationList.add(pronunciationVO);
+      this._initPronList.add(pronunciationVO);
     });
+    _setStepPronList();
+    notifyListeners();
+  }
+
+  void _setStepPronList() {
+    if(this._stepPronList.length > 0) {
+      this._stepPronList.clear();
+    }
+    for(int i = 0 ; i < 2 ; i++) {
+      this._stepPronList.add(this._initPronList[i]);
+    }
+    notifyListeners();
+  }
+
+  void addStepPronList() {
+    this._stepPronList.add(this._initPronList[this._stepPronList.length]);
     notifyListeners();
   }
 

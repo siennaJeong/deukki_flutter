@@ -44,6 +44,10 @@ class Strings {
   static const String log_in_cancel = '로그인을 취소했습니다.';
   static const String kakao_invalid_token = '일시적인 오류로 로그인에 실패했습니다. 다시 시도해주세요.';
   static const String no_email = '존재하지 않는 이메일 입니다.';
+  static const String verify_fail_error = '인증 정보가 유효하지 않습니다.';
+  static const String not_found_account_error = '가입 된 이메일이 아닙니다.';
+  static const String no_exist_required_param = '로그인에 실패했습니다. 다시 시도해주세요.';
+  static const String login_server_error = '일시적인 오류가 발생했습니다.';
 
   static const String login_sns_other_type = '또는';
   static const String sign_up_terms_title = '바름드끼 시작하기';

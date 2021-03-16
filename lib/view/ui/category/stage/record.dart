@@ -49,8 +49,6 @@ class _RecordState extends State<Record> {
     authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
     userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
 
-    ///AnalyticsService().sendAnalyticsEvent(true, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "", "", "");
-
     super.initState();
     _initRecorder();
   }
@@ -63,7 +61,6 @@ class _RecordState extends State<Record> {
 
   void _initRecorder() async {
     try{
-      //String pIdx = "_${categoryProvider.getRightPronun().pIdx}";
       tempPath = "/record_${DateTime.now().millisecond}.aac";
       directory = await getTemporaryDirectory();
       dirPath = directory.path;
@@ -133,7 +130,6 @@ class _RecordState extends State<Record> {
   }
 
   void _recordButtonCallback() {                //  Record Button Click
-    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "record", "", "");
 
     switch(_recordingStatus) {
       case RecordingStatus.Initialized:
@@ -243,21 +239,18 @@ class _RecordState extends State<Record> {
   }
 
   void _recordAgain() {
-    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "again", "", "");
     _recordUpload(recordProvider.roundCount);
     _initRecorder();
     Navigator.pop(context);
   }
 
   void _recordDone() {
-    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "done", "", "");
     Navigator.pop(context);
     _recordUpload(recordProvider.roundCount);
     Navigator.pop(context);
   }
 
   Widget _closeButtonWidget() {               //  close button
-    ///AnalyticsService().sendAnalyticsEvent(false, userProviderModel.userVOForHttp.premium == 0 ? false : true, PAGE_RECORD, "close", "", "");
     return InkWell(
       child: Container(
         margin: EdgeInsets.all(24),
@@ -368,7 +361,7 @@ class _RecordState extends State<Record> {
                                     height: deviceHeight * 0.22,
                                     alignment: AlignmentDirectional.center,
                                     child: Text(
-                                      categoryProvider.getRightPronun().pronunciation,
+                                      categoryProvider.getRightPron().pronunciation,
                                       style: TextStyle(
                                         fontSize: 20,
                                         fontFamily: "TmoneyRound",
