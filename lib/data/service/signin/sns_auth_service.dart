@@ -5,8 +5,6 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
@@ -39,12 +37,12 @@ class SNSAuthService {
         AuthCredential pendingCredential = e.credential;
         List<String> userSignInMethods = await firebaseAuth.fetchSignInMethodsForEmail(existMail);
 
-        if(userSignInMethods.first == 'facebook.com') {
+        /*if(userSignInMethods.first == 'facebook.com') {
           var accessToken = await FacebookAuth.instance.login(permissions: ['email', 'public_profile']);
           FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(accessToken.accessToken.token);
           UserCredential userCredential = await firebaseAuth.signInWithCredential(facebookAuthCredential);
           return userCredential.user.linkWithCredential(pendingCredential);
-        }
+        }*/
 
         if(userSignInMethods.first == 'google.com') {
           GoogleSignInAccount googleAccount = await GoogleSignIn(
@@ -141,7 +139,7 @@ class SNSAuthService {
     }
   }
 
-  Future<String> signInWithFacebook() async {
+  /*Future<String> signInWithFacebook() async {
     final result = await FacebookAuth.instance.login(permissions: ['email', 'public_profile']);
     final FacebookAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(result.accessToken.token);
     final UserCredential userCredential = await authExceptionHandler(facebookAuthCredential);
@@ -153,7 +151,7 @@ class SNSAuthService {
     _name = userCredential.user.displayName;
     _fbUid = userCredential.user.uid;
     return facebookAuthCredential.providerId;
-  }
+  }*/
 
   Future<String> signInWithApple() async {
     final rawNonce = generateNonce();

@@ -95,7 +95,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         changeKakaoNoti(false);
         return socialId;
         break;
-      case AuthServiceType.Facebook:
+      /*case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
           socialMethod = AuthService.AUTH_TYPE_FB;
           socialId = value;
@@ -106,7 +106,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         });
         changeKakaoNoti(false);
         return socialId;
-        break;
+        break;*/
       case AuthServiceType.Apple:
         await _snsAuthService.signInWithApple().then((value) {
           socialMethod = AuthService.AUTH_TYPE_APPLE;
