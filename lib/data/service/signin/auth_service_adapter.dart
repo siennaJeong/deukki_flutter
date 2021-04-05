@@ -79,6 +79,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   }
 
   @override
+  // ignore: missing_return
   Future<String> signInWithSNS(AuthServiceType authServiceType) async {
     switch(authServiceType) {
       case AuthServiceType.Google:
