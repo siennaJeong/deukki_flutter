@@ -77,8 +77,7 @@ class _RecordState extends State<Record> {
           _avgPower = (_recording.metering.averagePower + 120.0) / 360;
         });
       }else {
-        Scaffold.of(context).showSnackBar(
-            SnackBar(content: Text(Strings.permission_script)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.permission_script)));
       }
     }catch(e) {
       print(e);
@@ -139,8 +138,7 @@ class _RecordState extends State<Record> {
         _stop();
 
         if(_recording.duration >= Duration(milliseconds: 20000)) {
-          Scaffold.of(context).showSnackBar(
-              SnackBar(content: Text(Strings.record_over_time)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.record_over_time)));
         }else {
           recordProvider.setRoundCount();
           showDialog(             //  Record 끝난 후 Dialog

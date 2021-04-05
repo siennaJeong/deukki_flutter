@@ -143,8 +143,15 @@ class _LoginState extends State<Login> {
       width: deviceWidth * 0.5,
       height: deviceHeight > 700 ? 56 : deviceHeight * 0.13,
       margin: EdgeInsets.only(bottom: Platform.isIOS ? 8 : 30),
-      child: RaisedButton(
-        padding: EdgeInsets.only(left: 20, top: 13, right: 20, bottom: 13),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.only(left: 20, top: 13, right: 20, bottom: 13),
+          primary: logoColor,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(70.0))
+          ),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -170,11 +177,6 @@ class _LoginState extends State<Login> {
                 ),
             ),
           ],
-        ),
-        color: logoColor,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(70.0))
         ),
         onPressed: () {
           authServiceAdapter.setIsSigning(true);
@@ -230,16 +232,18 @@ class _LoginState extends State<Login> {
 
   Widget _snsButton(BuildContext context, String imgUrl, Color color, AuthServiceType authServiceType, String authTypeString) => SizedBox(
       width: 48,
-      child: RaisedButton(
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            primary: color,
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(11.0),
+          ),
           child: Image.asset(
             imgUrl,
             width: 21,
             height: 25,
           ),
-          elevation: 0,
-          color: color,
-          shape: CircleBorder(),
-          padding: EdgeInsets.all(11.0),
           onPressed: () {
             authServiceAdapter.setIsSigning(true);
             _checkSignUp(authTypeString, authServiceType);
