@@ -75,6 +75,9 @@ class _MemberShipState extends State<MemberShip> {
   }
 
   void _addProductIds() {
+    if(_productIds.length > 0) {
+      _productIds.clear();
+    }
     for(int i = 0 ; i < _userProviderModel.productList.length ; i++) {
       _productIds.add(_userProviderModel.productList[i].iapId);
     }
