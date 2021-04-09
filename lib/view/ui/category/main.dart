@@ -194,16 +194,18 @@ class _MainCategoryState extends State<MainCategory> {
                         width: deviceWidth * 0.12,
                         alignment: AlignmentDirectional.centerStart,
                         margin: EdgeInsets.only(top: 14, left: 44),
-                        child: RaisedButton(
-                          padding: EdgeInsets.only(top: 6, bottom: 6, left: 11, right: 11),
-                          color: MainColors.green_100,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
-                              side: BorderSide(
-                                  color: MainColors.green_100,
-                                  width: 2.0
-                              )
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.only(top: 6, bottom: 6, left: 11, right: 11),
+                            primary: MainColors.green_100,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                                side: BorderSide(
+                                    color: MainColors.green_100,
+                                    width: 2.0
+                                )
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

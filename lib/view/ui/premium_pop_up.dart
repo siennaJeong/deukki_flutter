@@ -115,8 +115,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
           setState(() {
             _isPaying = false;
           });
-          scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text(Strings.payment_error_canceled)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_error_canceled)));
           paymentPreRequestInit = null;
         }else if(purchaseDetails.status == PurchaseStatus.purchased) {                //  결제 완료
           _deliverProduct(purchaseDetails.verificationData.localVerificationData);
@@ -148,23 +147,23 @@ class _PremiumPopupState extends State<PremiumPopup> {
               _userProviderModel.setUserPremium(expiredDate);
               _userProviderModel.setPremiumPopupShow();
             });
-            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_completed), duration: Duration(seconds: 1)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_completed)));
           }else if(validation.result.asValue.value.status == 400) {
-            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_error), duration: Duration(seconds: 1)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_error)));
             paymentPreRequestInit = null;
           }else {
-            scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
             paymentPreRequestInit = null;
           }
           setState(() { _isPaying = false; });
         });
       }else if(_paymentId as int == 400) {
         setState(() { _isPaying = false; });
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_wrong_request), duration: Duration(seconds: 1)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_wrong_request)));
         paymentPreRequestInit = null;
       }else if(_paymentId as int == 401) {
         setState(() { _isPaying = false; });
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_token_valid_fail), duration: Duration(seconds: 1)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_token_valid_fail)));
         Future.delayed(Duration(seconds: 1), () {
           _authServiceAdapter.logout();
           _userProviderModel.logout(_authServiceAdapter.authJWT);
@@ -173,15 +172,15 @@ class _PremiumPopupState extends State<PremiumPopup> {
         paymentPreRequestInit = null;
       }else if(_paymentId as int == 404) {
         setState(() { _isPaying = false; });
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error), duration: Duration(seconds: 1)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
         paymentPreRequestInit = null;
       }else if(_paymentId as int == 500) {
         setState(() { _isPaying = false; });
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
         paymentPreRequestInit = null;
       }else {
         setState(() { _isPaying = false; });
-        scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_server_error), duration: Duration(seconds: 1)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_server_error)));
         paymentPreRequestInit = null;
       }
     }
@@ -490,7 +489,7 @@ class _PremiumPopupState extends State<PremiumPopup> {
           setState(() {
             _isPaying = false;
           });
-          scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.payment_not_found_error)));
         }
       },
     );

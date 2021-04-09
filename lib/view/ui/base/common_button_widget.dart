@@ -41,16 +41,18 @@ class _CommonRaisedButtonState extends State<CommonRaisedButton> {
 
   @override
   Widget build(BuildContext context) {
-    return RaisedButton(
-        padding: EdgeInsets.all(14),
-        color: _buttonColor,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(30)),
-            side: BorderSide(
-                color: _borderColor,
-                width: 2.0
-            )
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.all(14),
+          primary: _buttonColor,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(30)),
+              side: BorderSide(
+                  color: _borderColor,
+                  width: 2.0
+              )
+          ),
         ),
         child: Text(
           _buttonText,

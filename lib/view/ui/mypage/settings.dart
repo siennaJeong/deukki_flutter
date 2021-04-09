@@ -405,6 +405,7 @@ class _SettingsState extends State<Settings> {
                     setState(() {
                       defaultVoice = val;
                       _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "M");
+                      _userProviderModel.userVOForHttp.defaultVoice = val;
                     });
                   }
                 },
@@ -421,6 +422,7 @@ class _SettingsState extends State<Settings> {
                     setState(() {
                       defaultVoice = val;
                       _userProviderModel.updateVoice(_authServiceAdapter.authJWT, "F");
+                      _userProviderModel.userVOForHttp.defaultVoice = val;
                     });
                   }
                 },

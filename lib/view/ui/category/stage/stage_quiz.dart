@@ -203,13 +203,11 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
             BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
             userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
             userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
-            scaffoldKey.currentState.showSnackBar(
-                SnackBar(content: Text(Strings.bookmark_cancel), duration: Duration(seconds: 1)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.bookmark_cancel)));
           }else {
             categoryProvider.onBookMark(true);
             userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
-            scaffoldKey.currentState.showSnackBar(
-                SnackBar(content: Text(Strings.bookmark_done), duration: Duration(seconds: 1)));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.bookmark_done)));
           }
         },
       ),
@@ -346,16 +344,18 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   }
 
   Widget _playButtonWidget(double width, String soundIcons, String playSpeed) {
-    return RaisedButton(
-      padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
-      color: !categoryProvider.isPlaying ? MainColors.purple_80 : Colors.white,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(30)),
-          side: BorderSide(
-              color: MainColors.purple_80,
-              width: 2.0
-          )
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.only(top: 12, bottom: 12, left: 16, right: 16),
+        primary: !categoryProvider.isPlaying ? MainColors.purple_80 : Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            side: BorderSide(
+                color: MainColors.purple_80,
+                width: 2.0
+            )
+        ),
       ),
       child: _dataLoadingWidget(soundIcons, playSpeed),
       onPressed: () {               //  Play Button Click
