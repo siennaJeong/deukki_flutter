@@ -126,6 +126,15 @@ class UserProviderModel extends ProviderModel<UserProviderState> {
 
   Future<void> getProductList(String authJWT) async {
     final getProductList = _userRepository.getProductList(authJWT);
+
+    if(trialProductList.length > 0) {
+      trialProductList.clear();
+    }
+
+    if(productList.length > 0) {
+      productList.clear();
+    }
+
     getProductList.then((value) {
       for(int i = 0 ; i < value.asValue.value.length ; i++) {
         if(value.asValue.value[i].trial == 1) {
