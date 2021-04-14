@@ -3,8 +3,11 @@ import 'dart:math';
 
 import 'package:deukki/common/analytics/analytics_service.dart';
 import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/provider/resource/category_provider.dart';
+import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/view/ui/base/bookmark_button_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/values/app_images.dart';
 import 'package:deukki/view/values/colors.dart';
@@ -17,14 +20,20 @@ import 'package:in_app_review/in_app_review.dart';
 import 'package:provider/provider.dart';
 
 class StageCompleteDialog extends StatefulWidget {
+  final StageProvider stageProvider;
+
+  StageCompleteDialog({@required this.stageProvider});
+
   @override
   _StageCompleteDialogState createState() => _StageCompleteDialogState();
 }
 
 class _StageCompleteDialogState extends State<StageCompleteDialog> {
   static const String PAGE_LEARN_COMPLETE = "Learning Complete";
-  CategoryProvider categoryProvider;
-  UserProviderModel userProviderModel;
+  CategoryProvider _categoryProvider;
+  UserProviderModel _userProviderModel;
+  AuthServiceAdapter _authServiceAdapter;
+  StageProvider _stageProvider;
 
   final random = Random();
   final InAppReview _inAppReview = InAppReview.instance;
@@ -32,8 +41,10 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   void initState() {
-    userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
-    userProviderModel.getPremiumPopup();
+    _stageProvider = widget.stageProvider;
+    _authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+    _userProviderModel = Provider.of<UserProviderModel>(context, listen: false);
+    _userProviderModel.getPremiumPopup();
 
     AnalyticsService().sendAnalyticsEvent("${AnalyticsService.VISIT}$PAGE_LEARN_COMPLETE", null);
     super.initState();
@@ -41,7 +52,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
 
   @override
   void didChangeDependencies() {
-    categoryProvider = Provider.of<CategoryProvider>(context);
+    _categoryProvider = Provider.of<CategoryProvider>(context);
 
     super.didChangeDependencies();
   }
@@ -49,6 +60,18 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Widget _bookmarkWidget() {
+    return BookmarkButtonWidget(
+      categoryProvider: _categoryProvider,
+      userProviderModel: _userProviderModel,
+      playPronId: "${_stageProvider.playPIdx}",
+      playRepeat: "${_stageProvider.soundRepeat}",
+      round: "${_stageProvider.round}",
+      authJWT: _authServiceAdapter.authJWT,
+      analyticsName: "$PAGE_LEARN_COMPLETE Bookmark",
+    );
   }
 
   @override
@@ -59,7 +82,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     var acquiredStars, stageScore;
     double stageAvg;
 
-    final result = userProviderModel.value.recordLearning;
+    final result = _userProviderModel.value.recordLearning;
     if(!result.hasData) {
       CupertinoActivityIndicator();
     }else {
@@ -92,10 +115,10 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
     /// 평점 요청
     /// 한달 단위로 A, B, C type 으로 A/B test 진행
     void _requestAppReview(int count) {
-      if(userProviderModel.availableReview == 0) {
-        if(userProviderModel.learnCount >= count) {
+      if(_userProviderModel.availableReview == 0) {
+        if(_userProviderModel.learnCount >= count) {
           _inAppReview.requestReview();
-          userProviderModel.setAvailableReview();
+          _userProviderModel.setAvailableReview();
         }
       }
     }
@@ -104,20 +127,20 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
       AnalyticsService().sendAnalyticsEvent("$PAGE_LEARN_COMPLETE OK", null);
 
       if(acquiredStars >= stageScore) {
-        if(categoryProvider.isRootBookmark) {
-          userProviderModel.updateBookmarkScore(acquiredStars, categoryProvider.selectStageIdx);
+        if(_categoryProvider.isRootBookmark) {
+          _userProviderModel.updateBookmarkScore(acquiredStars, _categoryProvider.selectStageIdx);
         }else {
-          categoryProvider.updateScore(acquiredStars, stageAvg);
-          categoryProvider.updatePreScore();
-          categoryProvider.setPremiumPopupCount();
+          _categoryProvider.updateScore(acquiredStars, stageAvg);
+          _categoryProvider.updatePreScore();
+          _categoryProvider.setPremiumPopupCount();
         }
       }
 
       /// 무료 체험판 페이지로 이동
       if(!kDebugMode) {
-        if(categoryProvider.premiumPopupCount >= 5) {
-          if(userProviderModel.premiumPopupShow == 0) {
-            if(userProviderModel.userVOForHttp.premium == 1) {
+        if(_categoryProvider.premiumPopupCount >= 5) {
+          if(_userProviderModel.premiumPopupShow == 0) {
+            if(_userProviderModel.userVOForHttp.premium == 1) {
               Navigator.pop(context);
               _requestAppReview(3);
             }else {
@@ -133,7 +156,7 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
           _requestAppReview(3);
         }
       }else {
-        if(categoryProvider.premiumPopupCount >= 1) {
+        if(_categoryProvider.premiumPopupCount >= 1) {
           RouteNavigator().go(GetRoutesName.ROUTE_PREMIUM_POPUP, context);
           _requestAppReview(1);
         }else {
@@ -213,7 +236,15 @@ class _StageCompleteDialogState extends State<StageCompleteDialog> {
                   )
                 ],
               ),
-            )
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: Container(
+                margin: EdgeInsets.only(top: 20, right: 20),
+                child: _bookmarkWidget(),
+              ),
+            ),
           ],
         )
       ),

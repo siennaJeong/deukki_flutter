@@ -48,7 +48,7 @@ final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_TERMS: (context) => SignUpTerms(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (context) => SignUpInputEmail(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_NAME: (context) => SignUpInputName(),
-  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => SignUpInputBirth(),      //  ProviderWidget 에서 변경.
+  GetRoutesName.ROUTE_SIGNUP_INPUT_BIRTH: (context) => SignUpInputBirth(),
   GetRoutesName.ROUTE_WELCOME: (context) => Welcome(),
   GetRoutesName.ROUTE_CATEGORY_SMALL: (context) => CategorySmall(),
   GetRoutesName.ROUTE_STAGE_QUIZ: (context) => ChangeNotifierProvider<StageProvider>(create: (context) => StageProvider(), child: StageQuiz(),),
@@ -95,9 +95,6 @@ class RouteNavigator {
       case GetRoutesName.ROUTE_STAGE_QUIZ:
         Navigator.pushNamed(context, GetRoutesName.ROUTE_STAGE_QUIZ);
         break;
-      case GetRoutesName.ROUTE_STAGE_COMPLETE:
-        Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_STAGE_COMPLETE);
-        break;
       case GetRoutesName.ROUTE_RECORD:
         Navigator.pushReplacementNamed(context, GetRoutesName.ROUTE_RECORD);
         break;
@@ -119,6 +116,13 @@ class RouteNavigator {
     }
   }
 
+  goWithData(String routeName, BuildContext context, Object objects) {
+    switch(routeName) {
+      case GetRoutesName.ROUTE_STAGE_COMPLETE:
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StageCompleteDialog(stageProvider: objects,)));
+        break;
+    }
+  }
 }
 
 
