@@ -16,6 +16,7 @@ import 'package:deukki/view/ui/signin/sign_up_name.dart';
 import 'package:deukki/view/ui/signin/sign_up_terms.dart';
 import 'package:deukki/view/ui/category/main.dart';
 import 'package:deukki/view/ui/splash.dart';
+import 'package:deukki/view/ui/tutorial.dart';
 import 'package:deukki/view/ui/welcom.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ import 'package:provider/provider.dart';
 class GetRoutesName {
   static const String FINISH = "finish";
   static const String ROUTE_SPLASH = "/splash";
+  static const String ROUTE_TUTORIAL = "/tutorial";
   static const String ROUTE_LOGIN = "/login";
   static const String ROUTE_MAIN = "/main";
   static const String ROUTE_TERMS = "/signUpTerms";
@@ -44,6 +46,7 @@ class GetRoutesName {
 final routes = <String, WidgetBuilder> {
   GetRoutesName.ROUTE_SPLASH: (context) => Splash(),
   GetRoutesName.ROUTE_LOGIN: (context) => Login(),
+  GetRoutesName.ROUTE_TUTORIAL: (context) => Tutorial(),
   GetRoutesName.ROUTE_MAIN: (context) => MainCategory(),
   GetRoutesName.ROUTE_TERMS: (context) => SignUpTerms(),
   GetRoutesName.ROUTE_SIGNUP_INPUT_EMAIL: (context) => SignUpInputEmail(),
@@ -66,6 +69,9 @@ class RouteNavigator {
     switch(routeName) {
       case GetRoutesName.FINISH:
         Navigator.pop(context, true);
+        break;
+      case GetRoutesName.ROUTE_TUTORIAL:
+        Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_TUTORIAL, (Route<dynamic> route) => false);
         break;
       case GetRoutesName.ROUTE_LOGIN:
         Navigator.pushNamedAndRemoveUntil(context, GetRoutesName.ROUTE_LOGIN, (Route<dynamic> route) => false);

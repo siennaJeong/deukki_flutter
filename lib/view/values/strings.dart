@@ -205,4 +205,6 @@ class Strings {
   static const String mypage_help = '도움말';
   static const String mypage_help_title = '자주 묻는 질문 FAQ';
   static const String mypage_help_script = '찾으시는 답변이 없다면, 카카오톡 바름드끼 채널에게 물어봐주세요.\n단, 상담원 채팅은 근무시간 내에만 답변 가능합니다. (평일 AM 10:00 ~ PM 06:00)';
+
+  static const String skip_btn = 'Skip';
 }
