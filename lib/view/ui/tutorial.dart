@@ -1,8 +1,9 @@
-import 'package:deukki/view/ui/base/common_button_widget.dart';
-import 'package:deukki/view/values/colors.dart';
+import 'package:deukki/common/utils/route_util.dart';
+import 'package:deukki/data/service/signin/auth_service_adapter.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 class Tutorial extends StatefulWidget {
   @override
@@ -11,10 +12,17 @@ class Tutorial extends StatefulWidget {
 
 class _TutorialState extends State<Tutorial> {
   final PageController _pageController = PageController(initialPage: 0);
+  AuthServiceAdapter authServiceAdapter;
   double _deviceWidth, _deviceHeight;
 
   String _buttonText = Strings.skip_btn;
   List<Color> testColor = [Colors.blue, Colors.amber, Colors.green, Colors.deepPurpleAccent];
+
+  @override
+  void initState() {
+    super.initState();
+    authServiceAdapter = Provider.of<AuthServiceAdapter>(context, listen: false);
+  }
 
   Widget _pageViewWidget() {
     return PageView.builder(
@@ -75,7 +83,11 @@ class _TutorialState extends State<Tutorial> {
   }
 
   void _exitTutorial() {
-    print("exit Tutorial");
+    if(authServiceAdapter.authJWT.isNotEmpty) {
+      RouteNavigator().go(GetRoutesName.ROUTE_MAIN, context);
+    }else {
+      RouteNavigator().go(GetRoutesName.ROUTE_LOGIN, context);
+    }
   }
 
   @override
