@@ -95,7 +95,7 @@ class SNSAuthService {
 
       final headers = await googleUser.authHeaders;
       final request = await get(
-          "$_GOOGLE_PEOPLE_API${FirebaseAuth.instance.app.options.apiKey}",
+          Uri.parse("$_GOOGLE_PEOPLE_API${FirebaseAuth.instance.app.options.apiKey}"),
           headers: {
             "Authorization": headers["Authorization"]
           }

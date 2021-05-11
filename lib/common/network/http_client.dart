@@ -12,8 +12,9 @@ class HttpClient {
 
   Future<Result<dynamic>> getRequest(String path, Map<String, String> headers) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await get(path, headers: headers);
+      response = await get(url, headers: headers);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -41,8 +42,9 @@ class HttpClient {
 
   Future<Result<dynamic>> reportRequest(String path, Map<String, String> headers) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await get(path, headers: headers);
+      response = await get(url, headers: headers);
       if(response.body.isEmpty) {
         return Result.value(null);
       }else {
@@ -55,8 +57,9 @@ class HttpClient {
 
   Future<Result<dynamic>> postRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await post(path, headers: headers, body: body);
+      response = await post(url, headers: headers, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -85,8 +88,9 @@ class HttpClient {
 
   Future<Result<dynamic>> paymentRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await post(path, headers: headers, body: body);
+      response = await post(url, headers: headers, body: body);
       if(response.body.isEmpty) {
         return Result.value(null);
       }else {
@@ -99,8 +103,9 @@ class HttpClient {
 
   Future<Result<dynamic>> recordRequest(String path, Map<String, String> headers, Map<String, String> body) async {
     Response response;
+    var url = Uri.parse(Uri.encodeFull(path));
     try {
-      response = await post(Uri.encodeFull(path), headers: headers, body: body);
+      response = await post(url, headers: headers, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -129,8 +134,9 @@ class HttpClient {
 
   Future<Result<dynamic>> couponRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await post(path, headers: headers, body: body);
+      response = await post(url, headers: headers, body: body);
       final statusCode = response.statusCode;
       if(response.body.isEmpty) {
         return Result.value(null);
@@ -144,8 +150,9 @@ class HttpClient {
 
   Future<Result<dynamic>> patchRequest(String path, Map<String, String> headers, Map<String, dynamic> body) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await patch(path, headers: headers, body: body);
+      response = await patch(url, headers: headers, body: body);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {
@@ -174,8 +181,9 @@ class HttpClient {
 
   Future<Result<dynamic>> deleteRequest(String path, Map<String, String> headers) async {
     Response response;
+    var url = Uri.parse(path);
     try {
-      response = await delete(path, headers: headers);
+      response = await delete(url, headers: headers);
       final statusCode = response.statusCode;
       if(statusCode >= 200 && statusCode < 299) {
         if(response.body.isEmpty) {

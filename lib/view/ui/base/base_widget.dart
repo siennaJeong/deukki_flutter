@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 
 abstract class BaseWidget extends StatefulWidget {
-  static FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   static IosDeviceInfo iosDeviceInfo;
   static AndroidDeviceInfo androidDeviceInfo;
