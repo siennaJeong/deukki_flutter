@@ -403,12 +403,13 @@ class _CategorySmallState extends State<CategorySmall> with SingleTickerProvider
                               style: deviceHeight > 700 ? Theme.of(context).textTheme.headline4 : Theme.of(context).textTheme.subtitle1,
                             ),
                           ),
-                          SizedBox(width: 8),
+                          SizedBox(width: 10),
                           Container(
-                            child: FadeTransition(
-                              opacity: _animationController,
-                              child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              border: Border.all(color: MainColors.grey_answer, width: 2)
                             ),
+                            child: Image.asset(AppImages.expandMore, width: 32, height: 32,),
                           ),
                         ],
                       ),
