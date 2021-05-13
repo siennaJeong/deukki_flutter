@@ -1,18 +1,17 @@
 import 'dart:io';
 import 'package:device_info/device_info.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 
 abstract class BaseWidget extends StatefulWidget {
-  static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+//  static FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
   static DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
   static IosDeviceInfo iosDeviceInfo;
   static AndroidDeviceInfo androidDeviceInfo;
   static PackageInfo packageInfo;
   static String platform, deviceId, deviceModel, manufacturer, osVersion, appVersion;
-  static String fcmToken;
+  static String fcmToken = "";
 
   static void getDeviceInfo() async {
     packageInfo ??= await PackageInfo.fromPlatform();
@@ -35,9 +34,10 @@ abstract class BaseWidget extends StatefulWidget {
   }
 
   static void fcmListener() {
-    firebaseMessaging.getToken().then((token) {
+/*    firebaseMessaging.getToken().then((token) {
       fcmToken = token;
     });
+ */
   }
 
   @override
