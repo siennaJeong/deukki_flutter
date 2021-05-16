@@ -25,9 +25,6 @@ PODS:
   - Firebase/Crashlytics (7.11.0):
     - Firebase/CoreOnly
     - FirebaseCrashlytics (~> 7.11.0)
-  - Firebase/Messaging (7.11.0):
-    - Firebase/CoreOnly
-    - FirebaseMessaging (~> 7.11.0)
   - firebase_analytics (8.0.4):
     - Firebase/Analytics (= 7.11.0)
     - firebase_core
@@ -41,10 +38,6 @@ PODS:
     - Flutter
   - firebase_crashlytics (2.0.3):
     - Firebase/Crashlytics (= 7.11.0)
-    - firebase_core
-    - Flutter
-  - firebase_messaging (9.1.4):
-    - Firebase/Messaging (= 7.11.0)
     - firebase_core
     - Flutter
   - FirebaseAnalytics (7.11.0):
@@ -99,19 +92,6 @@ PODS:
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
-  - FirebaseInstanceID (7.11.0):
-    - FirebaseCore (~> 7.0)
-    - FirebaseInstallations (~> 7.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/UserDefaults (~> 7.0)
-  - FirebaseMessaging (7.11.0):
-    - FirebaseCore (~> 7.0)
-    - FirebaseInstallations (~> 7.0)
-    - FirebaseInstanceID (~> 7.0)
-    - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
-    - GoogleUtilities/Environment (~> 7.0)
-    - GoogleUtilities/Reachability (~> 7.0)
-    - GoogleUtilities/UserDefaults (~> 7.0)
   - Flutter (1.0.0)
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
@@ -200,7 +180,6 @@ DEPENDENCIES:
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
-  - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - hardware_buttons (from `.symlinks/plugins/hardware_buttons/ios`)
@@ -229,8 +208,6 @@ SPEC REPOS:
     - FirebaseCoreDiagnostics
     - FirebaseCrashlytics
     - FirebaseInstallations
-    - FirebaseInstanceID
-    - FirebaseMessaging
     - FMDB
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -256,8 +233,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_crashlytics:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
-  firebase_messaging:
-    :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
   google_sign_in:
@@ -302,15 +277,12 @@ SPEC CHECKSUMS:
   firebase_auth: a2bcd374be68ccee6284c3d00286846466b5a28b
   firebase_core: 54856a8a39b8f3e35f34fdd3373f3b92a1daa68b
   firebase_crashlytics: 1e72fe7a913faa6bc73f75794a5f68947e26623e
-  firebase_messaging: 64d2a9b095bc7afa54eff3f4e13522d9098619d2
   FirebaseAnalytics: cd3bd84d722a24a8923918af8af8e5236f615d77
   FirebaseAuth: 5fe4585c2ed847319f0ea68bd1d82c77e49ff9a0
   FirebaseCore: 907447d8917a4d3eb0cce2829c5a0ad21d90b432
   FirebaseCoreDiagnostics: 68ad972f99206cef818230f3f3179d52ccfb7f8c
   FirebaseCrashlytics: 272b675aa9d1e9bae1f9e1449fcc1f2cf6042806
   FirebaseInstallations: a58d4f72ec5861840b84df489f2668d970df558a
-  FirebaseInstanceID: ad5135045a498d7775903efd39762d2cdfa1be27
-  FirebaseMessaging: 163435fb6db065e3b6228f1e577b10ed2cc506d2
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
