@@ -19,7 +19,6 @@ class _TutorialState extends State<Tutorial> {
   AuthServiceAdapter authServiceAdapter;
   double _deviceWidth, _deviceHeight;
 
-  String _buttonText = Strings.skip_btn;
   List<String> guideImages = [
     AppImages.guide_1,
     AppImages.guide_2,
@@ -44,7 +43,8 @@ class _TutorialState extends State<Tutorial> {
       itemBuilder: (BuildContext context, int index) {
         return SizedBox.expand(
           child: Container(
-            child: Image.asset(guideImages[index], fit: BoxFit.fitHeight,),
+            margin: EdgeInsets.only(left: _deviceWidth * 0.06, right: _deviceWidth * 0.06),
+            child: Image.asset(guideImages[index], fit: BoxFit.fitWidth,),
           ),
         );
       },
@@ -64,10 +64,39 @@ class _TutorialState extends State<Tutorial> {
     );
   }
 
+  Widget _skipButtonWidget() {
+    return Container(
+      margin: EdgeInsets.only(top: 15, right: 15),
+      child: TextButton(
+        child: Image.asset(AppImages.skipButton, width: 60,),
+        onPressed: () => {
+          _exitTutorial()
+        },
+      ),
+    );
+  }
+
+  Widget _moveButtonWidget(bool isNext, String img) {
+    return TextButton(
+      child: Image.asset(img),
+      onPressed: () => {
+        _movePage(isNext)
+      },
+    );
+  }
+
   void _setCurrentPage(int pages) {
     setState(() {
       _currentPageNotifier.value = pages;
     });
+  }
+
+  void _movePage(bool isNext) {
+    if(isNext) {
+      _pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+    }else {
+      _pageController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+    }
   }
 
   void _exitTutorial() {
@@ -84,11 +113,15 @@ class _TutorialState extends State<Tutorial> {
     _deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+//      backgroundColor: MainColors.green_10,
       body: Center(
         child: Stack(
           children: <Widget>[
             Positioned.fill(child: _pageViewWidget()),
-            Positioned(bottom: 0, left: 0, right: 0, child: _indicatorWidget()),
+            Positioned(right: 0, top: 0, child: _skipButtonWidget()),
+            Positioned(left: 0, child: _moveButtonWidget(false, AppImages.arrowLeft)),
+            Positioned(right: 0, child: _moveButtonWidget(true, AppImages.arrowRight)),
+            Positioned(bottom: 0, left: 0, right: 0, child: _currentPageNotifier.value > 5 ? Container() : _indicatorWidget()),
           ],
         ),
       ),
