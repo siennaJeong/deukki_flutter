@@ -335,16 +335,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-<<<<<<< HEAD
-  flutter_audio_recorder:
-    dependency: "direct main"
-    description:
-      name: flutter_audio_recorder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.5.5"
-=======
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -403,18 +393,7 @@ packages:
       name: graphs
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
-    version: "0.2.0"
-=======
     version: "2.0.0"
-  hardware_buttons:
-    dependency: "direct main"
-    description:
-      name: hardware_buttons
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   http:
     dependency: "direct main"
     description:
