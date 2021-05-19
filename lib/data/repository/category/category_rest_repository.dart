@@ -96,7 +96,7 @@ class CategoryRestRepository implements CategoryRepository {
   @override
   Future<Result<String>> saveAudioFile(String dir, String url, String fileName) async {
     File file = new File('$dir/$fileName');
-    var request = await get(url);
+    var request = await get(Uri.parse(url));
     var bytes = request.bodyBytes;
     await file.writeAsBytes(bytes);
     if(file.path.isNotEmpty) {
@@ -121,7 +121,7 @@ class CategoryRestRepository implements CategoryRepository {
   }
 
   Future<void> _upload(String authJWT, int idx, String url, File file) async {
-    var response = await put(url, headers: HttpUrls.uploadHeader(), body: await file.readAsBytes());
+    var response = await put(Uri.parse(url), headers: HttpUrls.uploadHeader(), body: await file.readAsBytes());
     print("upload done : " + response.statusCode.toString());
     if(response.statusCode == 200) {
       updateRecordResult(authJWT, idx);

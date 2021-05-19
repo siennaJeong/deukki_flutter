@@ -14,7 +14,7 @@ import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+//import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -32,9 +32,9 @@ class _RecordState extends State<Record> {
   CategoryProvider categoryProvider;
   RecordProvider recordProvider;
 
-  FlutterAudioRecorder _recorder;
-  Recording _recording;
-  RecordingStatus _recordingStatus = RecordingStatus.Unset;
+  //FlutterAudioRecorder _recorder;
+  //Recording _recording;
+  //RecordingStatus _recordingStatus = RecordingStatus.Unset;
   double _avgPower = 0.0;
   String tempPath, dirPath;
   Directory directory;
@@ -65,7 +65,7 @@ class _RecordState extends State<Record> {
       directory = await getTemporaryDirectory();
       dirPath = directory.path;
 
-      if(await FlutterAudioRecorder.hasPermissions) {
+/*      if(await FlutterAudioRecorder.hasPermissions) {
         print("temporary directory : " + dirPath + tempPath);
         _recorder = FlutterAudioRecorder(dirPath + tempPath);
         await _recorder.initialized;
@@ -79,13 +79,14 @@ class _RecordState extends State<Record> {
       }else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.permission_script)));
       }
+ */
     }catch(e) {
       print(e);
     }
   }
 
   void _start() async {
-    try {
+/*    try {
       await _recorder.start();
       var recording = await _recorder.current(channel: 0);
       setState(() {
@@ -114,11 +115,12 @@ class _RecordState extends State<Record> {
     }catch(e) {
       print(e);
     }
+ */
   }
 
   void _stop() async {
     recordProvider.setIsRecord(false);
-    var stop = await _recorder.stop();
+/*    var stop = await _recorder.stop();
 
     setState(() {
       _avgPower = 0.0;
@@ -126,11 +128,12 @@ class _RecordState extends State<Record> {
       _recordingStatus = _recording.status;
       print("record duration : " + _recording.duration.toString());
     });
+ */
   }
 
   void _recordButtonCallback() {                //  Record Button Click
 
-    switch(_recordingStatus) {
+/*    switch(_recordingStatus) {
       case RecordingStatus.Initialized:
         _start();
         break;
@@ -223,6 +226,7 @@ class _RecordState extends State<Record> {
         }
         break;
     }
+ */
   }
 
   Future<void> _recordUpload(int roundCount) async {

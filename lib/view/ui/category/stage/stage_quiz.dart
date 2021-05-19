@@ -13,6 +13,7 @@ import 'package:deukki/provider/resource/category_provider.dart';
 import 'package:deukki/provider/resource/resource_provider_model.dart';
 import 'package:deukki/provider/resource/stage_provider.dart';
 import 'package:deukki/provider/user/user_provider_model.dart';
+import 'package:deukki/view/ui/base/bookmark_button_widget.dart';
 import 'package:deukki/view/ui/base/common_button_widget.dart';
 import 'package:deukki/view/ui/base/ripple_animation.dart';
 import 'package:deukki/view/values/app_images.dart';
@@ -178,40 +179,14 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
   }
 
   Widget _bookMarkWidget() {          //  Bookmark Button
-    return Container(
-      margin: EdgeInsets.only(bottom: 25),
-      child: InkWell(
-        child: Image.asset(
-          categoryProvider.isBookmark ? AppImages.bookmarkActive : AppImages.bookmarkNormal,
-          width: 50,
-          height: 50,
-        ),
-        onTap: () {
-          AnalyticsService().sendAnalyticsEvent(
-            "$PAGE_LEARNING Bookmark",
-            <String,dynamic> {
-              'sentence_id': categoryProvider.selectedSentence.id,
-              'stage_number': categoryProvider.selectStageIndex,
-              'play_pronunciation_id': stageProvider.playPIdx,
-              'play_repeat': stageProvider.soundRepeat,
-              'round': stageProvider.round
-            }
-          );
-
-          if(categoryProvider.isBookmark) {
-            categoryProvider.onBookMark(false);
-            BookmarkVO bookmarkVO = userProviderModel.currentBookmarkList.singleWhere((element) => element.stageIdx == categoryProvider.selectStageIdx, orElse: null);
-            userProviderModel.deleteBookmark(authServiceAdapter.authJWT, bookmarkVO.bookmarkIdx);
-            userProviderModel.currentBookmarkList.removeWhere((element) => element.stageIdx == categoryProvider.selectStageIdx);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.bookmark_cancel)));
-          }else {
-            categoryProvider.onBookMark(true);
-            userProviderModel.updateBookmark(authServiceAdapter.authJWT, categoryProvider.selectedSentence.id, categoryProvider.selectStageIdx);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(Strings.bookmark_done)));
-          }
-        },
-      ),
-    );
+    return BookmarkButtonWidget(
+      categoryProvider: categoryProvider,
+      userProviderModel: userProviderModel,
+      playPronId: "${stageProvider.playPIdx}",
+      playRepeat: "${stageProvider.soundRepeat}",
+      round: "${stageProvider.round}",
+      authJWT: authServiceAdapter.authJWT,
+      analyticsName: "$PAGE_LEARNING Bookmark");
   }
 
   Widget _bottom(double width) {
@@ -805,7 +780,7 @@ class _StageQuizState extends State<StageQuiz> with TickerProviderStateMixin {
         ).then((value) {
           userProviderModel.setLearnGuide();
           userProviderModel.setLearnCount();
-          RouteNavigator().go(GetRoutesName.ROUTE_STAGE_COMPLETE, context);
+          RouteNavigator().goWithData(GetRoutesName.ROUTE_STAGE_COMPLETE, context, stageProvider);
         });
       });
     }

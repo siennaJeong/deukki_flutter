@@ -52,4 +52,16 @@ class AppImages {
   static String kakaoYellowLogo = "$_basePath/kakao_logo_yellow.png";
   static String pictureImage = "$_basePath/picture.png";
 
+  static String guide_1 = "$_basePath/guide_first.png";
+  static String guide_2 = "$_basePath/guide_second.png";
+  static String guide_3 = "$_basePath/guide_third.png";
+  static String guide_4 = "$_basePath/guide_fourth.png";
+  static String guide_5 = "$_basePath/guide_fifth.png";
+  static String guide_6 = "$_basePath/guide_sixth.png";
+  static String guide_7 = "$_basePath/guide_seventh.png";
+  static String arrowLeft = "$_basePath/arrow_left.png";
+  static String arrowRight = "$_basePath/arrow_right.png";
+  static String skipButton = "$_basePath/skip_btn.png";
+  static String startButton = "$_basePath/start_btn.png";
+
 }

@@ -13,6 +13,8 @@ abstract class AuthService{
 
   static const String KAKAO_NOTIFICATION = "kakaoNotice";
 
+  static const String SKIP_TUTORIAL = "skipTutorial";
+
   Future<String> signInWithSNS(AuthServiceType authServiceType);
   Future<void> logout();
   Future<void> userAuthState();

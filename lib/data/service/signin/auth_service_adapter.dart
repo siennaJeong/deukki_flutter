@@ -31,8 +31,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
 
   bool marketingAgree = false;
   UserVO _userVO;
-  String _authJWT;
-  String _kakaoNoti;
+  String _authJWT, _kakaoNoti, _skipTutorial;
   String socialId, socialMethod, marketingMethod, phone, fbUid;
 
   bool _isSigning = false;
@@ -40,6 +39,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
   UserVO get userVO => _userVO;
   String get authJWT => _authJWT;
   String get kakaoNoti => _kakaoNoti;
+  String get skipTutorial => _skipTutorial;
   getIsSigning() => _isSigning;
 
   set authJWT(String value) {
@@ -49,6 +49,10 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
 
   set kakaoNoti(String value) {
     this._kakaoNoti = value;
+  }
+
+  set skipTutorial(String value) {
+    this._skipTutorial = value;
   }
 
   setIsSigning(bool isSigning) {
@@ -74,6 +78,7 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     if(sharedHelper.sharedPreference != null) {
       authJWT = await sharedHelper.getStringSharedPref(AuthService.AUTH_TOKEN, "") as String;
       kakaoNoti = await sharedHelper.getStringSharedPref(AuthService.KAKAO_NOTIFICATION, "") as String;
+      skipTutorial = await sharedHelper.getStringSharedPref(AuthService.SKIP_TUTORIAL, "") as String;
       notifyListeners();
     }
   }
@@ -96,15 +101,20 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         changeKakaoNoti(false);
         return socialId;
         break;
+<<<<<<< HEAD
       /*case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
+=======
+      case AuthServiceType.Facebook:
+        /*await _snsAuthService.signInWithFacebook().then((value) {
+>>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
           socialMethod = AuthService.AUTH_TYPE_FB;
           socialId = value;
           phone = "";
           fbUid = _snsAuthService.fbUid;
           userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
-        });
+        });*/
         changeKakaoNoti(false);
         return socialId;
         break;*/
@@ -160,20 +170,24 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
     return true;
   }
 
-  signInDone(String authJWT, String authType) async {     //  로그인
+  void signInDone(String authJWT, String authType) async {     //  로그인
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
     sharedHelper.setStringSharedPref(AuthService.AUTH_TYPE, authType);
     _authJWT = authJWT;
   }
 
-  signUpDone(String authJWT) async {        //  회원가입
+  void signUpDone(String authJWT) async {        //  회원가입
     sharedHelper.setStringSharedPref(AuthService.AUTH_TOKEN, authJWT);
     _authJWT = authJWT;
     dbHelper.insertUser(userVO);
   }
 
-  changeKakaoNoti(bool isBool) async {
+  void changeKakaoNoti(bool isBool) async {
     sharedHelper.setStringSharedPref(AuthService.KAKAO_NOTIFICATION, isBool ? "true" : "false");
+  }
+
+  void setSkipTutorial(String tutorial) async {
+    sharedHelper.setStringSharedPref(AuthService.SKIP_TUTORIAL, tutorial);
   }
 
   @override

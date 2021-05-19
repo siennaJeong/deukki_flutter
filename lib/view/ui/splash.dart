@@ -15,6 +15,7 @@ import 'package:deukki/view/ui/base/base_widget.dart';
 import 'package:deukki/view/ui/base/m_scroll_behavior.dart';
 import 'package:deukki/view/ui/signin/login.dart';
 import 'package:deukki/view/ui/category/main.dart';
+import 'package:deukki/view/ui/tutorial.dart';
 import 'package:deukki/view/values/colors.dart';
 import 'package:deukki/view/values/strings.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -157,29 +158,33 @@ class _SplashState extends State<Splash> {
         ],
       );
     }else {
-      if(authServiceAdapter.authJWT.isNotEmpty) {
-        verifyToken ??= Provider.of<UserProviderModel>(context).verifyToken(authServiceAdapter.authJWT);
-        final tokenStatusResult = context.select((UserProviderModel model) => model.value.verifyToken);
-        if(!tokenStatusResult.hasData) {
-          return Container(
-              alignment: AlignmentDirectional.center,
-              color: MainColors.green_80,
-              child: CupertinoActivityIndicator(radius: 15)
-          );
-        }
-        if(tokenStatusResult.result.asValue.value != null) {
-          if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
-            analytics ??= AnalyticsService().setUserProperties(
-                tokenStatusResult.result.asValue.value.premium,
-                authServiceAdapter.userVO.gender,
-                authServiceAdapter.userVO.birthDate);
+      if(authServiceAdapter.skipTutorial.isEmpty || authServiceAdapter.skipTutorial == "false") {
+        return Tutorial();
+      }else {
+        if(authServiceAdapter.authJWT.isNotEmpty) {
+          verifyToken ??= Provider.of<UserProviderModel>(context).verifyToken(authServiceAdapter.authJWT);
+          final tokenStatusResult = context.select((UserProviderModel model) => model.value.verifyToken);
+          if(!tokenStatusResult.hasData) {
+            return Container(
+                alignment: AlignmentDirectional.center,
+                color: MainColors.green_80,
+                child: CupertinoActivityIndicator(radius: 15)
+            );
           }
-          return MainCategory();
+          if(tokenStatusResult.result.asValue.value != null) {
+            if(authServiceAdapter.userVO.gender.isNotEmpty && authServiceAdapter.userVO.birthDate.isNotEmpty) {
+              analytics ??= AnalyticsService().setUserProperties(
+                  tokenStatusResult.result.asValue.value.premium,
+                  authServiceAdapter.userVO.gender,
+                  authServiceAdapter.userVO.birthDate);
+            }
+            return MainCategory();
+          }else {
+            return Login();
+          }
         }else {
           return Login();
         }
-      }else {
-        return Login();
       }
     }
   }
