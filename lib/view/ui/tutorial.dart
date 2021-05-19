@@ -43,7 +43,7 @@ class _TutorialState extends State<Tutorial> {
       itemBuilder: (BuildContext context, int index) {
         return SizedBox.expand(
           child: Container(
-            child: Image.asset(guideImages[index], fit: BoxFit.fitHeight,),
+            child: Image.asset(guideImages[index], fit: _deviceWidth < 740 ? BoxFit.fitWidth : BoxFit.fitHeight,),
           ),
         );
       },
@@ -77,7 +77,7 @@ class _TutorialState extends State<Tutorial> {
 
   Widget _moveButtonWidget(bool isNext, String img) {
     return Container(
-      margin: EdgeInsets.only(left: 12),
+      margin: EdgeInsets.only(left: _deviceWidth > 740 ? 12 : 0),
       child: TextButton(
         child: Image.asset(img, width: 16,),
         onPressed: () => {
@@ -128,6 +128,7 @@ class _TutorialState extends State<Tutorial> {
     _deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      backgroundColor: MainColors.green_10,
       body: Center(
         child: Stack(
           children: <Widget>[
