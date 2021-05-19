@@ -12,11 +12,7 @@ PODS:
     - Flutter
   - device_info (0.0.1):
     - Flutter
-<<<<<<< HEAD
-  - Firebase/Analytics (6.33.0):
-=======
   - Firebase/Analytics (7.11.0):
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
     - Firebase/Core
   - Firebase/Auth (7.11.0):
     - Firebase/CoreOnly
@@ -97,11 +93,6 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
   - Flutter (1.0.0)
-<<<<<<< HEAD
-  - flutter_audio_recorder (0.5.4):
-    - Flutter
-=======
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -145,13 +136,8 @@ PODS:
     - AppAuth/Core (~> 1.4)
     - GTMSessionFetcher/Core (~> 1.5)
   - GTMSessionFetcher/Core (1.5.0)
-<<<<<<< HEAD
-  - GTMSessionFetcher/Full (1.5.0):
-    - GTMSessionFetcher/Core (= 1.5.0)
-=======
   - hardware_buttons (0.0.1):
     - Flutter
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   - in_app_purchase (0.0.1):
     - Flutter
   - in_app_review (0.2.0):
@@ -195,11 +181,8 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
-<<<<<<< HEAD
-  - flutter_audio_recorder (from `.symlinks/plugins/flutter_audio_recorder/ios`)
-=======
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
+  - hardware_buttons (from `.symlinks/plugins/hardware_buttons/ios`)
   - in_app_purchase (from `.symlinks/plugins/in_app_purchase/ios`)
   - in_app_review (from `.symlinks/plugins/in_app_review/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
@@ -252,13 +235,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
-<<<<<<< HEAD
-  flutter_audio_recorder:
-    :path: ".symlinks/plugins/flutter_audio_recorder/ios"
-=======
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
+  hardware_buttons:
+    :path: ".symlinks/plugins/hardware_buttons/ios"
   in_app_purchase:
     :path: ".symlinks/plugins/in_app_purchase/ios"
   in_app_review:
@@ -292,24 +272,6 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
-<<<<<<< HEAD
-  Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5
-  firebase_analytics: 36a619088c46224900829f14f4daa71585693a6f
-  firebase_auth: d5159db3873478d1ac839af7b10d2f831516136a
-  firebase_core: 5d6a02f3d85acd5f8321c2d6d62877626a670659
-  firebase_crashlytics: 7b37f8e79a82175606a3447852c9efa8e10034b3
-  firebase_messaging: 0aea2cd5885b65e19ede58ee3507f485c992cc75
-  FirebaseAnalytics: 5dd088bd2e67bb9d13dbf792d1164ceaf3052193
-  FirebaseAuth: c92d49ada7948d1a23466e3db17bc4c2039dddc3
-  FirebaseCore: d889d9e12535b7f36ac8bfbf1713a0836a3012cd
-  FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
-  FirebaseCrashlytics: 1a747c9cc084a24dc6d9511c991db1cd078154eb
-  FirebaseInstallations: 466c7b4d1f58fe16707693091da253726a731ed2
-  FirebaseInstanceID: bd3ffc24367f901a43c063b36c640b345a4a5dd1
-  FirebaseMessaging: 5eca4ef173de76253352511aafef774caa1cba2a
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
-  flutter_audio_recorder: eb998d4e75e59b39d9e3ca1818a5e0f3a82f5836
-=======
   Firebase: c121feb35e4126c0b355e3313fa9b487d47319fd
   firebase_analytics: 2d95c809fde5c606276a51b9cdc591a7ba44e1f2
   firebase_auth: a2bcd374be68ccee6284c3d00286846466b5a28b
@@ -322,7 +284,6 @@ SPEC CHECKSUMS:
   FirebaseCrashlytics: 272b675aa9d1e9bae1f9e1449fcc1f2cf6042806
   FirebaseInstallations: a58d4f72ec5861840b84df489f2668d970df558a
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleAppMeasurement: fd19169c3034975cb934e865e5667bfdce59df7f
@@ -331,6 +292,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 284cddc7fffc14ae1907efb6f78ab95c1fccaedc
   GTMAppAuth: ad5c2b70b9a8689e1a04033c9369c4915bfcbe89
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  hardware_buttons: 014f502132c734dc391a47e2b708728b1dd8bf32
   in_app_purchase: 3e2155afa9d03d4fa32d9e62d567885080ce97d6
   in_app_review: 4a97249f7a2f539a0f294c2d9196b7fe35e49541
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
