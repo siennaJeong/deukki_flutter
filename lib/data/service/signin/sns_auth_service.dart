@@ -5,10 +5,6 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-<<<<<<< HEAD
-=======
-import 'package:firebase_core/firebase_core.dart';
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';

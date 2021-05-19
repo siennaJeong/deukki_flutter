@@ -101,20 +101,15 @@ class AuthServiceAdapter extends ChangeNotifier implements AuthService{
         changeKakaoNoti(false);
         return socialId;
         break;
-<<<<<<< HEAD
       /*case AuthServiceType.Facebook:
         await _snsAuthService.signInWithFacebook().then((value) {
-=======
-      case AuthServiceType.Facebook:
-        /*await _snsAuthService.signInWithFacebook().then((value) {
->>>>>>> 95cb9369f2542b04bdd4bbbc95d47b4b1b40d866
           socialMethod = AuthService.AUTH_TYPE_FB;
           socialId = value;
           phone = "";
           fbUid = _snsAuthService.fbUid;
           userVO.name = _snsAuthService.name;
           userVO.email = _snsAuthService.email;
-        });*/
+        });
         changeKakaoNoti(false);
         return socialId;
         break;*/
