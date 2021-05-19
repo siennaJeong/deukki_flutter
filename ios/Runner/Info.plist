@@ -85,6 +85,10 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Use to store user's recording and voice files.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string></string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Bluetooth is used to communicate with BLE devices.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Can We Use Your Calendar Please.</string>
 	<key>NSContactsUsageDescription</key>
